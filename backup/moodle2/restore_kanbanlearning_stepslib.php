@@ -80,8 +80,10 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         $data->course = $this->get_courseid();
         $includegroups = (bool)$this->get_setting_value('groups');
         $destinationgroups = [];
-        if (!empty($data->boardmode)
-                && (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
+        if (
+            !empty($data->boardmode)
+            && (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
+        ) {
             $destinationgroups = groups_get_all_groups($this->get_courseid(), 0, 0, 'g.id, g.name');
         }
         if (!$includegroups) {
@@ -98,8 +100,10 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
             }
             $data->boardgroups = implode(',', array_unique($mappedgroupids));
         }
-        if ((int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
-                && empty($destinationgroups)) {
+        if (
+            (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
+            && empty($destinationgroups)
+        ) {
             $data->boardmode = \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_SHARED;
             $data->boardgroups = '';
             $data->boardgroupid = 0;
