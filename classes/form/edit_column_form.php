@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead\form;
+namespace mod_kanbanlearning\form;
 
 use context;
 use context_module;
 use core_form\dynamic_form;
-use mod_kanbanccead\boardmanager;
-use mod_kanbanccead\helper;
+use mod_kanbanlearning\boardmanager;
+use mod_kanbanlearning\helper;
 use moodle_url;
 
 /**
  * From for editing a column.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -47,21 +47,21 @@ class edit_column_form extends dynamic_form {
         $mform->addElement('hidden', 'cmid');
         $mform->setType('cmid', PARAM_INT);
 
-        $mform->addElement('text', 'title', get_string('columntitle', 'mod_kanbanccead'), ['size' => '50']);
+        $mform->addElement('text', 'title', get_string('columntitle', 'mod_kanbanlearning'), ['size' => '50']);
         $mform->setType('title', PARAM_TEXT);
 
         $userid = $this->optional_param('userid', 0, PARAM_INT);
         $groupid = $this->optional_param('groupid', 0, PARAM_INT);
 
-        $mform->addElement('advcheckbox', 'autoclose', get_string('autoclose', 'mod_kanbanccead'));
+        $mform->addElement('advcheckbox', 'autoclose', get_string('autoclose', 'mod_kanbanlearning'));
         $mform->setType('autoclose', PARAM_BOOL);
 
-        $mform->addElement('advcheckbox', 'autohide', get_string('autohide', 'mod_kanbanccead'));
+        $mform->addElement('advcheckbox', 'autohide', get_string('autohide', 'mod_kanbanlearning'));
         $mform->setType('autohide', PARAM_BOOL);
 
         $wiparray = [];
-        $wiparray[] = $mform->createElement('advcheckbox', 'wiplimitenable', get_string('wiplimitenable', 'mod_kanbanccead'));
-        $wiparray[] = $mform->createElement('text', 'wiplimit', get_string('wiplimit', 'mod_kanbanccead'), ['size' => '4']);
+        $wiparray[] = $mform->createElement('advcheckbox', 'wiplimitenable', get_string('wiplimitenable', 'mod_kanbanlearning'));
+        $wiparray[] = $mform->createElement('text', 'wiplimit', get_string('wiplimit', 'mod_kanbanlearning'), ['size' => '4']);
         $mform->addGroup($wiparray, 'wipgroup', '', '', false);
 
         $mform->setType('wiplimit', PARAM_INT);
@@ -122,8 +122,8 @@ class edit_column_form extends dynamic_form {
                 margin: 0;
                 cursor: pointer;
             }
-            #fgroup_id_dotcolorgroup .mod_kanbanccead_dotcolor_option,
-            #fitem_id_dotcolorgroup .mod_kanbanccead_dotcolor_option {
+            #fgroup_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option,
+            #fitem_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option {
                 appearance: none;
                 -webkit-appearance: none;
                 width: 1.2rem;
@@ -134,43 +134,43 @@ class edit_column_form extends dynamic_form {
                 cursor: pointer;
                 transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
             }
-            #fgroup_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:hover,
-            #fgroup_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:focus,
-            #fitem_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:hover,
-            #fitem_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:focus {
+            #fgroup_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:hover,
+            #fgroup_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:focus,
+            #fitem_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:hover,
+            #fitem_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:focus {
                 transform: scale(1.08);
             }
-            #fgroup_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:checked,
-            #fitem_id_dotcolorgroup .mod_kanbanccead_dotcolor_option:checked {
+            #fgroup_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:checked,
+            #fitem_id_dotcolorgroup .mod_kanbanlearning_dotcolor_option:checked {
                 border-color: #204f95;
                 box-shadow: 0 0 0 2px #fff, 0 0 0 3px #204f95;
             }
         </style>');
 
         $dotcolors = [
-            '#9AA4B2' => ['label' => get_string('dotcolorgray', 'mod_kanbanccead')],
-            '#3579DC' => ['label' => get_string('dotcolorblue', 'mod_kanbanccead')],
-            '#4DB56A' => ['label' => get_string('dotcolorgreen', 'mod_kanbanccead')],
-            '#7C6ED6' => ['label' => get_string('dotcolorpurple', 'mod_kanbanccead')],
-            '#1D74A6' => ['label' => get_string('dotcolorcyan', 'mod_kanbanccead')],
-            '#009688' => ['label' => get_string('dotcolorteal', 'mod_kanbanccead')],
-            '#C68A2E' => ['label' => get_string('dotcoloramber', 'mod_kanbanccead')],
-            '#B96A55' => ['label' => get_string('dotcolorterracotta', 'mod_kanbanccead')],
-            '#A9597A' => ['label' => get_string('dotcolorrose', 'mod_kanbanccead')],
-            '#7A7A2E' => ['label' => get_string('dotcolorolive', 'mod_kanbanccead')],
+            '#9AA4B2' => ['label' => get_string('dotcolorgray', 'mod_kanbanlearning')],
+            '#3579DC' => ['label' => get_string('dotcolorblue', 'mod_kanbanlearning')],
+            '#4DB56A' => ['label' => get_string('dotcolorgreen', 'mod_kanbanlearning')],
+            '#7C6ED6' => ['label' => get_string('dotcolorpurple', 'mod_kanbanlearning')],
+            '#1D74A6' => ['label' => get_string('dotcolorcyan', 'mod_kanbanlearning')],
+            '#009688' => ['label' => get_string('dotcolorteal', 'mod_kanbanlearning')],
+            '#C68A2E' => ['label' => get_string('dotcoloramber', 'mod_kanbanlearning')],
+            '#B96A55' => ['label' => get_string('dotcolorterracotta', 'mod_kanbanlearning')],
+            '#A9597A' => ['label' => get_string('dotcolorrose', 'mod_kanbanlearning')],
+            '#7A7A2E' => ['label' => get_string('dotcolorolive', 'mod_kanbanlearning')],
         ];
         $dotcolorelements = [];
         foreach ($dotcolors as $value => $meta) {
             $dotcolorelements[] = $mform->createElement('radio', 'dotcolor', '', '', $value, [
-                'class' => 'mod_kanbanccead_dotcolor_option',
+                'class' => 'mod_kanbanlearning_dotcolor_option',
                 'style' => 'appearance:none;-webkit-appearance:none;background:' . s($value) .
                     ';width:1.35rem;height:1.35rem;border-radius:50%;border:1px solid #7a8494;margin:0;position:relative;top:5px;',
                 'title' => $meta['label'],
                 'aria-label' => $meta['label'],
             ]);
         }
-        $mform->addGroup($dotcolorelements, 'dotcolorgroup', get_string('dotcolor', 'mod_kanbanccead'), '', false);
-        $mform->addHelpButton('dotcolorgroup', 'dotcolor', 'mod_kanbanccead');
+        $mform->addGroup($dotcolorelements, 'dotcolorgroup', get_string('dotcolor', 'mod_kanbanlearning'), '', false);
+        $mform->addHelpButton('dotcolorgroup', 'dotcolor', 'mod_kanbanlearning');
         $mform->setType('dotcolor', PARAM_TEXT);
         $mform->setDefault('dotcolor', '#9AA4B2');
     }
@@ -193,12 +193,12 @@ class edit_column_form extends dynamic_form {
         $context = $this->get_context_for_dynamic_submission();
         $cmid = $this->optional_param('cmid', null, PARAM_INT);
         $boardid = $this->optional_param('boardid', null, PARAM_INT);
-        $kanbancceadboard = helper::get_cached_board($boardid);
+        $kanbanlearningboard = helper::get_cached_board($boardid);
         $id = $this->optional_param('id', null, PARAM_INT);
-        require_capability('mod/kanbanccead:managecolumns', $context);
+        require_capability('mod/kanbanlearning:managecolumns', $context);
         $modinfo = get_fast_modinfo($COURSE);
         $cm = $modinfo->get_cm($cmid);
-        \mod_kanbanccead\helper::check_permissions_for_user_or_group($kanbancceadboard, $context, $cm);
+        \mod_kanbanlearning\helper::check_permissions_for_user_or_group($kanbanlearningboard, $context, $cm);
     }
 
     /**
@@ -232,10 +232,10 @@ class edit_column_form extends dynamic_form {
     public function set_data_for_dynamic_submission(): void {
         global $DB;
         $id = $this->optional_param('id', null, PARAM_INT);
-        $column = $DB->get_record('kanbanccead_column', ['id' => $id]);
+        $column = $DB->get_record('kanbanlearning_column', ['id' => $id]);
         $column->cmid = $this->optional_param('cmid', null, PARAM_INT);
         $column->title = html_entity_decode($column->title, ENT_COMPAT, 'UTF-8');
-        $column->boardid = $column->kanbanccead_board;
+        $column->boardid = $column->kanbanlearning_board;
         $options = json_decode($column->options ?? '{}');
         if (empty($options) || !is_object($options)) {
             $options = (object)[];
@@ -262,7 +262,7 @@ class edit_column_form extends dynamic_form {
             'boardid' => $this->optional_param('boardid', null, PARAM_INT),
             'cmid' => $this->optional_param('cmid', null, PARAM_INT),
         ];
-        return new moodle_url('/mod/kanbanccead/view.php', $params);
+        return new moodle_url('/mod/kanbanlearning/view.php', $params);
     }
 
     /**
@@ -276,7 +276,7 @@ class edit_column_form extends dynamic_form {
         $errors = parent::validation($data, $files);
 
         if (!empty($data['wiplimitenable']) && $data['wiplimit'] <= 0) {
-            $errors['wipgroup'] = get_string('wiplimitgreaterzero', 'mod_kanbanccead');
+            $errors['wipgroup'] = get_string('wiplimitgreaterzero', 'mod_kanbanlearning');
         }
 
         return $errors;

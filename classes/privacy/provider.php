@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy provider for mod_kanbanccead.
+ * Privacy provider for mod_kanbanlearning.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_kanbanccead\privacy;
+namespace mod_kanbanlearning\privacy;
 
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -34,9 +34,9 @@ use core_privacy\local\request\writer;
 use core_privacy\local\metadata\collection;
 
 /**
- * Privacy provider for mod_kanbanccead.
+ * Privacy provider for mod_kanbanlearning.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -71,49 +71,49 @@ class provider implements
             return;
         }
 
-        $params = ['cmid' => $context->instanceid, 'modname' => 'kanbanccead'];
+        $params = ['cmid' => $context->instanceid, 'modname' => 'kanbanlearning'];
         $queries = [
             "SELECT DISTINCT b.userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
               WHERE cm.id = :cmid AND b.userid > 0",
             "SELECT DISTINCT ca.createdby AS userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
               WHERE cm.id = :cmid AND ca.createdby > 0",
             "SELECT DISTINCT a.userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
-               JOIN {kanbanccead_assignee} a ON a.kanbanccead_card = ca.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
+               JOIN {kanbanlearning_assignee} a ON a.kanbanlearning_card = ca.id
               WHERE cm.id = :cmid",
             "SELECT DISTINCT d.userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
-               JOIN {kanbanccead_comment} d ON d.kanbanccead_card = ca.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
+               JOIN {kanbanlearning_comment} d ON d.kanbanlearning_card = ca.id
               WHERE cm.id = :cmid",
             "SELECT DISTINCT h.userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_history} h ON h.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_history} h ON h.kanbanlearning_board = b.id
               WHERE cm.id = :cmid AND h.userid > 0",
             "SELECT DISTINCT h.affected_userid AS userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_history} h ON h.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_history} h ON h.kanbanlearning_board = b.id
               WHERE cm.id = :cmid AND h.affected_userid > 0",
             "SELECT DISTINCT e.userid
                FROM {course_modules} cm
                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-               JOIN {event} e ON e.instance = cm.instance AND e.modulename = 'kanbanccead'
+               JOIN {event} e ON e.instance = cm.instance AND e.modulename = 'kanbanlearning'
               WHERE cm.id = :cmid AND e.userid > 0",
         ];
 
@@ -130,7 +130,7 @@ class provider implements
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
         $params = [
-            'modname' => 'kanbanccead',
+            'modname' => 'kanbanlearning',
             'contextlevel' => CONTEXT_MODULE,
             'userid' => $userid,
         ];
@@ -139,32 +139,32 @@ class provider implements
                     JOIN {modules} m ON m.id = cm.module AND m.name = :modname";
         $queries = [
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
-               JOIN {kanbanccead_assignee} a ON a.kanbanccead_card = ca.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
+               JOIN {kanbanlearning_assignee} a ON a.kanbanlearning_card = ca.id
               WHERE a.userid = :userid",
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
               WHERE b.userid = :userid",
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
               WHERE ca.createdby = :userid",
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_card} ca ON ca.kanbanccead_board = b.id
-               JOIN {kanbanccead_comment} d ON d.kanbanccead_card = ca.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_card} ca ON ca.kanbanlearning_board = b.id
+               JOIN {kanbanlearning_comment} d ON d.kanbanlearning_card = ca.id
               WHERE d.userid = :userid",
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_history} h ON h.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_history} h ON h.kanbanlearning_board = b.id
               WHERE h.userid = :userid",
             "SELECT c.id {$base}
-               JOIN {kanbanccead_board} b ON b.kanbanccead_instance = cm.instance
-               JOIN {kanbanccead_history} h ON h.kanbanccead_board = b.id
+               JOIN {kanbanlearning_board} b ON b.kanbanlearning_instance = cm.instance
+               JOIN {kanbanlearning_history} h ON h.kanbanlearning_board = b.id
               WHERE h.affected_userid = :userid",
             "SELECT c.id {$base}
-               JOIN {event} e ON e.instance = cm.instance AND e.modulename = 'kanbanccead'
+               JOIN {event} e ON e.instance = cm.instance AND e.modulename = 'kanbanlearning'
               WHERE e.userid = :userid",
         ];
 
@@ -191,7 +191,7 @@ class provider implements
             if (!$context instanceof \context_module) {
                 continue;
             }
-            $cm = get_coursemodule_from_id('kanbanccead', $context->instanceid);
+            $cm = get_coursemodule_from_id('kanbanlearning', $context->instanceid);
             if (!$cm) {
                 continue;
             }
@@ -203,46 +203,46 @@ class provider implements
             $sql = "SELECT ca.id, ca.title, ca.description, ca.descriptionformat, ca.options,
                            ca.duedate, ca.reminderdate, ca.completed, ca.approval_seal, ca.timecreated, ca.timemodified,
                            co.title AS columntitle, b.groupid
-                      FROM {kanbanccead_card} ca
-                      JOIN {kanbanccead_column} co ON co.id = ca.kanbanccead_column
-                      JOIN {kanbanccead_board} b ON b.id = ca.kanbanccead_board
-                     WHERE b.kanbanccead_instance = :instance AND ca.createdby = :userid
+                      FROM {kanbanlearning_card} ca
+                      JOIN {kanbanlearning_column} co ON co.id = ca.kanbanlearning_column
+                      JOIN {kanbanlearning_board} b ON b.id = ca.kanbanlearning_board
+                     WHERE b.kanbanlearning_instance = :instance AND ca.createdby = :userid
                   ORDER BY ca.id";
             self::export_records($context, 'created_cards', $DB->get_records_sql($sql, $params));
 
             $sql = "SELECT ca.id, ca.title, ca.approval_seal, co.title AS columntitle, b.groupid, ca.timemodified
-                      FROM {kanbanccead_assignee} a
-                      JOIN {kanbanccead_card} ca ON ca.id = a.kanbanccead_card
-                      JOIN {kanbanccead_column} co ON co.id = ca.kanbanccead_column
-                      JOIN {kanbanccead_board} b ON b.id = ca.kanbanccead_board
-                     WHERE b.kanbanccead_instance = :instance AND a.userid = :userid
+                      FROM {kanbanlearning_assignee} a
+                      JOIN {kanbanlearning_card} ca ON ca.id = a.kanbanlearning_card
+                      JOIN {kanbanlearning_column} co ON co.id = ca.kanbanlearning_column
+                      JOIN {kanbanlearning_board} b ON b.id = ca.kanbanlearning_board
+                     WHERE b.kanbanlearning_instance = :instance AND a.userid = :userid
                   ORDER BY ca.id";
             self::export_records($context, 'assigned_cards', $DB->get_records_sql($sql, $params));
 
             $sql = "SELECT d.id, d.content, d.timecreated, ca.title AS cardtitle, co.title AS columntitle
-                      FROM {kanbanccead_comment} d
-                      JOIN {kanbanccead_card} ca ON ca.id = d.kanbanccead_card
-                      JOIN {kanbanccead_column} co ON co.id = ca.kanbanccead_column
-                      JOIN {kanbanccead_board} b ON b.id = ca.kanbanccead_board
-                     WHERE b.kanbanccead_instance = :instance AND d.userid = :userid
+                      FROM {kanbanlearning_comment} d
+                      JOIN {kanbanlearning_card} ca ON ca.id = d.kanbanlearning_card
+                      JOIN {kanbanlearning_column} co ON co.id = ca.kanbanlearning_column
+                      JOIN {kanbanlearning_board} b ON b.id = ca.kanbanlearning_board
+                     WHERE b.kanbanlearning_instance = :instance AND d.userid = :userid
                   ORDER BY d.id";
             self::export_records($context, 'discussion_comments', $DB->get_records_sql($sql, $params));
 
             $sql = "SELECT h.id, h.action, h.parameters, h.affected_userid, h.timestamp,
                            ca.title AS cardtitle, co.title AS columntitle
-                      FROM {kanbanccead_history} h
-                      JOIN {kanbanccead_board} b ON b.id = h.kanbanccead_board
-                 LEFT JOIN {kanbanccead_card} ca ON ca.id = h.kanbanccead_card
-                 LEFT JOIN {kanbanccead_column} co ON co.id = h.kanbanccead_column
-                     WHERE b.kanbanccead_instance = :instance
+                      FROM {kanbanlearning_history} h
+                      JOIN {kanbanlearning_board} b ON b.id = h.kanbanlearning_board
+                 LEFT JOIN {kanbanlearning_card} ca ON ca.id = h.kanbanlearning_card
+                 LEFT JOIN {kanbanlearning_column} co ON co.id = h.kanbanlearning_column
+                     WHERE b.kanbanlearning_instance = :instance
                        AND (h.userid = :userid OR h.affected_userid = :affecteduserid)
                   ORDER BY h.id";
             $historyparams = $params + ['affecteduserid' => $user->id];
             self::export_records($context, 'history', $DB->get_records_sql($sql, $historyparams));
 
             $sql = "SELECT b.id, b.groupid, b.options, b.timecreated, b.timemodified
-                      FROM {kanbanccead_board} b
-                     WHERE b.kanbanccead_instance = :instance AND b.userid = :userid
+                      FROM {kanbanlearning_board} b
+                     WHERE b.kanbanlearning_instance = :instance AND b.userid = :userid
                   ORDER BY b.id";
             self::export_records($context, 'personal_boards', $DB->get_records_sql($sql, $params));
         }
@@ -271,17 +271,17 @@ class provider implements
         if (!$context instanceof \context_module) {
             return;
         }
-        $cm = get_coursemodule_from_id('kanbanccead', $context->instanceid);
+        $cm = get_coursemodule_from_id('kanbanlearning', $context->instanceid);
         if (!$cm) {
             return;
         }
 
         $transaction = $DB->start_delegated_transaction();
-        $DB->delete_records('event', ['modulename' => 'kanbanccead', 'instance' => $cm->instance]);
+        $DB->delete_records('event', ['modulename' => 'kanbanlearning', 'instance' => $cm->instance]);
         $boardids = $DB->get_fieldset_select(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             'id',
-            'kanbanccead_instance = :instance',
+            'kanbanlearning_instance = :instance',
             ['instance' => $cm->instance]
         );
         if (!$boardids) {
@@ -290,15 +290,15 @@ class provider implements
         }
 
         [$boardsql, $boardparams] = $DB->get_in_or_equal($boardids, SQL_PARAMS_NAMED, 'board');
-        $cardids = $DB->get_fieldset_select('kanbanccead_card', 'id', 'kanbanccead_board ' . $boardsql, $boardparams);
+        $cardids = $DB->get_fieldset_select('kanbanlearning_card', 'id', 'kanbanlearning_board ' . $boardsql, $boardparams);
         self::delete_card_dependants($context, $cardids);
-        $DB->delete_records_select('kanbanccead_history', 'kanbanccead_board ' . $boardsql, $boardparams);
-        $DB->delete_records_select('kanbanccead_card', 'kanbanccead_board ' . $boardsql, $boardparams);
+        $DB->delete_records_select('kanbanlearning_history', 'kanbanlearning_board ' . $boardsql, $boardparams);
+        $DB->delete_records_select('kanbanlearning_card', 'kanbanlearning_board ' . $boardsql, $boardparams);
 
         $nontemplateids = $DB->get_fieldset_select(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             'id',
-            'kanbanccead_instance = :instance AND template = 0',
+            'kanbanlearning_instance = :instance AND template = 0',
             ['instance' => $cm->instance]
         );
         if ($nontemplateids) {
@@ -307,19 +307,19 @@ class provider implements
                 SQL_PARAMS_NAMED,
                 'nontemplate'
             );
-            $DB->delete_records_select('kanbanccead_column', 'kanbanccead_board ' . $nontemplatesql, $nontemplateparams);
-            $DB->delete_records_select('kanbanccead_board', 'id ' . $nontemplatesql, $nontemplateparams);
+            $DB->delete_records_select('kanbanlearning_column', 'kanbanlearning_board ' . $nontemplatesql, $nontemplateparams);
+            $DB->delete_records_select('kanbanlearning_board', 'id ' . $nontemplatesql, $nontemplateparams);
         }
 
         $templateids = $DB->get_fieldset_select(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             'id',
-            'kanbanccead_instance = :instance AND template = 1',
+            'kanbanlearning_instance = :instance AND template = 1',
             ['instance' => $cm->instance]
         );
         if ($templateids) {
             [$templatesql, $templateparams] = $DB->get_in_or_equal($templateids, SQL_PARAMS_NAMED, 'template');
-            $DB->set_field_select('kanbanccead_column', 'sequence', '', 'kanbanccead_board ' . $templatesql, $templateparams);
+            $DB->set_field_select('kanbanlearning_column', 'sequence', '', 'kanbanlearning_board ' . $templatesql, $templateparams);
         }
         $transaction->allow_commit();
     }
@@ -351,21 +351,21 @@ class provider implements
     private static function delete_user_data_from_context(\context_module $context, int $userid): void {
         global $DB;
 
-        $cm = get_coursemodule_from_id('kanbanccead', $context->instanceid);
+        $cm = get_coursemodule_from_id('kanbanlearning', $context->instanceid);
         if (!$cm) {
             return;
         }
 
         $transaction = $DB->start_delegated_transaction();
         $DB->delete_records('event', [
-            'modulename' => 'kanbanccead',
+            'modulename' => 'kanbanlearning',
             'instance' => $cm->instance,
             'userid' => $userid,
         ]);
         $boardids = $DB->get_fieldset_select(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             'id',
-            'kanbanccead_instance = :instance',
+            'kanbanlearning_instance = :instance',
             ['instance' => $cm->instance]
         );
         if (!$boardids) {
@@ -375,42 +375,42 @@ class provider implements
 
         [$boardsql, $boardparams] = $DB->get_in_or_equal($boardids, SQL_PARAMS_NAMED, 'board');
         $params = $boardparams + ['userid' => $userid];
-        $DB->delete_records_select('kanbanccead_history', 'userid = :userid AND kanbanccead_board ' . $boardsql, $params);
+        $DB->delete_records_select('kanbanlearning_history', 'userid = :userid AND kanbanlearning_board ' . $boardsql, $params);
         $DB->set_field_select(
-            'kanbanccead_history',
+            'kanbanlearning_history',
             'affected_userid',
             0,
-            'affected_userid = :userid AND kanbanccead_board ' . $boardsql,
+            'affected_userid = :userid AND kanbanlearning_board ' . $boardsql,
             $params
         );
         $DB->set_field_select(
-            'kanbanccead_card',
+            'kanbanlearning_card',
             'createdby',
             0,
-            'createdby = :userid AND kanbanccead_board ' . $boardsql,
+            'createdby = :userid AND kanbanlearning_board ' . $boardsql,
             $params
         );
 
-        $cardids = $DB->get_fieldset_select('kanbanccead_card', 'id', 'kanbanccead_board ' . $boardsql, $boardparams);
+        $cardids = $DB->get_fieldset_select('kanbanlearning_card', 'id', 'kanbanlearning_board ' . $boardsql, $boardparams);
         if ($cardids) {
             [$cardsql, $cardparams] = $DB->get_in_or_equal($cardids, SQL_PARAMS_NAMED, 'card');
             $cardparams['userid'] = $userid;
             $DB->delete_records_select(
-                'kanbanccead_assignee',
-                'userid = :userid AND kanbanccead_card ' . $cardsql,
+                'kanbanlearning_assignee',
+                'userid = :userid AND kanbanlearning_card ' . $cardsql,
                 $cardparams
             );
             $DB->delete_records_select(
-                'kanbanccead_comment',
-                'userid = :userid AND kanbanccead_card ' . $cardsql,
+                'kanbanlearning_comment',
+                'userid = :userid AND kanbanlearning_card ' . $cardsql,
                 $cardparams
             );
         }
 
         $personalboardids = $DB->get_fieldset_select(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             'id',
-            'kanbanccead_instance = :instance AND userid = :userid',
+            'kanbanlearning_instance = :instance AND userid = :userid',
             ['instance' => $cm->instance, 'userid' => $userid]
         );
         if ($personalboardids) {
@@ -420,16 +420,16 @@ class provider implements
                 'personal'
             );
             $personalcardids = $DB->get_fieldset_select(
-                'kanbanccead_card',
+                'kanbanlearning_card',
                 'id',
-                'kanbanccead_board ' . $personalsql,
+                'kanbanlearning_board ' . $personalsql,
                 $personalparams
             );
             self::delete_card_dependants($context, $personalcardids);
-            $DB->delete_records_select('kanbanccead_history', 'kanbanccead_board ' . $personalsql, $personalparams);
-            $DB->delete_records_select('kanbanccead_card', 'kanbanccead_board ' . $personalsql, $personalparams);
-            $DB->delete_records_select('kanbanccead_column', 'kanbanccead_board ' . $personalsql, $personalparams);
-            $DB->delete_records_select('kanbanccead_board', 'id ' . $personalsql, $personalparams);
+            $DB->delete_records_select('kanbanlearning_history', 'kanbanlearning_board ' . $personalsql, $personalparams);
+            $DB->delete_records_select('kanbanlearning_card', 'kanbanlearning_board ' . $personalsql, $personalparams);
+            $DB->delete_records_select('kanbanlearning_column', 'kanbanlearning_board ' . $personalsql, $personalparams);
+            $DB->delete_records_select('kanbanlearning_board', 'id ' . $personalsql, $personalparams);
         }
         $transaction->allow_commit();
     }
@@ -447,12 +447,12 @@ class provider implements
             return;
         }
         [$cardsql, $cardparams] = $DB->get_in_or_equal($cardids, SQL_PARAMS_NAMED, 'card');
-        $DB->delete_records_select('kanbanccead_assignee', 'kanbanccead_card ' . $cardsql, $cardparams);
-        $DB->delete_records_select('kanbanccead_comment', 'kanbanccead_card ' . $cardsql, $cardparams);
+        $DB->delete_records_select('kanbanlearning_assignee', 'kanbanlearning_card ' . $cardsql, $cardparams);
+        $DB->delete_records_select('kanbanlearning_comment', 'kanbanlearning_card ' . $cardsql, $cardparams);
 
         $fs = get_file_storage();
         foreach ($cardids as $cardid) {
-            $fs->delete_area_files($context->id, 'mod_kanbanccead', 'attachments', $cardid);
+            $fs->delete_area_files($context->id, 'mod_kanbanlearning', 'attachments', $cardid);
         }
     }
     /**
@@ -462,22 +462,22 @@ class provider implements
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection): collection {
-        $collection->add_database_table('kanbanccead_board', [
+        $collection->add_database_table('kanbanlearning_board', [
             'userid' => 'privacy:metadata:userid',
             'groupid' => 'privacy:metadata:groupid',
             'options' => 'privacy:metadata:options',
             'timecreated' => 'privacy:metadata:timecreated',
             'timemodified' => 'privacy:metadata:timemodified',
-        ], 'privacy:metadata:kanbanccead_board');
+        ], 'privacy:metadata:kanbanlearning_board');
 
-        $collection->add_database_table('kanbanccead_column', [
+        $collection->add_database_table('kanbanlearning_column', [
             'title' => 'privacy:metadata:title',
             'options' => 'privacy:metadata:options',
             'timecreated' => 'privacy:metadata:timecreated',
             'timemodified' => 'privacy:metadata:timemodified',
-        ], 'privacy:metadata:kanbanccead_column');
+        ], 'privacy:metadata:kanbanlearning_column');
 
-        $collection->add_database_table('kanbanccead_card', [
+        $collection->add_database_table('kanbanlearning_card', [
             'title' => 'privacy:metadata:title',
             'description' => 'privacy:metadata:description',
             'options' => 'privacy:metadata:options',
@@ -488,30 +488,30 @@ class provider implements
             'timecreated' => 'privacy:metadata:timecreated',
             'timemodified' => 'privacy:metadata:timemodified',
             'createdby' => 'privacy:metadata:createdby',
-        ], 'privacy:metadata:kanbanccead_card');
+        ], 'privacy:metadata:kanbanlearning_card');
 
-        $collection->add_database_table('kanbanccead_assignee', [
+        $collection->add_database_table('kanbanlearning_assignee', [
             'userid' => 'privacy:metadata:userid',
-            'kanbanccead_card' => 'privacy:metadata:kanbanccead_card',
-        ], 'privacy:metadata:kanbanccead_assignee');
+            'kanbanlearning_card' => 'privacy:metadata:kanbanlearning_card',
+        ], 'privacy:metadata:kanbanlearning_assignee');
 
-        $collection->add_database_table('kanbanccead_comment', [
+        $collection->add_database_table('kanbanlearning_comment', [
             'userid' => 'privacy:metadata:userid',
-            'kanbanccead_card' => 'privacy:metadata:kanbanccead_card',
+            'kanbanlearning_card' => 'privacy:metadata:kanbanlearning_card',
             'content' => 'privacy:metadata:content',
             'timecreated' => 'privacy:metadata:timecreated',
-        ], 'privacy:metadata:kanbanccead_comment');
+        ], 'privacy:metadata:kanbanlearning_comment');
 
-        $collection->add_database_table('kanbanccead_history', [
+        $collection->add_database_table('kanbanlearning_history', [
             'userid' => 'privacy:metadata:userid',
-            'kanbanccead_board' => 'privacy:metadata:kanbanccead_board',
-            'kanbanccead_column' => 'privacy:metadata:kanbanccead_column',
-            'kanbanccead_card' => 'privacy:metadata:kanbanccead_card',
+            'kanbanlearning_board' => 'privacy:metadata:kanbanlearning_board',
+            'kanbanlearning_column' => 'privacy:metadata:kanbanlearning_column',
+            'kanbanlearning_card' => 'privacy:metadata:kanbanlearning_card',
             'parameters' => 'privacy:metadata:parameters',
             'action' => 'privacy:metadata:action',
             'affected_userid' => 'privacy:metadata:affected_userid',
             'timestamp' => 'privacy:metadata:timestamp',
-        ], 'privacy:metadata:kanbanccead_history');
+        ], 'privacy:metadata:kanbanlearning_history');
 
         return $collection;
     }

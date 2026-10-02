@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/boardselector
+    @template mod_kanbanlearning/boardselector
 
     Dropdown selector for teachers to switch between boards.
 
@@ -37,21 +37,21 @@
     }
 }}
 {{#boardselector.show}}
-<div class="dropdown mod_kanbanccead_boardselector">
-    <button class="btn btn-outline-secondary dropdown-toggle mod_kanbanccead_boardselector_button"
+<div class="dropdown mod_kanbanlearning_boardselector">
+    <button class="btn btn-outline-secondary dropdown-toggle mod_kanbanlearning_boardselector_button"
             type="button"
             data-bs-toggle="dropdown"
             data-toggle="dropdown"
             aria-expanded="false"
             title="{{boardselector.label}}"
             aria-label="{{boardselector.label}}">
-        <span class="mod_kanbanccead_boardselector_icon">{{#pix}} i/group, core, {{boardselector.label}} {{/pix}}</span>
-        <span class="mod_kanbanccead_boardselector_current">{{boardselector.shortcurrentlabel}}</span>
+        <span class="mod_kanbanlearning_boardselector_icon">{{#pix}} i/group, core, {{boardselector.label}} {{/pix}}</span>
+        <span class="mod_kanbanlearning_boardselector_current">{{boardselector.shortcurrentlabel}}</span>
     </button>
-    <ul class="dropdown-menu mod_kanbanccead_boardselector_menu">
+    <ul class="dropdown-menu mod_kanbanlearning_boardselector_menu">
         {{#boardselector.boards}}
             <li>
-                <a class="dropdown-item{{#current}} mod_kanbanccead_boardselector_item_current{{/current}}"
+                <a class="dropdown-item{{#current}} mod_kanbanlearning_boardselector_item_current{{/current}}"
                    href="{{url}}">
                     {{label}}
                 </a>

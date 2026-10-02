@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
  * Class numberfilter
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright  2024 ISB Bayern
  * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,7 +40,7 @@ class numberfilter {
         $pattern = '/#(\d+)/';
         $text = preg_replace_callback($pattern, function ($matches) {
             $number = (int)$matches[1];
-            return '<a class="mod_kanbanccead_card_number" data-id="' . $number . '">#' . $number . '</a>';
+            return '<a class="mod_kanbanlearning_card_number" data-id="' . $number . '">#' . $number . '</a>';
         }, $text);
         return $text;
     }

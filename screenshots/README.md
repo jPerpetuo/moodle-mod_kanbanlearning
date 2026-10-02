@@ -3,7 +3,7 @@
 This directory stores public screenshots for release pages and a future Moodle Marketplace listing. Capture images only from a disposable demonstration course with fictional users and no personal, institutional, or production data.
 ## Inherited screenshot
 
-The image below is inherited from the `mod_kanban` predecessor and is retained as a visual reference. It is not evidence of a tested `mod_kanbanccead` installation. Capture replacement images from the renamed component before publishing a release or Marketplace submission.
+The image below is inherited from the `mod_kanban` predecessor and is retained as a visual reference. It is not evidence of a tested `mod_kanbanlearning` installation. Capture replacement images from the renamed component before publishing a release or Marketplace submission.
 
 ![Group board with example cards](kanban-board-groups-en.png)
 

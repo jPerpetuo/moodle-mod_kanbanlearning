@@ -1,26 +1,26 @@
-import Reactive from 'mod_kanbanccead/reactive';
-import KanbanCceadParent from 'mod_kanbanccead/kanbancceadparent';
-import KanbanCceadMutations from 'mod_kanbanccead/mutations';
+import Reactive from 'mod_kanbanlearning/reactive';
+import kanbanlearningParent from 'mod_kanbanlearning/kanbanlearningparent';
+import kanbanlearningMutations from 'mod_kanbanlearning/mutations';
 
-const stateChangedEventName = 'mod_kanbanccead:stateChanged';
+const stateChangedEventName = 'mod_kanbanlearning:stateChanged';
 
 /**
- * Create reactive instance for kanbanccead, load initial state.
+ * Create reactive instance for kanbanlearning, load initial state.
  * @param {string} domElementId Id of render container
- * @param {number} cmId Course module id of the kanbanccead board
+ * @param {number} cmId Course module id of the kanbanlearning board
  * @param {number} boardId Id of the board to display
- * @returns {KanbanCceadComponent}
+ * @returns {kanbanlearningComponent}
  */
 export const init = (domElementId, cmId, boardId) => {
     const reactiveInstance = new Reactive({
-        name: 'kanbanccead_' + cmId,
+        name: 'kanbanlearning_' + cmId,
         eventName: stateChangedEventName,
-        eventDispatch: dispatchKanbanCceadEvent,
+        eventDispatch: dispatchkanbanlearningEvent,
         target: document.getElementById(domElementId),
-        mutations: new KanbanCceadMutations(),
+        mutations: new kanbanlearningMutations(),
     });
     reactiveInstance.loadBoard(cmId, boardId);
-    return new KanbanCceadParent({
+    return new kanbanlearningParent({
         element: document.getElementById(domElementId),
         reactive: reactiveInstance,
     });
@@ -29,11 +29,11 @@ export const init = (domElementId, cmId, boardId) => {
 /**
  * Internal state changed event.
  *
- * @method dispatchKanbanCceadEvent
+ * @method dispatchkanbanlearningEvent
  * @param {object} detail the full state
  * @param {object} target the custom event target (document if none provided)
  */
-function dispatchKanbanCceadEvent(detail, target) {
+function dispatchkanbanlearningEvent(detail, target) {
     if (target === undefined) {
         target = document;
     }

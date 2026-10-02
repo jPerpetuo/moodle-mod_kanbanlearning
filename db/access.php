@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for mod_kanbanccead
+ * Capability definitions for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
 
-    'mod/kanbanccead:addinstance' => [
+    'mod/kanbanlearning:addinstance' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -37,7 +37,7 @@ $capabilities = [
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
-    'mod/kanbanccead:view' => [
+    'mod/kanbanlearning:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -48,7 +48,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:addcard' => [
+    'mod/kanbanlearning:addcard' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -59,7 +59,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:assignself' => [
+    'mod/kanbanlearning:assignself' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -70,7 +70,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:assignothers' => [
+    'mod/kanbanlearning:assignothers' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -81,7 +81,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:manageassignedcards' => [
+    'mod/kanbanlearning:manageassignedcards' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -92,7 +92,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:manageallcards' => [
+    'mod/kanbanlearning:manageallcards' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -103,7 +103,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:manageapprovalseals' => [
+    'mod/kanbanlearning:manageapprovalseals' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -114,7 +114,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:managecolumns' => [
+    'mod/kanbanlearning:managecolumns' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -125,7 +125,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:viewhistory' => [
+    'mod/kanbanlearning:viewhistory' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -136,7 +136,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:viewallboards' => [
+    'mod/kanbanlearning:viewallboards' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -147,7 +147,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:editallboards' => [
+    'mod/kanbanlearning:editallboards' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -158,7 +158,7 @@ $capabilities = [
         ],
     ],
 
-    'mod/kanbanccead:manageboard' => [
+    'mod/kanbanlearning:manageboard' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -171,13 +171,13 @@ $capabilities = [
 ];
 
 $deprecatedcapabilities = [
-    'mod/kanbanccead:managecards' => [
-        'replacement' => 'mod/kanbanccead:manageallcards',
+    'mod/kanbanlearning:managecards' => [
+        'replacement' => 'mod/kanbanlearning:manageallcards',
     ],
-    'mod/kanbanccead:moveallcards' => [
-        'replacement' => 'mod/kanbanccead:manageallcards',
+    'mod/kanbanlearning:moveallcards' => [
+        'replacement' => 'mod/kanbanlearning:manageallcards',
     ],
-    'mod/kanbanccead:moveassignedcards' => [
-        'replacement' => 'mod/kanbanccead:manageassignedcards',
+    'mod/kanbanlearning:moveassignedcards' => [
+        'replacement' => 'mod/kanbanlearning:manageassignedcards',
     ],
 ];

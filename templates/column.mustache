@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/column
+    @template mod_kanbanlearning/column
 
-    Template for a column in the kanbanccead board.
+    Template for a column in the kanbanlearning board.
 
     Example context (json):
     {
@@ -33,51 +33,51 @@
         "addcard": true
     }
 }}
-<li class="mod_kanbanccead_column col card{{#autohide}} mod_kanbanccead_autohide{{/autohide}} {{#locked}}mod_kanbanccead_locked_column{{/locked}} {{#wiplimit}}mod_kanbanccead_column_wiplimit{{/wiplimit}}" id="mod_kanbanccead_column-{{id}}" data-id="{{id}}">
-    <div class="mod_kanbanccead_column_header">
-        <div class="mod_kanbanccead_column_titlewrap">
-            <span class="mod_kanbanccead_column_dot"></span>
-            <h5 class="mod_kanbanccead_column_title card-title">
-                <span class="inplaceeditable inplaceeditable-text"{{#managecolumns}} {{^locked}}data-inplaceeditable="1" {{/locked}}data-component="mod_kanbanccead" data-itemtype="column" data-itemid="{{id}}"
+<li class="mod_kanbanlearning_column col card{{#autohide}} mod_kanbanlearning_autohide{{/autohide}} {{#locked}}mod_kanbanlearning_locked_column{{/locked}} {{#wiplimit}}mod_kanbanlearning_column_wiplimit{{/wiplimit}}" id="mod_kanbanlearning_column-{{id}}" data-id="{{id}}">
+    <div class="mod_kanbanlearning_column_header">
+        <div class="mod_kanbanlearning_column_titlewrap">
+            <span class="mod_kanbanlearning_column_dot"></span>
+            <h5 class="mod_kanbanlearning_column_title card-title">
+                <span class="inplaceeditable inplaceeditable-text"{{#managecolumns}} {{^locked}}data-inplaceeditable="1" {{/locked}}data-component="mod_kanbanlearning" data-itemtype="column" data-itemid="{{id}}"
                 data-value="{{{title}}}" data-type="text"{{/managecolumns}}>
                     <a class="quickeditlink aalink"{{#managecolumns}} data-inplaceeditablelink="1"{{/managecolumns}}>
                         {{{title}}}
                     </a>
-                    <span class="mod_kanbanccead_column_lock" title="{{#str}} lock, mod_kanbanccead {{/str}}">
-                        <i class="icon fa fa-lock fa-fw" role="img" aria-label="{{#str}} lock, mod_kanbanccead {{/str}}"></i>
+                    <span class="mod_kanbanlearning_column_lock" title="{{#str}} lock, mod_kanbanlearning {{/str}}">
+                        <i class="icon fa fa-lock fa-fw" role="img" aria-label="{{#str}} lock, mod_kanbanlearning {{/str}}"></i>
                     </span>
                 </span>
             </h5>
-            <span class="mod_kanbanccead_column_counter"><span class="mod_kanbanccead_cardcount">{{cardcount}}</span></span>
+            <span class="mod_kanbanlearning_column_counter"><span class="mod_kanbanlearning_cardcount">{{cardcount}}</span></span>
         </div>
-        <div class="mod_kanbanccead_column_actions">
-            {{>mod_kanbanccead/actionmenucolumn}}
+        <div class="mod_kanbanlearning_column_actions">
+            {{>mod_kanbanlearning/actionmenucolumn}}
         </div>
     </div>
-    <div class="mod_kanbanccead_column_stats">
-        <span class="badge badge-light mod_kanbanccead_wipinfo"><span class="mod_kanbanccead_wiplimit">{{wiplimit}}</span> / {{#pix}} t/user, core, {{#str}} wiplimit, mod_kanbanccead{{/str}} {{/pix}}</span>
+    <div class="mod_kanbanlearning_column_stats">
+        <span class="badge badge-light mod_kanbanlearning_wipinfo"><span class="mod_kanbanlearning_wiplimit">{{wiplimit}}</span> / {{#pix}} t/user, core, {{#str}} wiplimit, mod_kanbanlearning{{/str}} {{/pix}}</span>
     </div>
-    <div class="mod_kanbanccead_hidden_actions">
-        <button data-action="show_hidden" class="btn btn-icon icon-no-margin p-0">{{#pix}} i/show, core, {{#str}} showhidden, mod_kanbanccead {{/str}} {{/pix}}</button>
-        <button data-action="hide_hidden" class="btn btn-icon icon-no-margin p-0">{{#pix}} i/hide, core, {{#str}} hidehidden, mod_kanbanccead {{/str}} {{/pix}}</button>
+    <div class="mod_kanbanlearning_hidden_actions">
+        <button data-action="show_hidden" class="btn btn-icon icon-no-margin p-0">{{#pix}} i/show, core, {{#str}} showhidden, mod_kanbanlearning {{/str}} {{/pix}}</button>
+        <button data-action="hide_hidden" class="btn btn-icon icon-no-margin p-0">{{#pix}} i/hide, core, {{#str}} hidehidden, mod_kanbanlearning {{/str}} {{/pix}}</button>
     </div>
-    <ul class="mod_kanbanccead_column_inner card-body p-0" data-id="{{id}}">
-        <li class="mod_kanbanccead_addcard_first">
-            {{>mod_kanbanccead/addcard}}
+    <ul class="mod_kanbanlearning_column_inner card-body p-0" data-id="{{id}}">
+        <li class="mod_kanbanlearning_addcard_first">
+            {{>mod_kanbanlearning/addcard}}
         </li>
         {{#hascards}}
             {{#cards}}
-                {{>mod_kanbanccead/card}}
+                {{>mod_kanbanlearning/card}}
             {{/cards}}
         {{/hascards}}
     </ul>
-    <button data-action="add_card" class="btn btn-link btn-add-content mod_kanbanccead_addcard_link{{^addcard}} hidden{{/addcard}}" data-columnid="{{id}}" data-id="0">{{#str}} addcardshort, mod_kanbanccead {{/str}}</button>
-    {{>mod_kanbanccead/addcolumn}}
+    <button data-action="add_card" class="btn btn-link btn-add-content mod_kanbanlearning_addcard_link{{^addcard}} hidden{{/addcard}}" data-columnid="{{id}}" data-id="0">{{#str}} addcardshort, mod_kanbanlearning {{/str}}</button>
+    {{>mod_kanbanlearning/addcolumn}}
 </li>
 
 {{#js}}
 {{#managecolumns}}require(['core/inplace_editable']);{{/managecolumns}}
-require(['mod_kanbanccead/column'], function(component) {
-    component.init('mod_kanbanccead_column-{{id}}');
+require(['mod_kanbanlearning/column'], function(component) {
+    component.init('mod_kanbanlearning_column-{{id}}');
 });
 {{/js}}

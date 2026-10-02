@@ -15,19 +15,19 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/discussionmodal
+    @template mod_kanbanlearning/discussionmodal
 
     Example context (json):
     {
         "id": 4,
-        "kanbanccead_column": 1,
+        "kanbanlearning_column": 1,
         "title": "Task",
         "hasassignees": false,
         "completed": true,
         "canedit": true
     }
 }}
-<div class="mod_kanbanccead_discussion_modal modal fade" id="mod_kanbanccead_discussion_modal_{{id}}" data-id="{{id}}" aria-hidden="true">
+<div class="mod_kanbanlearning_discussion_modal modal fade" id="mod_kanbanlearning_discussion_modal_{{id}}" data-id="{{id}}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -36,16 +36,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="mod_kanbanccead_loading_status" role="status">
-                    {{> core/loading}} {{#str}} loadingdiscussion, mod_kanbanccead {{/str}}
+                <div class="mod_kanbanlearning_loading_status" role="status">
+                    {{> core/loading}} {{#str}} loadingdiscussion, mod_kanbanlearning {{/str}}
                 </div>
-                <div class="mod_kanbanccead_discussion" data-id="{{id}}">
+                <div class="mod_kanbanlearning_discussion" data-id="{{id}}">
                 </div>
             </div>
             <div class="modal-footer">
-                <textarea id="mod_kanbanccead_discussion_input_{{id}}" class="mod_kanbanccead_discussion_input"></textarea>
-                <button type="button" class="mod_kanbanccead_discussion_send btn btn-icon icon-no-margin p-0" data-action="send_discussion_message" data-id="{{id}}">
-                {{#pix}} i/sendmessage, core, {{#str}} senddiscussion, mod_kanbanccead {{/str}} {{/pix}}
+                <textarea id="mod_kanbanlearning_discussion_input_{{id}}" class="mod_kanbanlearning_discussion_input"></textarea>
+                <button type="button" class="mod_kanbanlearning_discussion_send btn btn-icon icon-no-margin p-0" data-action="send_discussion_message" data-id="{{id}}">
+                {{#pix}} i/sendmessage, core, {{#str}} senddiscussion, mod_kanbanlearning {{/str}} {{/pix}}
                 </button>
             </div>
         </div>

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Portuguese Brazilian language file for mod_kanbanccead.
+ * Portuguese Brazilian language file for mod_kanbanlearning.
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2026 CCEAD PUC-Rio
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -151,24 +151,24 @@ $string['history_card_unassigned'] = '{$a->username} removeu a atribuição do c
 $string['history_card_updated'] = '{$a->username} alterou o título do cartão para "{$a->title}"';
 $string['history_discussion_added'] = '{$a->username} adicionou uma mensagem de discussão';
 $string['history_discussion_deleted'] = '{$a->username} excluiu uma mensagem de discussão';
-$string['kanbanccead:addcard'] = 'Adicionar um cartão a um quadro Kanban';
-$string['kanbanccead:addinstance'] = 'Adicionar um quadro Kanban';
-$string['kanbanccead:assignothers'] = 'Atribuir outras pessoas a um cartão';
-$string['kanbanccead:assignself'] = 'Atribuir a si mesmo a um cartão';
-$string['kanbanccead:editallboards'] = 'Editar todos os quadros';
-$string['kanbanccead:manageallcards'] = 'Editar / mover todos os cartões';
-$string['kanbanccead:manageapprovalseals'] = 'Gerenciar reações do professor em cartões concluídos';
-$string['kanbanccead:manageassignedcards'] = 'Editar / mover cartões atribuídos a si mesmo';
-$string['kanbanccead:manageboard'] = 'Gerenciar o quadro (modelos, excluir o quadro)';
-$string['kanbanccead:managecolumns'] = 'Editar as colunas do quadro';
-$string['kanbanccead:view'] = 'Ver um quadro Kanban';
-$string['kanbanccead:viewallboards'] = 'Ver todos os quadros';
-$string['kanbanccead:viewhistory'] = 'Ver o histórico do quadro';
+$string['kanbanlearning:addcard'] = 'Adicionar um cartão a um quadro Kanban';
+$string['kanbanlearning:addinstance'] = 'Adicionar um quadro Kanban';
+$string['kanbanlearning:assignothers'] = 'Atribuir outras pessoas a um cartão';
+$string['kanbanlearning:assignself'] = 'Atribuir a si mesmo a um cartão';
+$string['kanbanlearning:editallboards'] = 'Editar todos os quadros';
+$string['kanbanlearning:manageallcards'] = 'Editar / mover todos os cartões';
+$string['kanbanlearning:manageapprovalseals'] = 'Gerenciar reações do professor em cartões concluídos';
+$string['kanbanlearning:manageassignedcards'] = 'Editar / mover cartões atribuídos a si mesmo';
+$string['kanbanlearning:manageboard'] = 'Gerenciar o quadro (modelos, excluir o quadro)';
+$string['kanbanlearning:managecolumns'] = 'Editar as colunas do quadro';
+$string['kanbanlearning:view'] = 'Ver um quadro Kanban';
+$string['kanbanlearning:viewallboards'] = 'Ver todos os quadros';
+$string['kanbanlearning:viewhistory'] = 'Ver o histórico do quadro';
 $string['linknumbers'] = 'Vincular números dos cartões';
 $string['linknumbers_help'] = 'Números de cartão em descrições de cartão e comentários de discussão serão vinculados.';
 $string['liveupdatetime'] = 'Intervalo de atualização em tempo real em segundos';
 $string['liveupdatetimedescription'] = 'Os quadros buscarão atualizações após este intervalo. Defina 0 para desativar atualização em tempo real.';
-$string['loading'] = 'Carregando quadro kanbanccead';
+$string['loading'] = 'Carregando quadro do Kanban for Learning';
 $string['loadingdiscussion'] = 'Carregando discussão';
 $string['lock'] = 'Bloquear';
 $string['lockboardcolumns'] = 'Bloquear colunas do quadro';
@@ -193,7 +193,7 @@ $string['messageprovider:closed'] = 'Cartão concluído / reaberto';
 $string['messageprovider:discussion'] = 'Discussão de cartão';
 $string['messageprovider:due'] = 'Vencimento de cartão';
 $string['messageprovider:moved'] = 'Cartão movido';
-$string['modulename'] = 'Kanban CCEAD';
+$string['modulename'] = 'Kanban for Learning';
 $string['modulename_help'] = 'Esta atividade permite usar o método Kanban para gerenciar projetos ou processos de aprendizagem.
 Kanban é um método ágil de gerenciamento de projetos que organiza tarefas por meio de um quadro visual para otimizar o fluxo de trabalho. As tarefas são categorizadas em colunas como "A fazer", "Em andamento" e "Concluído" para tornar o progresso transparente. O objetivo é identificar gargalos no fluxo de trabalho e melhorar continuamente a eficiência.
 <br>Dependendo das configurações, pode haver vários tipos de quadros dentro de uma atividade Kanban:
@@ -203,7 +203,7 @@ Kanban é um método ágil de gerenciamento de projetos que organiza tarefas por
     <li>Quadros de grupo</li>
     <li>Quadros de modelo: qualquer pessoa que possa gerenciar quadros pode copiar um quadro existente como modelo.</li>
 </ul>';
-$string['modulenameplural'] = 'Quadros Kanban CCEAD';
+$string['modulenameplural'] = 'Quadros do Kanban for Learning';
 $string['moveaftercard'] = 'Mover após';
 $string['movecard'] = 'Mover cartão';
 $string['movecolumn'] = 'Mover coluna';
@@ -213,14 +213,14 @@ $string['name_help'] = 'Este nome será visível na visão geral do curso e como
 $string['newcard'] = 'Novo cartão';
 $string['newcolumn'] = 'Nova coluna';
 $string['nogroupavailable'] = 'Nenhum grupo disponível';
-$string['nokanbancceadinstances'] = 'Não há quadros kanbanccead neste curso ou você não tem permissão para acessá-los';
+$string['nokanbanlearninginstances'] = 'Não há quadros do Kanban for Learning neste curso ou você não tem permissão para acessá-los.';
 $string['nonewduedate'] = 'Sem nova data de vencimento';
 $string['notemplateavailable'] = 'Não há um modelo salvo disponível para aplicar.';
 $string['nouser'] = "Sem usu\u{00E1}rio";
 $string['nouserboards'] = 'Sem quadros pessoais';
 $string['plannedfor'] = 'Previsto para';
-$string['pluginadministration'] = 'Administração do Kanban CCEAD';
-$string['pluginname'] = 'Kanban CCEAD';
+$string['pluginadministration'] = 'Administração do Kanban for Learning';
+$string['pluginname'] = 'Kanban for Learning';
 $string['privacy:metadata:action'] = 'Ação';
 $string['privacy:metadata:affected_userid'] = 'Usuário afetado';
 $string['privacy:metadata:approval_seal'] = 'Selo de feedback do professor armazenado no cartão.';
@@ -230,12 +230,12 @@ $string['privacy:metadata:createdby'] = 'Usuário que criou o cartão';
 $string['privacy:metadata:description'] = 'Descrição';
 $string['privacy:metadata:duedate'] = 'Data de vencimento';
 $string['privacy:metadata:groupid'] = 'ID do grupo';
-$string['privacy:metadata:kanbanccead_assignee'] = 'Responsável';
-$string['privacy:metadata:kanbanccead_board'] = 'Quadro';
-$string['privacy:metadata:kanbanccead_card'] = 'Cartão';
-$string['privacy:metadata:kanbanccead_column'] = 'Coluna';
-$string['privacy:metadata:kanbanccead_comment'] = 'Comentário';
-$string['privacy:metadata:kanbanccead_history'] = 'Histórico';
+$string['privacy:metadata:kanbanlearning_assignee'] = 'Responsável';
+$string['privacy:metadata:kanbanlearning_board'] = 'Quadro';
+$string['privacy:metadata:kanbanlearning_card'] = 'Cartão';
+$string['privacy:metadata:kanbanlearning_column'] = 'Coluna';
+$string['privacy:metadata:kanbanlearning_comment'] = 'Comentário';
+$string['privacy:metadata:kanbanlearning_history'] = 'Histórico';
 $string['privacy:metadata:options'] = 'Opções de configuração armazenadas';
 $string['privacy:metadata:parameters'] = 'Informações sobre a ação';
 $string['privacy:metadata:reminderdate'] = 'Data do lembrete';
@@ -245,7 +245,7 @@ $string['privacy:metadata:timestamp'] = 'Horário da ação';
 $string['privacy:metadata:title'] = 'Título';
 $string['privacy:metadata:userid'] = 'ID do usuário';
 $string['pushcard'] = 'Enviar cartão para todos os quadros';
-$string['pushcardconfirm'] = 'Isso enviará uma cópia deste cartão para todos os quadros desta atividade kanbanccead, incluindo modelos. Cópias existentes serão substituídas.';
+$string['pushcardconfirm'] = 'Isso enviará uma cópia deste cartão para todos os quadros desta atividade Kanban for Learning, incluindo modelos. Cópias existentes serão substituídas.';
 $string['reminderdate'] = 'Data de lembrete';
 $string['remindertask'] = 'Enviar notificações de lembrete';
 $string['removeseal'] = 'Remover reação';
@@ -256,7 +256,7 @@ $string['repeat_interval'] = 'Intervalo';
 $string['repeat_interval_type'] = 'Frequência';
 $string['repeat_newduedate'] = 'Nova data de vencimento';
 $string['reset_group'] = 'Redefinir quadros de grupo';
-$string['reset_kanbanccead'] = 'Redefinir quadros compartilhados';
+$string['reset_kanbanlearning'] = 'Redefinir quadros compartilhados';
 $string['reset_personal'] = 'Redefinir quadros pessoais';
 $string['saveastemplate'] = 'Salvar como modelo';
 $string['saveastemplateconfirm'] = "O modelo salvar\u{00E1} somente a estrutura deste quadro: colunas, ordem, configura\u{00E7}\u{00F5}es e marcadores. Cart\u{00F5}es, anexos, respons\u{00E1}veis, discuss\u{00F5}es e hist\u{00F3}rico n\u{00E3}o ser\u{00E3}o inclu\u{00ED}dos. Ele substituir\u{00E1} o modelo atual, se houver.";
@@ -288,7 +288,7 @@ $string['uncomplete'] = 'Reabrir';
 $string['unlock'] = 'Desbloquear';
 $string['unlockboardcolumns'] = 'Desbloquear colunas do quadro';
 $string['usenumbers'] = 'Usar números de cartão';
-$string['usenumbers_help'] = 'Ativa numeração de cartões nesta atividade kanbanccead. Os números são únicos por quadro (ou seja, cartões em quadros de usuário / grupo e no quadro compartilhado podem ter o mesmo número).';
+$string['usenumbers_help'] = 'Ativa a numeração dos cartões nesta atividade Kanban for Learning. Os números são únicos por quadro (ou seja, cartões em quadros pessoais / de grupo e no quadro compartilhado podem ter o mesmo número).';
 $string['userboard'] = 'Quadro pessoal de {$a}';
 $string['userboards'] = 'Quadros pessoais';
 $string['userboards_help'] = 'Ativa quadros pessoais para os participantes (visíveis apenas para eles e para os professores)';

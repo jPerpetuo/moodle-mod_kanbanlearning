@@ -23,7 +23,7 @@ require_once('HTML/QuickForm/input.php');
 /**
  * Moodleform type for color input.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -54,7 +54,7 @@ class MoodleQuickForm_color extends HTML_QuickForm_text implements templatable {
      */
     public function export_for_template(renderer_base $output) {
         $context = $this->export_for_template_base($output);
-        $context['html'] = $output->render_from_template('mod_kanbanccead/color-input', ['element' => $context]);
+        $context['html'] = $output->render_from_template('mod_kanbanlearning/color-input', ['element' => $context]);
         $context['staticlabel'] = false;
         return $context;
     }

@@ -16,53 +16,43 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/kanbanccead/backup/moodle2/restore_kanbanccead_stepslib.php');
+require_once($CFG->dirroot . '/mod/kanbanlearning/backup/moodle2/backup_kanbanlearning_stepslib.php');
 
 /**
- * Restore class for mod_kanbanccead
+ * Backup class for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_kanbanccead_activity_task extends restore_activity_task {
+class backup_kanbanlearning_activity_task extends backup_activity_task {
     /**
      * No specific settings for this activity
-     *
-     * @return void
      */
     protected function define_my_settings(): void {
     }
 
     /**
-     * Defines the restore step for kanbanccead
-     *
-     * @return void
+     * Defines a backup step to store the instance data in the kanbanlearning.xml file
      */
     protected function define_my_steps(): void {
-        $this->add_step(new restore_kanbanccead_activity_structure_step('kanbanccead_structure', 'kanbanccead.xml'));
+        $this->add_step(new backup_kanbanlearning_activity_structure_step('kanbanlearning_structure', 'kanbanlearning.xml'));
     }
 
     /**
-     * Calls decode functions of other plugins for the intro field.
+     * Encodes the links to view.php for backup
      *
-     * @return array
+     * @param string $content
+     * @return string
      */
-    public static function define_decode_contents(): array {
-        $contents = [];
-        $contents[] = new restore_decode_content('kanbanccead', ['intro'], 'kanbanccead');
-        return $contents;
-    }
+    public static function encode_content_links($content): string {
+        global $CFG;
 
-    /**
-     * Defines rules for decoding links to view.php in restore step
-     *
-     * @return array
-     */
-    public static function define_decode_rules(): array {
-        $rules = [];
-        $rules[] = new restore_decode_rule('KANBANCCEADVIEWBYID', '/mod/kanbanccead/view.php?id=$1', 'course_module');
-        return $rules;
+        $base = preg_quote($CFG->wwwroot . '/mod/kanbanlearning', '#');
+
+        $pattern = "#(" . $base . "\/view.php\?id\=)([0-9]+)#";
+        $content = preg_replace($pattern, '$@KANBANLEARNINGVIEWBYID*$2@$', $content);
+        return $content;
     }
 }

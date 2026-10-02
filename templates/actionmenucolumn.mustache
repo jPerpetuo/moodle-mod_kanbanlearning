@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/actionmenucolumn
+    @template mod_kanbanlearning/actionmenucolumn
 
     Template for the action menu for columns.
 
@@ -27,19 +27,19 @@
         "locked": false
     }
 }}
-<div class="mod_kanbanccead_action_menu{{^managecolumns}} hidden{{/managecolumns}}">
-    <button class="mod_kanbanccead_action_menu_trigger btn btn-icon icon-no-margin p-0 dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown">{{#pix}} i/menu, core, {{#str}} editcolumn, mod_kanbanccead {{/str}} {{/pix}}</button>
+<div class="mod_kanbanlearning_action_menu{{^managecolumns}} hidden{{/managecolumns}}">
+    <button class="mod_kanbanlearning_action_menu_trigger btn btn-icon icon-no-margin p-0 dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown">{{#pix}} i/menu, core, {{#str}} editcolumn, mod_kanbanlearning {{/str}} {{/pix}}</button>
     <ul class="dropdown-menu dropdown-menu-right">
-        <li class="nav-item mod_kanbanccead_lock_column">
-            <a class="dropdown-item" data-action="lock_column" data-id="{{id}}">{{#pix}} t/lock, core, {{#str}} lock, mod_kanbanccead {{/str}} {{/pix}}{{#str}} lock, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_lock_column">
+            <a class="dropdown-item" data-action="lock_column" data-id="{{id}}">{{#pix}} t/lock, core, {{#str}} lock, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} lock, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_unlock_column">
-            <a class="dropdown-item" data-action="unlock_column" data-id="{{id}}">{{#pix}} t/unlock, core, {{#str}} unlock, mod_kanbanccead {{/str}} {{/pix}}{{#str}} unlock, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_unlock_column">
+            <a class="dropdown-item" data-action="unlock_column" data-id="{{id}}">{{#pix}} t/unlock, core, {{#str}} unlock, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} unlock, mod_kanbanlearning {{/str}}</a>
         </li>
         <li class="nav-item">
-            <a class="dropdown-item" data-action="edit_details" data-id="{{id}}">{{#pix}} t/edit, core, {{#str}} editdetails, mod_kanbanccead {{/str}} {{/pix}}{{#str}} editdetails, mod_kanbanccead {{/str}}</a>
+            <a class="dropdown-item" data-action="edit_details" data-id="{{id}}">{{#pix}} t/edit, core, {{#str}} editdetails, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} editdetails, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_delete_column">
+        <li class="nav-item mod_kanbanlearning_delete_column">
             <a class="dropdown-item text-danger" data-action="delete_column" data-id="{{id}}">{{#pix}} t/delete, core, {{#str}} delete, core {{/str}} {{/pix}}{{#str}} delete, core {{/str}}</a>
         </li>
     </ul>

@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/user
+    @template mod_kanbanlearning/user
 
-    Template for a an assigned user in the kanbanccead board.
+    Template for a an assigned user in the kanbanlearning board.
 
     Example context (json):
     {
@@ -26,7 +26,7 @@
         "userpicture": ""
     }
 }}
-<div id="mod_kanbanccead_assignee-{{cardid}}-{{id}}" class="mod_kanbanccead_assigned_user" data-id="{{cardid}}" data-userid="{{id}}" title="{{fullname}}" tabindex="0">
-    <span class="mod_kanbanccead_assigned_user_icon">{{#pix}} i/user, core, {{fullname}} {{/pix}}</span>
-    <span class="mod_kanbanccead_assigned_user_name">{{fullname}}</span>
+<div id="mod_kanbanlearning_assignee-{{cardid}}-{{id}}" class="mod_kanbanlearning_assigned_user" data-id="{{cardid}}" data-userid="{{id}}" title="{{fullname}}" tabindex="0">
+    <span class="mod_kanbanlearning_assigned_user_icon">{{#pix}} i/user, core, {{fullname}} {{/pix}}</span>
+    <span class="mod_kanbanlearning_assigned_user_name">{{fullname}}</span>
 </div>

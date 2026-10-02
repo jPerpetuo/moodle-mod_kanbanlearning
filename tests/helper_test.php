@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
  * Unit tests for helper class.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @category   test
  * @copyright  2023-2025 ISB Bayern
  * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass     \mod_kanbanccead\helper
+ * @coversDefaultClass     \mod_kanbanlearning\helper
  */
 final class helper_test extends \advanced_testcase {
     /**

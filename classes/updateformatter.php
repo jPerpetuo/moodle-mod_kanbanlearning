@@ -17,13 +17,13 @@
 /**
  * Helper for formatting updates.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
  * Helper for formatting updates.
@@ -31,7 +31,7 @@ namespace mod_kanbanccead;
  * This class provides is used to format the data changes. They have to be in a specific format for being able
  * to be processed easily by the reactive frontend once pushed to it by the webservice.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

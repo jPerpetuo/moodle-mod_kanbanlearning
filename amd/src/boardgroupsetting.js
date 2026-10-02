@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Group board selector settings for mod_kanbanccead.
+ * Group board selector settings for mod_kanbanlearning.
  *
- * @module mod_kanbanccead/boardgroupsetting
+ * @module mod_kanbanlearning/boardgroupsetting
  * @copyright 2026 CCEAD PUC-Rio
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

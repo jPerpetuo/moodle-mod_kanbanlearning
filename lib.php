@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Library for mod_kanbanccead
+ * Library for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_kanbanccead\boardmanager;
+use mod_kanbanlearning\boardmanager;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,35 +31,35 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once('HTML/QuickForm/input.php');
 
-MoodleQuickForm::registerElementType('color', $CFG->dirroot . '/mod/kanbanccead/classes/form/color.php', 'MoodleQuickForm_color');
+MoodleQuickForm::registerElementType('color', $CFG->dirroot . '/mod/kanbanlearning/classes/form/color.php', 'MoodleQuickForm_color');
 
 /**
- * Adds a new kanbanccead instance
+ * Adds a new kanbanlearning instance
  *
- * @param stdClass $data kanbanccead record
+ * @param stdClass $data kanbanlearning record
  * @return int
  */
-function kanbanccead_add_instance($data): int {
+function kanbanlearning_add_instance($data): int {
     global $DB;
-    kanbanccead_normalize_board_group_settings($data);
-    $kanbancceadid = $DB->insert_record("kanbanccead", $data);
+    kanbanlearning_normalize_board_group_settings($data);
+    $kanbanlearningid = $DB->insert_record("kanbanlearning", $data);
     $boardmanager = new boardmanager();
-    $boardmanager->load_instance($kanbancceadid, true);
+    $boardmanager->load_instance($kanbanlearningid, true);
     $boardmanager->create_board();
-    return $kanbancceadid;
+    return $kanbanlearningid;
 }
 
 /**
- * Updates a kanbanccead instance
+ * Updates a kanbanlearning instance
  *
- * @param stdClass $data kanbanccead record
+ * @param stdClass $data kanbanlearning record
  * @return int
  */
-function kanbanccead_update_instance($data): int {
+function kanbanlearning_update_instance($data): int {
     global $DB;
-    kanbanccead_normalize_board_group_settings($data);
+    kanbanlearning_normalize_board_group_settings($data);
     $data->id = $data->instance;
-    return $DB->update_record("kanbanccead", $data);
+    return $DB->update_record("kanbanlearning", $data);
 }
 
 /**
@@ -72,7 +72,7 @@ function kanbanccead_update_instance($data): int {
  * @param stdClass $data Form payload.
  * @return void
  */
-function kanbanccead_normalize_board_group_settings(stdClass &$data): void {
+function kanbanlearning_normalize_board_group_settings(stdClass &$data): void {
     $data->linknumbers = empty($data->usenumbers) ? 0 : 1;
 
     $selectedgroupids = [];
@@ -124,14 +124,14 @@ function kanbanccead_normalize_board_group_settings(stdClass &$data): void {
 }
 
 /**
- * Deletes a kanbanccead instance, all boards and all associated data (e.g. files)
+ * Deletes a kanbanlearning instance, all boards and all associated data (e.g. files)
  *
- * @param integer $id kanbanccead record
+ * @param integer $id kanbanlearning record
  * @return bool
  */
-function kanbanccead_delete_instance($id): bool {
+function kanbanlearning_delete_instance($id): bool {
     global $DB;
-    $boards = $DB->get_fieldset_sql('SELECT id FROM {kanbanccead_board} WHERE kanbanccead_instance = :id', ['id' => $id]);
+    $boards = $DB->get_fieldset_sql('SELECT id FROM {kanbanlearning_board} WHERE kanbanlearning_instance = :id', ['id' => $id]);
 
     foreach ($boards as $board) {
         $boardmanager = new boardmanager();
@@ -139,7 +139,7 @@ function kanbanccead_delete_instance($id): bool {
         $boardmanager->delete_board($board);
     }
 
-    return $DB->delete_records('kanbanccead', ['id' => $id]);
+    return $DB->delete_records('kanbanlearning', ['id' => $id]);
 }
 
 /**
@@ -155,7 +155,7 @@ function kanbanccead_delete_instance($id): bool {
  * @uses FEATURE_IDNUMBER
  * @uses FEATURE_GROUPS
  */
-function kanbanccead_supports($feature) {
+function kanbanlearning_supports($feature) {
     switch ($feature) {
         case FEATURE_IDNUMBER:
             return true;
@@ -193,18 +193,18 @@ function kanbanccead_supports($feature) {
  * @return \core\output\inplace_editable | null
  * @throws dml_exception
  */
-function kanbanccead_inplace_editable($itemtype, $itemid, $newvalue) {
+function kanbanlearning_inplace_editable($itemtype, $itemid, $newvalue) {
     global $CFG, $USER;
     require_once($CFG->libdir . '/externallib.php');
     $boardmanager = new boardmanager();
 
     if ($itemtype == 'card') {
         $card = $boardmanager->get_card($itemid);
-        $boardmanager->load_board($card->kanbanccead_board);
+        $boardmanager->load_board($card->kanbanlearning_board);
     }
     if ($itemtype == 'column') {
         $column = $boardmanager->get_column($itemid);
-        $boardmanager->load_board($column->kanbanccead_board);
+        $boardmanager->load_board($column->kanbanlearning_board);
     }
 
     $context = context_module::instance($boardmanager->get_cminfo()->id);
@@ -212,15 +212,15 @@ function kanbanccead_inplace_editable($itemtype, $itemid, $newvalue) {
 
     if ($itemtype == 'card') {
         if (!$boardmanager->can_user_manage_specific_card($card->id)) {
-            throw new moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanccead');
+            throw new moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanlearning');
         }
     }
 
     if ($itemtype == 'column') {
-        require_capability('mod/kanbanccead:managecolumns', $context);
+        require_capability('mod/kanbanlearning:managecolumns', $context);
     }
 
-    \mod_kanbanccead\helper::check_permissions_for_user_or_group($boardmanager->get_board(), $context, $boardmanager->get_cminfo());
+    \mod_kanbanlearning\helper::check_permissions_for_user_or_group($boardmanager->get_board(), $context, $boardmanager->get_cminfo());
 
     if ($itemtype == 'card') {
         $boardmanager->update_card($itemid, ['title' => $newvalue]);
@@ -242,7 +242,7 @@ function kanbanccead_inplace_editable($itemtype, $itemid, $newvalue) {
     }
 
     return new \core\output\inplace_editable(
-        'mod_kanbanccead',
+        'mod_kanbanlearning',
         $itemtype,
         $itemid,
         true,
@@ -265,24 +265,24 @@ function kanbanccead_inplace_editable($itemtype, $itemid, $newvalue) {
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - justsend the file
  */
-function kanbanccead_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []): ?bool {
+function kanbanlearning_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []): ?bool {
     global $DB;
     require_course_login($course, true, $cm);
 
     // In $args[0] is the card id.
 
     $cardid = intval($args[0]);
-    $boardid = $DB->get_field('kanbanccead_card', 'kanbanccead_board', ['id' => $cardid], MUST_EXIST);
+    $boardid = $DB->get_field('kanbanlearning_card', 'kanbanlearning_board', ['id' => $cardid], MUST_EXIST);
 
     // Check, whether the user is allowed to access this board.
 
-    require_capability('mod/kanbanccead:view', $context);
+    require_capability('mod/kanbanlearning:view', $context);
 
-    $board = mod_kanbanccead\helper::get_cached_board($boardid);
+    $board = mod_kanbanlearning\helper::get_cached_board($boardid);
 
-    mod_kanbanccead\helper::check_permissions_for_user_or_group($board, $context, cm_info::create($cm));
+    mod_kanbanlearning\helper::check_permissions_for_user_or_group($board, $context, cm_info::create($cm));
 
-    $fullpath = "/$context->id/mod_kanbanccead/$filearea/" . implode('/', $args);
+    $fullpath = "/$context->id/mod_kanbanlearning/$filearea/" . implode('/', $args);
 
     $fs = get_file_storage();
     if (!($file = $fs->get_file_by_hash(sha1($fullpath))) || $file->is_directory()) {
@@ -294,15 +294,15 @@ function kanbanccead_pluginfile($course, $cm, $context, $filearea, $args, $force
 
 /**
  * Implementation of the function for printing the form elements that control
- * whether the course reset functionality affects the kanbanccead activity.
+ * whether the course reset functionality affects the kanbanlearning activity.
  *
  * @param object $mform form passed by reference
  */
-function kanbanccead_reset_course_form_definition(&$mform): void {
-    $mform->addElement('header', 'kanbancceadactivityheader', get_string('modulenameplural', 'mod_kanbanccead'));
-    $mform->addElement('advcheckbox', 'reset_kanbanccead_personal', get_string('reset_personal', 'mod_kanbanccead'));
-    $mform->addElement('advcheckbox', 'reset_kanbanccead_group', get_string('reset_group', 'mod_kanbanccead'));
-    $mform->addElement('advcheckbox', 'reset_kanbanccead', get_string('reset_kanbanccead', 'mod_kanbanccead'));
+function kanbanlearning_reset_course_form_definition(&$mform): void {
+    $mform->addElement('header', 'kanbanlearningactivityheader', get_string('modulenameplural', 'mod_kanbanlearning'));
+    $mform->addElement('advcheckbox', 'reset_kanbanlearning_personal', get_string('reset_personal', 'mod_kanbanlearning'));
+    $mform->addElement('advcheckbox', 'reset_kanbanlearning_group', get_string('reset_group', 'mod_kanbanlearning'));
+    $mform->addElement('advcheckbox', 'reset_kanbanlearning', get_string('reset_kanbanlearning', 'mod_kanbanlearning'));
 }
 
 /**
@@ -311,11 +311,11 @@ function kanbanccead_reset_course_form_definition(&$mform): void {
  * @param stdClass $course the course object
  * @return array
  */
-function kanbanccead_reset_course_form_defaults(stdClass $course): array {
+function kanbanlearning_reset_course_form_defaults(stdClass $course): array {
     return [
-        'reset_kanbanccead_personal' => 1,
-        'reset_kanbanccead_group' => 1,
-        'reset_kanbanccead' => 1,
+        'reset_kanbanlearning_personal' => 1,
+        'reset_kanbanlearning_group' => 1,
+        'reset_kanbanlearning' => 1,
     ];
 }
 
@@ -325,34 +325,34 @@ function kanbanccead_reset_course_form_defaults(stdClass $course): array {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function kanbanccead_reset_userdata($data) {
+function kanbanlearning_reset_userdata($data) {
     global $DB;
     $status = [];
-    $kanbancceads = $DB->get_records('kanbanccead', ['course' => $data->courseid]);
+    $kanbanlearnings = $DB->get_records('kanbanlearning', ['course' => $data->courseid]);
     $boards = [];
-    foreach ($kanbancceads as $kanbanccead) {
-        if (!empty($data->reset_kanbanccead_personal)) {
+    foreach ($kanbanlearnings as $kanbanlearning) {
+        if (!empty($data->reset_kanbanlearning_personal)) {
             $personalboards = $DB->get_fieldset_sql(
-                'SELECT id FROM {kanbanccead_board} WHERE kanbanccead_instance = :id AND userid > 0',
-                ['id' => $kanbanccead->id]
+                'SELECT id FROM {kanbanlearning_board} WHERE kanbanlearning_instance = :id AND userid > 0',
+                ['id' => $kanbanlearning->id]
             );
             if ($personalboards) {
                 $boards = array_merge($boards, $personalboards);
             }
         }
-        if (!empty($data->reset_kanbanccead_group)) {
+        if (!empty($data->reset_kanbanlearning_group)) {
             $groupboards = $DB->get_fieldset_sql(
-                'SELECT id FROM {kanbanccead_board} WHERE kanbanccead_instance = :id AND groupid > 0',
-                ['id' => $kanbanccead->id]
+                'SELECT id FROM {kanbanlearning_board} WHERE kanbanlearning_instance = :id AND groupid > 0',
+                ['id' => $kanbanlearning->id]
             );
             if ($groupboards) {
                 $boards = array_merge($boards, $groupboards);
             }
         }
-        if (!empty($data->reset_kanbanccead)) {
+        if (!empty($data->reset_kanbanlearning)) {
             $courseboards = $DB->get_fieldset_sql(
-                'SELECT id FROM {kanbanccead_board} WHERE kanbanccead_instance = :id AND template = 0',
-                ['id' => $kanbanccead->id]
+                'SELECT id FROM {kanbanlearning_board} WHERE kanbanlearning_instance = :id AND template = 0',
+                ['id' => $kanbanlearning->id]
             );
             if ($courseboards) {
                 $boards = array_merge($boards, $courseboards);
@@ -365,8 +365,8 @@ function kanbanccead_reset_userdata($data) {
         $boardmanager->load_board($board);
         $boardmanager->delete_board($board);
         $status[] = [
-            'component' => get_string('modulenameplural', 'mod_kanbanccead'),
-            'item' => get_string('reset_personal', 'mod_kanbanccead'),
+            'component' => get_string('modulenameplural', 'mod_kanbanlearning'),
+            'item' => get_string('reset_personal', 'mod_kanbanlearning'),
             'error' => false,
         ];
     }
@@ -379,22 +379,22 @@ function kanbanccead_reset_userdata($data) {
  * @param stdClass $cm coursemodule record.
  * @return cached_cm_info
  */
-function kanbanccead_get_coursemodule_info(stdClass $cm): cached_cm_info {
+function kanbanlearning_get_coursemodule_info(stdClass $cm): cached_cm_info {
     global $DB;
 
-    $kanbanccead = $DB->get_record('kanbanccead', ['id' => $cm->instance]);
+    $kanbanlearning = $DB->get_record('kanbanlearning', ['id' => $cm->instance]);
 
     $result = new cached_cm_info();
-    if ($kanbanccead) {
-        $result->name = $kanbanccead->name;
+    if ($kanbanlearning) {
+        $result->name = $kanbanlearning->name;
 
         if ($cm->showdescription) {
-            $result->content = format_module_intro('kanbanccead', $kanbanccead, $cm->id, false);
+            $result->content = format_module_intro('kanbanlearning', $kanbanlearning, $cm->id, false);
         }
 
         if ($cm->completion == COMPLETION_TRACKING_AUTOMATIC) {
-            $result->customdata['customcompletionrules']['completioncreate'] = $kanbanccead->completioncreate;
-            $result->customdata['customcompletionrules']['completioncomplete'] = $kanbanccead->completioncomplete;
+            $result->customdata['customcompletionrules']['completioncreate'] = $kanbanlearning->completioncreate;
+            $result->customdata['customcompletionrules']['completioncomplete'] = $kanbanlearning->completioncomplete;
         }
     }
     return $result;

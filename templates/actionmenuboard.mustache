@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/actionmenuboard
+    @template mod_kanbanlearning/actionmenuboard
 
     Template for the action menu for boards.
 
@@ -38,71 +38,71 @@
     }
 }}
 {{#showactionmenu}}
-<button class="mod_kanbanccead_action_menu_trigger mod_kanbanccead_board_actions_button btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown">
-    <span class="mod_kanbanccead_board_actions_icon">{{#pix}} i/settings, core, {{#str}} boardactions, mod_kanbanccead {{/str}} {{/pix}}</span>
-    <span class="mod_kanbanccead_board_actions_label">{{#str}} boardactions, mod_kanbanccead {{/str}}</span>
+<button class="mod_kanbanlearning_action_menu_trigger mod_kanbanlearning_board_actions_button btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown">
+    <span class="mod_kanbanlearning_board_actions_icon">{{#pix}} i/settings, core, {{#str}} boardactions, mod_kanbanlearning {{/str}} {{/pix}}</span>
+    <span class="mod_kanbanlearning_board_actions_label">{{#str}} boardactions, mod_kanbanlearning {{/str}}</span>
 </button>
 <ul class="dropdown-menu dropdown-menu-left">
     {{#manageboard}}
     {{#boardmode}}
-    <li class="nav-item mod_kanbanccead_save_board_as_template">
+    <li class="nav-item mod_kanbanlearning_save_board_as_template">
         <a class="dropdown-item" data-action="save_board_as_template" data-id="{{id}}">
-            <i class="icon fa-solid fa-bookmark fa-fw" aria-hidden="true"></i>{{#str}} saveastemplate, mod_kanbanccead {{/str}}
+            <i class="icon fa-solid fa-bookmark fa-fw" aria-hidden="true"></i>{{#str}} saveastemplate, mod_kanbanlearning {{/str}}
         </a>
     </li>
-    <li class="nav-item mod_kanbanccead_apply_template_to_board">
+    <li class="nav-item mod_kanbanlearning_apply_template_to_board">
         <a class="dropdown-item" data-action="apply_template_to_board" data-id="{{id}}">
-            <i class="icon fa-solid fa-paste fa-fw" aria-hidden="true"></i>{{#str}} applytemplatetothisboard, mod_kanbanccead {{/str}}
+            <i class="icon fa-solid fa-paste fa-fw" aria-hidden="true"></i>{{#str}} applytemplatetothisboard, mod_kanbanlearning {{/str}}
         </a>
     </li>
-    <li class="nav-item mod_kanbanccead_apply_template_to_all_group_boards">
+    <li class="nav-item mod_kanbanlearning_apply_template_to_all_group_boards">
         <a class="dropdown-item" data-action="apply_template_to_all_group_boards" data-id="{{id}}">
-            <i class="icon fa-solid fa-layer-group fa-fw" aria-hidden="true"></i>{{#str}} applytemplatetoallgroupboards, mod_kanbanccead {{/str}}
+            <i class="icon fa-solid fa-layer-group fa-fw" aria-hidden="true"></i>{{#str}} applytemplatetoallgroupboards, mod_kanbanlearning {{/str}}
         </a>
     </li>
     {{/boardmode}}
-    <li class="nav-item mod_kanbanccead_lock_board_columns">
-        <a class="dropdown-item" data-action="lock_board_columns" data-id="{{id}}">{{#pix}} t/lock, core, {{#str}} lockboardcolumns, mod_kanbanccead {{/str}} {{/pix}}{{#str}} lockboardcolumns, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_lock_board_columns">
+        <a class="dropdown-item" data-action="lock_board_columns" data-id="{{id}}">{{#pix}} t/lock, core, {{#str}} lockboardcolumns, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} lockboardcolumns, mod_kanbanlearning {{/str}}</a>
     </li>
-    <li class="nav-item mod_kanbanccead_unlock_board_columns">
-        <a class="dropdown-item" data-action="unlock_board_columns" data-id="{{id}}">{{#pix}} t/unlock, core, {{#str}} unlockboardcolumns, mod_kanbanccead {{/str}} {{/pix}}{{#str}} unlockboardcolumns, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_unlock_board_columns">
+        <a class="dropdown-item" data-action="unlock_board_columns" data-id="{{id}}">{{#pix}} t/unlock, core, {{#str}} unlockboardcolumns, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} unlockboardcolumns, mod_kanbanlearning {{/str}}</a>
     </li>
     {{/manageboard}}
     {{^boardmode}}
-    <li class="nav-item mod_kanbanccead_show_board">
-        <a class="dropdown-item" href="view.php?id={{cmid}}&group=0&user=0">{{#pix}} t/left, core, {{#str}} showboard, mod_kanbanccead {{/str}} {{/pix}}{{#str}} showboard, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_show_board">
+        <a class="dropdown-item" href="view.php?id={{cmid}}&group=0&user=0">{{#pix}} t/left, core, {{#str}} showboard, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} showboard, mod_kanbanlearning {{/str}}</a>
     </li>
     {{/boardmode}}
-    <li class="nav-item mod_kanbanccead_delete_board">
-        <a class="dropdown-item text-danger" data-action="delete_board" data-id="{{id}}">{{#pix}} t/delete, core, {{#str}} deleteboard, mod_kanbanccead {{/str}} {{/pix}}{{#str}} deleteboard, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_delete_board">
+        <a class="dropdown-item text-danger" data-action="delete_board" data-id="{{id}}">{{#pix}} t/delete, core, {{#str}} deleteboard, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} deleteboard, mod_kanbanlearning {{/str}}</a>
     </li>
     {{#groupmode}}
     {{#groupselector}}
-    <li class="nav-item mod_kanbanccead_select_group">
-        <a class="dropdown-item" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_change_group" data-target="#mod_kanbanccead_change_group">{{#pix}} i/group, core, {{#str}} changegroup, mod_kanbanccead {{/str}} {{/pix}}{{#str}} changegroup, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_select_group">
+        <a class="dropdown-item" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_change_group" data-target="#mod_kanbanlearning_change_group">{{#pix}} i/group, core, {{#str}} changegroup, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} changegroup, mod_kanbanlearning {{/str}}</a>
     </li>
     {{/groupselector}}
     {{/groupmode}}
     {{#userboards}}
     {{^ismyuserboard}}
-    <li class="nav-item mod_kanbanccead_to_personal_board">
-        <a class="dropdown-item" href="view.php?id={{cmid}}&group=0&user={{myuserid}}">{{#pix}} t/right, core, {{#str}} myuserboard, mod_kanbanccead {{/str}} {{/pix}}{{#str}} myuserboard, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_to_personal_board">
+        <a class="dropdown-item" href="view.php?id={{cmid}}&group=0&user={{myuserid}}">{{#pix}} t/right, core, {{#str}} myuserboard, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} myuserboard, mod_kanbanlearning {{/str}}</a>
     </li>
     {{/ismyuserboard}}
     {{#viewallboards}}
-    <li class="nav-item mod_kanbanccead_select_user">
-        <a class="dropdown-item" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_change_user" data-target="#mod_kanbanccead_change_user">{{#pix}} t/user, core, {{#str}} changeuser, mod_kanbanccead {{/str}} {{/pix}}{{#str}} changeuser, mod_kanbanccead {{/str}}</a>
+    <li class="nav-item mod_kanbanlearning_select_user">
+        <a class="dropdown-item" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_change_user" data-target="#mod_kanbanlearning_change_user">{{#pix}} t/user, core, {{#str}} changeuser, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} changeuser, mod_kanbanlearning {{/str}}</a>
     </li>
     {{/viewallboards}}
     {{/userboards}}
 </ul>
 {{/showactionmenu}}
 {{#groupselector}}
-<div class="modal fade" id="mod_kanbanccead_change_group" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="mod_kanbanlearning_change_group" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{#str}} changegroup, mod_kanbanccead {{/str}}</h5>
+                <h5 class="modal-title">{{#str}} changegroup, mod_kanbanlearning {{/str}}</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="{{#str}} closebuttontitle, core {{/str}}"></button>
             </div>
             <div class="modal-body">
@@ -114,15 +114,15 @@
 {{/groupselector}}
 {{#userboards}}
     {{#viewallboards}}
-    <div class="modal fade" id="mod_kanbanccead_change_user" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="mod_kanbanlearning_change_user" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{#str}} changeuser, mod_kanbanccead {{/str}}</h5>
+                    <h5 class="modal-title">{{#str}} changeuser, mod_kanbanlearning {{/str}}</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="{{#str}} closebuttontitle, core {{/str}}"></button>
                 </div>
                 <div class="modal-body">
-                    {{>mod_kanbanccead/singleuserselect}}
+                    {{>mod_kanbanlearning/singleuserselect}}
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
 {{/userboards}}
 {{#js}}
 {{#groupselector}}
-let gs = document.querySelector('#mod_kanbanccead_change_group form');
+let gs = document.querySelector('#mod_kanbanlearning_change_group form');
 if (gs) {
     gs.addEventListener('change', (e) => {
         e.target.closest('form').submit();
@@ -140,7 +140,7 @@ if (gs) {
 {{/groupselector}}
 {{#userboards}}
     {{#viewallboards}}
-let us = document.querySelector('#mod_kanbanccead_change_user form');
+let us = document.querySelector('#mod_kanbanlearning_change_user form');
 if (us) {
     us.addEventListener('change', (e) => {
         e.target.closest('form').submit();

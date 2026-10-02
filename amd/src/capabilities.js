@@ -1,5 +1,5 @@
 /**
- * Capabilities for mod_kanbanccead.
+ * Capabilities for mod_kanbanlearning.
  */
 export default {
     ADDCARD: 'addcard',

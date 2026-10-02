@@ -16,7 +16,7 @@
 /**
  * Add event listener to card number to open card detail.
  *
- * @module     mod_kanbanccead/cardnumber
+ * @module     mod_kanbanlearning/cardnumber
  * @copyright  2024 ISB Bayern
  * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,15 +25,15 @@ import {alert as displayAlert} from 'core/notification';
 import {get_string as getString} from 'core/str';
 
 export const init = (element) => {
-    document.querySelectorAll('#' + element + ' .mod_kanbanccead_card_number').forEach((el) => {
+    document.querySelectorAll('#' + element + ' .mod_kanbanlearning_card_number').forEach((el) => {
         el.addEventListener('click', (event) => {
             let card = document.querySelector(
-                `.mod_kanbanccead_card[data-number="${event.target.dataset.id}"] .mod_kanbanccead_detail_trigger`
+                `.mod_kanbanlearning_card[data-number="${event.target.dataset.id}"] .mod_kanbanlearning_detail_trigger`
             );
             if (card) {
                 card.click();
             } else {
-                displayAlert(getString('cardnotfound', 'mod_kanbanccead'));
+                displayAlert(getString('cardnotfound', 'mod_kanbanlearning'));
             }
         });
     });

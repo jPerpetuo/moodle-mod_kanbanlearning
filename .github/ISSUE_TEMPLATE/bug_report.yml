@@ -10,7 +10,7 @@ body:
     id: pluginrelease
     attributes:
       label: Plugin release
-      description: Copy the release value from mod/kanbanccead/version.php.
+      description: Copy the release value from mod/kanbanlearning/version.php.
       placeholder: 0.4.0-beta
     validations:
       required: true

@@ -1,7 +1,7 @@
 import {BaseComponent} from 'core/reactive';
 
 /**
- * Component representing a card in a kanbanccead board.
+ * Component representing a card in a kanbanlearning board.
  */
 export default class extends BaseComponent {
     /**

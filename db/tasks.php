@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mod_kanbanccead task definition.
+ * mod_kanbanlearning task definition.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright  2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $tasks = [
     [
-        'classname' => 'mod_kanbanccead\task\reminder',
+        'classname' => 'mod_kanbanlearning\task\reminder',
         'blocking' => 0,
         'minute' => '*/5',
         'hour' => '*',

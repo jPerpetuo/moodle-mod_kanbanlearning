@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup and restore tests for mod_kanbanccead.
+ * Backup and restore tests for mod_kanbanlearning.
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @category    test
  * @copyright   2026 CCEAD PUC-Rio
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 use advanced_testcase;
 use backup;
@@ -36,9 +36,9 @@ use stdClass;
 /**
  * Tests the structural import behaviour without user data.
  *
- * @package     mod_kanbanccead
- * @covers      \backup_kanbanccead_activity_structure_step
- * @covers      \restore_kanbanccead_activity_structure_step
+ * @package     mod_kanbanlearning
+ * @covers      \backup_kanbanlearning_activity_structure_step
+ * @covers      \restore_kanbanlearning_activity_structure_step
  */
 final class backup_restore_test extends advanced_testcase {
     /**
@@ -67,51 +67,51 @@ final class backup_restore_test extends advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $course]);
-        $board = $DB->get_record('kanbanccead_board', [
-            'kanbanccead_instance' => $kanbanccead->id,
+        $kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $kanbanlearning->id,
             'userid' => 0,
             'groupid' => 0,
             'template' => 0,
         ], '*', MUST_EXIST);
-        $manager = new boardmanager($kanbanccead->cmid, $board->id);
+        $manager = new boardmanager($kanbanlearning->cmid, $board->id);
         // The template is deliberately stale: import must use the active board structure.
         $manager->create_template();
         $manager->add_column(0, ['title' => 'Revisão', 'options' => '{"color":"#f7d7d7"}']);
 
-        $columnid = $DB->get_field('kanbanccead_column', 'id', [
-            'kanbanccead_board' => $board->id,
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', [
+            'kanbanlearning_board' => $board->id,
             'title' => 'Revisão',
         ], MUST_EXIST);
         $manager->add_card($columnid, 0, ['title' => 'Conteúdo do curso de origem']);
 
         $newcourseid = $this->backup_and_restore($course, false);
-        $restoredkanbanccead = $DB->get_record('kanbanccead', ['course' => $newcourseid], '*', MUST_EXIST);
-        $template = $DB->get_record('kanbanccead_board', [
-            'kanbanccead_instance' => $restoredkanbanccead->id,
+        $restoredkanbanlearning = $DB->get_record('kanbanlearning', ['course' => $newcourseid], '*', MUST_EXIST);
+        $template = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $restoredkanbanlearning->id,
             'template' => 1,
         ], '*', MUST_EXIST);
 
-        $this->assertSame(0, $DB->count_records('kanbanccead_card', ['kanbanccead_board' => $template->id]));
-        $this->assertSame(4, $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $template->id]));
-        $templatecolumns = $DB->get_records('kanbanccead_column', ['kanbanccead_board' => $template->id]);
+        $this->assertSame(0, $DB->count_records('kanbanlearning_card', ['kanbanlearning_board' => $template->id]));
+        $this->assertSame(4, $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $template->id]));
+        $templatecolumns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $template->id]);
         foreach ($templatecolumns as $templatecolumn) {
             $this->assertSame('', $templatecolumn->sequence);
         }
-        $templatecolumn = $DB->get_record('kanbanccead_column', [
-            'kanbanccead_board' => $template->id,
+        $templatecolumn = $DB->get_record('kanbanlearning_column', [
+            'kanbanlearning_board' => $template->id,
             'title' => 'Revisão',
         ], '*', MUST_EXIST);
         $this->assertSame('{"color":"#f7d7d7"}', $templatecolumn->options);
 
-        $restoredcm = get_coursemodule_from_instance('kanbanccead', $restoredkanbanccead->id, $newcourseid, false, MUST_EXIST);
+        $restoredcm = get_coursemodule_from_instance('kanbanlearning', $restoredkanbanlearning->id, $newcourseid, false, MUST_EXIST);
         $restoredmanager = new boardmanager($restoredcm->id);
         $restoredboardid = $restoredmanager->create_board();
 
-        $this->assertSame(0, $DB->count_records('kanbanccead_card', ['kanbanccead_board' => $restoredboardid]));
-        $this->assertSame(4, $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $restoredboardid]));
-        $restoredcolumn = $DB->get_record('kanbanccead_column', [
-            'kanbanccead_board' => $restoredboardid,
+        $this->assertSame(0, $DB->count_records('kanbanlearning_card', ['kanbanlearning_board' => $restoredboardid]));
+        $this->assertSame(4, $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $restoredboardid]));
+        $restoredcolumn = $DB->get_record('kanbanlearning_column', [
+            'kanbanlearning_board' => $restoredboardid,
             'title' => 'Revisão',
         ], '*', MUST_EXIST);
         $this->assertSame('{"color":"#f7d7d7"}', $restoredcolumn->options);

@@ -8,5 +8,5 @@ jobs:
   call-moodle-release-workflow:
     uses: bycs-lp/moodle-workflows/.github/workflows/moodle-release.yml@main
     with:
-      plugin-name: 'mod_kanbanccead'
+      plugin-name: 'mod_kanbanlearning'
     secrets: inherit

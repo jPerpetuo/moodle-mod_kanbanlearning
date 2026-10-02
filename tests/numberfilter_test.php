@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
  * Tests for Kanban board number filter
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @category   test
  * @copyright  2024 ISB Bayern
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \mod_kanbanccead\numberfilter
+ * @covers    \mod_kanbanlearning\numberfilter
  */
 final class numberfilter_test extends \advanced_testcase {
     /**
@@ -31,8 +31,8 @@ final class numberfilter_test extends \advanced_testcase {
      */
     public function test_filter(): void {
         $text = 'This is a test #1234 and #5678';
-        $expected = 'This is a test <a class="mod_kanbanccead_card_number" data-id="1234">#1234</a>' .
-            ' and <a class="mod_kanbanccead_card_number" data-id="5678">#5678</a>';
+        $expected = 'This is a test <a class="mod_kanbanlearning_card_number" data-id="1234">#1234</a>' .
+            ' and <a class="mod_kanbanlearning_card_number" data-id="5678">#5678</a>';
         $this->assertEquals($expected, numberfilter::filter($text));
     }
 

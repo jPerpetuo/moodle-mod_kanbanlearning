@@ -2,7 +2,7 @@
 
 ## Two data modes
 
-This document describes backups and restores within `mod_kanbanccead`, implemented in [backup/moodle2](../backup/moodle2). It does not describe migration from `mod_kanban`; no cross-component backup converter is provided.
+This document describes backups and restores within `mod_kanbanlearning`, implemented in [backup/moodle2](../backup/moodle2). It does not describe migration from `mod_kanban`; no cross-component backup converter is provided.
 
 Moodle backup and restore has a user-data setting, commonly surfaced as **Include enrolled users** or `userinfo` in backup APIs. Course import normally operates without user data.
 

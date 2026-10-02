@@ -14,7 +14,7 @@ For group mode, the activity form presents selected groups and available groups 
 
 The selected groups are stored by the activity. Only those groups are eligible for group boards. During normal viewing, users without an all-boards capability are restricted to boards for groups they belong to. A direct URL requesting a board outside that scope is rejected and redirected to an accessible board, rather than exposing the requested group board.
 
-Users with `mod/kanbanccead:viewallboards` or `mod/kanbanccead:editallboards` can navigate eligible boards even when they are not members of every group. See [Permissions and groups](permissions.md).
+Users with `mod/kanbanlearning:viewallboards` or `mod/kanbanlearning:editallboards` can navigate eligible boards even when they are not members of every group. See [Permissions and groups](permissions.md).
 
 ## Columns and cards
 

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/singleuserselect
+    @template mod_kanbanlearning/singleuserselect
 
     Example context (json):
     {
@@ -28,7 +28,7 @@
 <form action="view.php" method="get">
 <input type="hidden" name="id" value="{{cmid}}">
 <select class="custom-select singleselect" name="user">
-<option value="0">{{#str}} nouser, mod_kanbanccead {{/str}}</option>
+<option value="0">{{#str}} nouser, mod_kanbanlearning {{/str}}</option>
 {{#users}}
     <option value="{{id}}">{{fullname}}</option>
 {{/users}}

@@ -14,23 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
- * Unit test for mod_kanbanccead
+ * Unit test for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      \mod_kanbanccead\external\change_kanbanccead_content
+ * @covers      \mod_kanbanlearning\external\change_kanbanlearning_content
  * @runTestsInSeparateProcesses
  */
-final class change_kanbanccead_content_test extends \advanced_testcase {
+final class change_kanbanlearning_content_test extends \advanced_testcase {
     /** @var \stdClass The course used for testing */
     private $course;
-    /** @var \stdClass The kanbanccead used for testing */
-    private $kanbanccead;
+    /** @var \stdClass The kanbanlearning used for testing */
+    private $kanbanlearning;
     /** @var array The users used for testing */
     private $users;
 
@@ -43,7 +43,7 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         parent::setUp();
 
         $this->course = $this->getDataGenerator()->create_course();
-        $this->kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $this->course]);
+        $this->kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $this->course]);
 
         for ($i = 0; $i < 3; $i++) {
             $this->users[$i] = $this->getDataGenerator()->create_user(
@@ -60,7 +60,7 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($this->users[1]->id, $this->course->id, $studentrole->id);
         $this->getDataGenerator()->enrol_user($this->users[2]->id, $this->course->id, $teacherrole->id);
         // This is just for the tests of auth_saml2 not to fail.
-        $SCRIPT = '/mod/kanbanccead/view.php';
+        $SCRIPT = '/mod/kanbanlearning/view.php';
     }
 
     /**
@@ -75,18 +75,18 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::add_column(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercol' => 0, 'title' => 'Testcolumn']
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::add_column_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::add_column_returns(),
             $returnvalue
         );
 
@@ -100,15 +100,15 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $columnids = array_merge([$columnid], $columnids);
         $this->assertEquals(join(',', $columnids), $update[0]['fields']['sequence']);
 
-        $this->assertEquals(1, $DB->count_records('kanbanccead_column', ['id' => $columnid]));
+        $this->assertEquals(1, $DB->count_records('kanbanlearning_column', ['id' => $columnid]));
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::add_column(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercol' => $columnids[3], 'title' => 'Testcolumn 2']
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::add_column_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::add_column_returns(),
             $returnvalue
         );
 
@@ -119,7 +119,7 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $columnids = array_merge($columnids, [$columnid]);
         $this->assertEquals(join(',', $columnids), $update[0]['fields']['sequence']);
 
-        $this->assertEquals(1, $DB->count_records('kanbanccead_column', ['id' => $columnid]));
+        $this->assertEquals(1, $DB->count_records('kanbanlearning_column', ['id' => $columnid]));
     }
 
     /**
@@ -134,17 +134,17 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanccead_column', 'id', ['kanbanccead_board' => $boardid], IGNORE_MULTIPLE);
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::add_card(
-            $this->kanbanccead->cmid,
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercard' => 0, 'columnid' => $columnid, 'title' => 'Testcard']
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::add_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::add_card_returns(),
             $returnvalue
         );
 
@@ -157,17 +157,17 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $card = $boardmanager->get_card($cardid);
         $this->assertEquals('Testcard', $card->title);
-        $this->assertEquals($boardid, $update[0]['fields']['kanbanccead_board']);
-        $this->assertEquals($columnid, $update[0]['fields']['kanbanccead_column']);
+        $this->assertEquals($boardid, $update[0]['fields']['kanbanlearning_board']);
+        $this->assertEquals($columnid, $update[0]['fields']['kanbanlearning_column']);
         $this->assertEquals($cardid, $update[1]['fields']['sequence']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::add_card(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercard' => $cardid, 'columnid' => $columnid, 'title' => 'Testcard 2']
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::add_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::add_card_returns(),
             $returnvalue
         );
 
@@ -191,17 +191,17 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::move_column(
-            $this->kanbanccead->cmid,
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_column(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercol' => 0, 'columnid' => $columnids[2]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::move_column_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_column_returns(),
             $returnvalue
         );
 
@@ -212,13 +212,13 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $this->assertEquals(join(',', [$columnids[2], $columnids[0], $columnids[1]]), $update[0]['fields']['sequence']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::move_column(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_column(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['aftercol' => $columnids[1], 'columnid' => $columnids[0]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::move_column_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_column_returns(),
             $returnvalue
         );
 
@@ -242,22 +242,22 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::move_card(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[0]->id, 'aftercard' => 0, 'columnid' => $columnids[2]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::move_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_card_returns(),
             $returnvalue
         );
 
@@ -272,15 +272,15 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $this->assertEquals(join(',', [$cards[0]->id, $cards[2]->id]), $update[2]['fields']['sequence']);
         $this->assertEquals('', $update[1]['fields']['sequence']);
-        $this->assertEquals($columnids[2], $update[0]['fields']['kanbanccead_column']);
+        $this->assertEquals($columnids[2], $update[0]['fields']['kanbanlearning_column']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::move_card(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[0]->id, 'aftercard' => $cards[2]->id, 'columnid' => $columnids[2]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::move_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_card_returns(),
             $returnvalue
         );
 
@@ -291,13 +291,13 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $this->assertEquals(join(',', [$cards[2]->id, $cards[0]->id]), $update[0]['fields']['sequence']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::move_card(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[1]->id, 'aftercard' => $cards[2]->id, 'columnid' => $columnids[2]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::move_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_card_returns(),
             $returnvalue
         );
 
@@ -312,7 +312,7 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $this->assertEquals(join(',', [$cards[2]->id, $cards[1]->id, $cards[0]->id]), $update[2]['fields']['sequence']);
         $this->assertEquals('', $update[1]['fields']['sequence']);
-        $this->assertEquals($columnids[2], $update[0]['fields']['kanbanccead_column']);
+        $this->assertEquals($columnids[2], $update[0]['fields']['kanbanlearning_column']);
     }
 
     /**
@@ -327,22 +327,22 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::delete_card(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::delete_card(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[0]->id]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::delete_card_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::delete_card_returns(),
             $returnvalue
         );
 
@@ -370,22 +370,22 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::delete_column(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::delete_column(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['columnid' => $columnids[0]]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::delete_column_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::delete_column_returns(),
             $returnvalue
         );
 
@@ -413,22 +413,22 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::assign_user(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::assign_user(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[2]->id, 'userid' => $this->users[0]->id]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::assign_user_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::assign_user_returns(),
             $returnvalue
         );
 
@@ -440,13 +440,13 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->assertArrayHasKey('users', $updatesbyname);
         $this->assertEquals([$this->users[0]->id], $updatesbyname['cards']['fields']['assignees']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::assign_user(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::assign_user(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[2]->id, 'userid' => $this->users[2]->id]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::assign_user_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::assign_user_returns(),
             $returnvalue
         );
 
@@ -457,13 +457,13 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->assertArrayHasKey('users', $updatesbyname);
         $this->assertEquals([$this->users[0]->id, $this->users[2]->id], $updatesbyname['cards']['fields']['assignees']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::unassign_user(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::unassign_user(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[2]->id, 'userid' => $this->users[0]->id]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::unassign_user_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::unassign_user_returns(),
             $returnvalue
         );
 
@@ -473,13 +473,13 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->assertEquals('cards', $update[0]['name']);
         $this->assertEquals([$this->users[2]->id], $update[0]['fields']['assignees']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::unassign_user(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::unassign_user(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cards[2]->id, 'userid' => $this->users[2]->id]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::unassign_user_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::unassign_user_returns(),
             $returnvalue
         );
 
@@ -502,19 +502,19 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
         $completedcolumnid = $boardmanager->get_first_completion_column($boardid);
         $this->assertNotEmpty($completedcolumnid);
         $cardid = $boardmanager->add_card($completedcolumnid, 0, ['title' => 'Testcard']);
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::set_card_complete(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::set_card_complete(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cardid, 'state' => 1]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::set_card_complete_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::set_card_complete_returns(),
             $returnvalue
         );
 
@@ -524,16 +524,16 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->assertEquals('cards', $update[0]['name']);
         $this->assertEquals(1, $update[0]['fields']['completed']);
 
-        $completedcard = $DB->get_record('kanbanccead_card', ['id' => $cardid], '*', MUST_EXIST);
-        $this->assertEquals((int) $completedcolumnid, (int) $completedcard->kanbanccead_column);
+        $completedcard = $DB->get_record('kanbanlearning_card', ['id' => $cardid], '*', MUST_EXIST);
+        $this->assertEquals((int) $completedcolumnid, (int) $completedcard->kanbanlearning_column);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::set_card_complete(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::set_card_complete(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cardid, 'state' => 0]
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::set_card_complete_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::set_card_complete_returns(),
             $returnvalue
         );
 
@@ -554,27 +554,27 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setUser($this->users[2]);
-        $DB->set_field('kanbanccead', 'approval_seals', 1, ['id' => $this->kanbanccead->id]);
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
         $completioncolumnid = $boardmanager->get_first_completion_column($boardid);
         $this->assertNotEmpty($completioncolumnid);
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
 
-        $returnvalue = \mod_kanbanccead\external\change_kanbanccead_content::set_approval_seal(
-            $this->kanbanccead->cmid,
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::set_approval_seal(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cardid, 'seal' => 'clap']
         );
         $returnvalue = \external_api::clean_returnvalue(
-            \mod_kanbanccead\external\change_kanbanccead_content::set_approval_seal_returns(),
+            \mod_kanbanlearning\external\change_kanbanlearning_content::set_approval_seal_returns(),
             $returnvalue
         );
         $update = json_decode($returnvalue['update'], true);
 
-        $this->assertSame('clap', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('clap', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
         $this->assertCount(1, $update);
         $this->assertSame('cards', $update[0]['name']);
         $this->assertSame('clap', $update[0]['fields']['approval_seal']);
@@ -590,8 +590,8 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         require_once($CFG->dirroot . '/lib/externallib.php');
 
         $this->resetAfterTest();
-        $DB->set_field('kanbanccead', 'approval_seals', 1, ['id' => $this->kanbanccead->id]);
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
         $completioncolumnid = $boardmanager->get_first_completion_column($boardid);
@@ -599,8 +599,8 @@ final class change_kanbanccead_content_test extends \advanced_testcase {
         $this->setUser($this->users[0]);
 
         $this->expectException(\required_capability_exception::class);
-        \mod_kanbanccead\external\change_kanbanccead_content::set_approval_seal(
-            $this->kanbanccead->cmid,
+        \mod_kanbanlearning\external\change_kanbanlearning_content::set_approval_seal(
+            $this->kanbanlearning->cmid,
             $boardid,
             ['cardid' => $cardid, 'seal' => 'approved']
         );

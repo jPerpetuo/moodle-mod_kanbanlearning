@@ -15,16 +15,16 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/discussionmessages
+    @template mod_kanbanlearning/discussionmessages
 
     Example context (json):
     {
         "discussions": [
-            {"id": 4, "kanbanccead_card": 1, "content": "Task", "username": "Berti Beispiel", "timecreated": 123456789, "candelete": true}
+            {"id": 4, "kanbanlearning_card": 1, "content": "Task", "username": "Berti Beispiel", "timecreated": 123456789, "candelete": true}
         ]
     }
 }}
-<ul class="list-group mod_kanbanccead_discussion_messages">
+<ul class="list-group mod_kanbanlearning_discussion_messages">
     {{#discussions}}
         <li class="list-group-item">
             <div class="font-weight-bold">{{username}}</div>

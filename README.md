@@ -1,18 +1,18 @@
-# Kanban CCEAD activity for Moodle
+# Kanban for Learning activity for Moodle
 
-Kanban CCEAD is a Moodle activity module for project and learning-process management inside a course. It provides shared, group, personal, and template boards with columns, cards, assignments, due dates, notifications, history, and activity-completion rules.
+Kanban for Learning is a Moodle activity module for project and learning-process management inside a course. It provides shared, group, personal, and template boards with columns, cards, assignments, due dates, notifications, history, and activity-completion rules.
 
-This fork uses the independent Moodle component `mod_kanbanccead`, declared in [version.php](version.php). Its origin, authorship and licence are recorded in [NOTICE](NOTICE).
+This independently maintained plugin uses the Moodle component `mod_kanbanlearning`, declared in [version.php](version.php). Its code origin, authorship and licence are recorded in [NOTICE](NOTICE).
 
 It is designed for installation alongside `mod_kanban`, using a separate plugin directory and plugin-owned tables. Coexistence still requires staging validation. It does not replace or automatically migrate activities from the original module.
 
 ## Development status and declared compatibility
 
-This renamed variant passed static validation, a manual clean-installation and coexistence check in a Moodle 5.2 test environment, and the complete [Moodle Plugin CI matrix](https://github.com/jPerpetuo/moodle-mod_kanbanccead/actions/workflows/moodle-ci.yml). It remains beta and is not approved for production or Moodle Marketplace use. Automated CI coverage does not replace production homologation.
+The previous `mod_kanbanccead` identity passed static validation, a manual clean-installation and coexistence check in a Moodle 5.2 test environment, and the complete [Moodle Plugin CI matrix](https://github.com/jPerpetuo/moodle-mod_kanbanccead/actions/workflows/moodle-ci.yml). This `mod_kanbanlearning` rename still requires validation. The plugin remains beta and is not approved for production or Moodle Marketplace use. Automated CI coverage does not replace production homologation.
 
 [version.php](version.php) retains the inherited `0.4.0-beta` label and declares Moodle 4.1 through 5.2. These declarations describe the supported range of this beta source revision; they are not evidence of a published release or production certification.
 
-The source repository is [jPerpetuo/moodle-mod_kanbanccead](https://github.com/jPerpetuo/moodle-mod_kanbanccead). Use no predecessor repository as a substitute.
+The source repository is [jPerpetuo/moodle-mod_kanbanlearning](https://github.com/jPerpetuo/moodle-mod_kanbanlearning). Use no predecessor repository as a substitute.
 
 JavaScript is required. The activity uses Moodle reactive components and has no non-JavaScript fallback.
 
@@ -35,7 +35,7 @@ The procedures below describe the intended installation layout. They have not ye
 
 ### Install from a ZIP file
 
-1. Obtain a tested release ZIP for `mod_kanbanccead` containing a top-level `kanbanccead/` directory.
+1. Obtain a tested release ZIP for `mod_kanbanlearning` containing a top-level `kanbanlearning/` directory.
 2. In Moodle, go to **Site administration > Plugins > Install plugins**.
 3. Upload the ZIP and complete the validation and installation process.
 4. Go to **Site administration > Notifications** if Moodle asks to complete the upgrade.
@@ -45,7 +45,7 @@ The procedures below describe the intended installation layout. They have not ye
 Place this repository at:
 
 ```
-{moodle-dirroot}/mod/kanbanccead
+{moodle-dirroot}/mod/kanbanlearning
 ```
 
 Then complete the Moodle upgrade through **Site administration > Notifications** or:
@@ -56,11 +56,11 @@ php {moodle-dirroot}/admin/cli/upgrade.php
 
 ### Install from Git
 
-From the Moodle `mod` directory, clone into `kanbanccead`:
+From the Moodle `mod` directory, clone into `kanbanlearning`:
 
 ```bash
 cd {moodle-dirroot}/mod
-git clone https://github.com/jPerpetuo/moodle-mod_kanbanccead.git kanbanccead
+git clone https://github.com/jPerpetuo/moodle-mod_kanbanlearning.git kanbanlearning
 ```
 
 Then complete the Moodle upgrade through **Site administration > Notifications** or:
@@ -71,10 +71,10 @@ php {moodle-dirroot}/admin/cli/upgrade.php
 
 ### Update a Git installation
 
-Use this only for an existing `mod_kanbanccead` Git installation with no local changes and a tested update on `origin/main`. Follow the backup requirements in [Release and operations](docs/release.md) first. Stop if the status is not clean.
+Use this only for an existing `mod_kanbanlearning` Git installation with no local changes and a tested update on `origin/main`. Follow the backup requirements in [Release and operations](docs/release.md) first. Stop if the status is not clean.
 
 ```bash
-cd {moodle-dirroot}/mod/kanbanccead
+cd {moodle-dirroot}/mod/kanbanlearning
 git status --short
 git pull --ff-only origin main
 php {moodle-dirroot}/admin/cli/upgrade.php
@@ -84,11 +84,11 @@ Here, `{moodle-dirroot}` means the directory containing Moodle's `config.php` an
 
 ## Existing installations of the original module
 
-Keep the original `mod/kanban` directory and its data intact. Install this component separately in `mod/kanbanccead` after validation.
+Keep the original `mod/kanban` directory and its data intact. Install this component separately in `mod/kanbanlearning` after validation.
 
-The schema in [db/install.xml](db/install.xml) uses `kanbanccead`-prefixed tables. Existing boards and cards in `mod_kanban` remain with that component. Both plugins still use Moodle's shared courses, users and groups.
+The schema in [db/install.xml](db/install.xml) uses `kanbanlearning`-prefixed tables. Existing boards and cards in `mod_kanban` remain with that component. Both plugins still use Moodle's shared courses, users and groups.
 
-No cross-component migration or backup conversion is provided. Do not rename existing database tables or treat a `mod_kanban` backup as a `mod_kanbanccead` backup. See [Backup, restore, and import](docs/backup-restore.md).
+No cross-component migration or backup conversion is provided. Do not rename existing database tables or treat a `mod_kanban` backup as a `mod_kanbanlearning` backup. See [Backup, restore, and import](docs/backup-restore.md).
 
 For the complete release and rollback procedure, see [Release and operations](docs/release.md).
 

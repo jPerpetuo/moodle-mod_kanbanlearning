@@ -2,7 +2,7 @@ import {Reactive} from 'core/reactive';
 import Ajax from 'core/ajax';
 
 /**
- * Reactive instance for mod_kanbanccead.
+ * Reactive instance for mod_kanbanlearning.
  */
 export default class extends Reactive {
     /**
@@ -14,7 +14,7 @@ export default class extends Reactive {
         const initialData = await Ajax.call(
             [
                 {
-                    methodname: 'mod_kanbanccead_get_kanbanccead_content_init',
+                    methodname: 'mod_kanbanlearning_get_kanbanlearning_content_init',
                     args: {
                         'cmid': cmid,
                         'boardid': boardid,

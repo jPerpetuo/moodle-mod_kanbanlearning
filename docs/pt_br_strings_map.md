@@ -1,6 +1,6 @@
-# Referência de strings pt_br (mod_kanbanccead)
+# Referência de strings pt_br (mod_kanbanlearning)
 
-Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../lang/pt_br/kanbanccead.php). O arquivo PHP é a fonte oficial; atualize esta referência quando alterar as traduções. As chaves identificam as mensagens usadas pela API de strings do Moodle.
+Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanlearning.php](../lang/pt_br/kanbanlearning.php). O arquivo PHP é a fonte oficial; atualize esta referência quando alterar as traduções. As chaves identificam as mensagens usadas pela API de strings do Moodle.
 
 | Chave | Tradução (pt_br) |
 | --- | --- |
@@ -126,23 +126,23 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `history_card_updated` | {$a->username} alterou o título do cartão para "{$a->title}" |
 | `history_discussion_added` | {$a->username} adicionou uma mensagem de discussão |
 | `history_discussion_deleted` | {$a->username} excluiu uma mensagem de discussão |
-| `kanbanccead:addcard` | Adicionar um cartão a um quadro Kanban |
-| `kanbanccead:addinstance` | Adicionar um quadro Kanban |
-| `kanbanccead:assignothers` | Atribuir outras pessoas a um cartão |
-| `kanbanccead:assignself` | Atribuir a si mesmo a um cartão |
-| `kanbanccead:editallboards` | Editar todos os quadros |
-| `kanbanccead:manageallcards` | Editar / mover todos os cartões |
-| `kanbanccead:manageassignedcards` | Editar / mover cartões atribuídos a si mesmo |
-| `kanbanccead:manageboard` | Gerenciar o quadro (modelos, excluir o quadro) |
-| `kanbanccead:managecolumns` | Editar as colunas do quadro |
-| `kanbanccead:view` | Ver um quadro Kanban |
-| `kanbanccead:viewallboards` | Ver todos os quadros |
-| `kanbanccead:viewhistory` | Ver o histórico do quadro |
+| `kanbanlearning:addcard` | Adicionar um cartão a um quadro Kanban |
+| `kanbanlearning:addinstance` | Adicionar um quadro Kanban |
+| `kanbanlearning:assignothers` | Atribuir outras pessoas a um cartão |
+| `kanbanlearning:assignself` | Atribuir a si mesmo a um cartão |
+| `kanbanlearning:editallboards` | Editar todos os quadros |
+| `kanbanlearning:manageallcards` | Editar / mover todos os cartões |
+| `kanbanlearning:manageassignedcards` | Editar / mover cartões atribuídos a si mesmo |
+| `kanbanlearning:manageboard` | Gerenciar o quadro (modelos, excluir o quadro) |
+| `kanbanlearning:managecolumns` | Editar as colunas do quadro |
+| `kanbanlearning:view` | Ver um quadro Kanban |
+| `kanbanlearning:viewallboards` | Ver todos os quadros |
+| `kanbanlearning:viewhistory` | Ver o histórico do quadro |
 | `linknumbers` | Vincular números dos cartões |
 | `linknumbers_help` | Números de cartão em descrições de cartão e comentários de discussão serão vinculados. |
 | `liveupdatetime` | Intervalo de atualização em tempo real em segundos |
 | `liveupdatetimedescription` | Os quadros buscarão atualizações após este intervalo. Defina 0 para desativar atualização em tempo real. |
-| `loading` | Carregando quadro kanbanccead |
+| `loading` | Carregando quadro do Kanban for Learning |
 | `loadingdiscussion` | Carregando discussão |
 | `lock` | Bloquear |
 | `lockboardcolumns` | Bloquear colunas do quadro |
@@ -165,9 +165,9 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `messageprovider:discussion` | Discussão de cartão |
 | `messageprovider:due` | Vencimento de cartão |
 | `messageprovider:moved` | Cartão movido |
-| `modulename` | Kanban CCEAD |
+| `modulename` | Kanban for Learning |
 | `modulename_help` | Esta atividade permite usar o método Kanban para gerenciar projetos ou processos de aprendizagem.<br>Kanban é um método ágil de gerenciamento de projetos que organiza tarefas por meio de um quadro visual para otimizar o fluxo de trabalho. As tarefas são categorizadas em colunas como "A fazer", "Em andamento" e "Concluído" para tornar o progresso transparente. O objetivo é identificar gargalos no fluxo de trabalho e melhorar continuamente a eficiência.<br><br>Dependendo das configurações, pode haver vários tipos de quadros dentro de uma atividade Kanban:<br><ul><br>    <li>Quadro do curso: acessível a todos que têm acesso à atividade</li><br>    <li>Quadros pessoais: um para cada usuário</li><br>    <li>Quadros de grupo</li><br>    <li>Quadros de modelo: qualquer pessoa que possa gerenciar quadros pode copiar um quadro existente como modelo.</li><br></ul> |
-| `modulenameplural` | Quadros Kanban CCEAD |
+| `modulenameplural` | Quadros do Kanban for Learning |
 | `moveaftercard` | Mover após |
 | `movecard` | Mover cartão |
 | `movecolumn` | Mover coluna |
@@ -177,14 +177,14 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `newcard` | Novo cartão |
 | `newcolumn` | Nova coluna |
 | `nogroupavailable` | Nenhum grupo disponível |
-| `nokanbancceadinstances` | Não há quadros kanbanccead neste curso ou você não tem permissão para acessá-los |
+| `nokanbanlearninginstances` | Não há quadros do Kanban for Learning neste curso ou você não tem permissão para acessá-los. |
 | `nonewduedate` | Sem nova data de vencimento |
 | `notemplateavailable` | Não há um modelo salvo disponível para aplicar. |
 | `nouser` | Sem usuário |
 | `nouserboards` | Sem quadros pessoais |
 | `plannedfor` | Previsto para |
-| `pluginadministration` | Administração do Kanban CCEAD |
-| `pluginname` | Kanban CCEAD |
+| `pluginadministration` | Administração do Kanban for Learning |
+| `pluginname` | Kanban for Learning |
 | `privacy:metadata:action` | Ação |
 | `privacy:metadata:affected_userid` | Usuário afetado |
 | `privacy:metadata:completed` | Estado de conclusão |
@@ -193,12 +193,12 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `privacy:metadata:description` | Descrição |
 | `privacy:metadata:duedate` | Data de vencimento |
 | `privacy:metadata:groupid` | ID do grupo |
-| `privacy:metadata:kanbanccead_assignee` | Responsável |
-| `privacy:metadata:kanbanccead_board` | Quadro |
-| `privacy:metadata:kanbanccead_card` | Cartão |
-| `privacy:metadata:kanbanccead_column` | Coluna |
-| `privacy:metadata:kanbanccead_comment` | Comentário |
-| `privacy:metadata:kanbanccead_history` | Histórico |
+| `privacy:metadata:kanbanlearning_assignee` | Responsável |
+| `privacy:metadata:kanbanlearning_board` | Quadro |
+| `privacy:metadata:kanbanlearning_card` | Cartão |
+| `privacy:metadata:kanbanlearning_column` | Coluna |
+| `privacy:metadata:kanbanlearning_comment` | Comentário |
+| `privacy:metadata:kanbanlearning_history` | Histórico |
 | `privacy:metadata:options` | Opções de configuração armazenadas |
 | `privacy:metadata:parameters` | Informações sobre a ação |
 | `privacy:metadata:reminderdate` | Data do lembrete |
@@ -208,7 +208,7 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `privacy:metadata:title` | Título |
 | `privacy:metadata:userid` | ID do usuário |
 | `pushcard` | Enviar cartão para todos os quadros |
-| `pushcardconfirm` | Isso enviará uma cópia deste cartão para todos os quadros desta atividade kanbanccead, incluindo modelos. Cópias existentes serão substituídas. |
+| `pushcardconfirm` | Isso enviará uma cópia deste cartão para todos os quadros desta atividade Kanban for Learning, incluindo modelos. Cópias existentes serão substituídas. |
 | `reminderdate` | Data de lembrete |
 | `remindertask` | Enviar notificações de lembrete |
 | `repeat` | Repetir cartão |
@@ -217,7 +217,7 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `repeat_interval_type` | Frequência |
 | `repeat_newduedate` | Nova data de vencimento |
 | `reset_group` | Redefinir quadros de grupo |
-| `reset_kanbanccead` | Redefinir quadros compartilhados |
+| `reset_kanbanlearning` | Redefinir quadros compartilhados |
 | `reset_personal` | Redefinir quadros pessoais |
 | `saveastemplate` | Salvar como modelo |
 | `saveastemplateconfirm` | O modelo salvará somente a estrutura deste quadro: colunas, ordem, configurações e marcadores. Cartões, anexos, responsáveis, discussões e histórico não serão incluídos. Ele substituirá o modelo atual, se houver. |
@@ -245,7 +245,7 @@ Esta tabela reproduz as chaves e traduções de [lang/pt_br/kanbanccead.php](../
 | `unlock` | Desbloquear |
 | `unlockboardcolumns` | Desbloquear colunas do quadro |
 | `usenumbers` | Usar números de cartão |
-| `usenumbers_help` | Ativa numeração de cartões nesta atividade kanbanccead. Os números são únicos por quadro (ou seja, cartões em quadros de usuário / grupo e no quadro compartilhado podem ter o mesmo número). |
+| `usenumbers_help` | Ativa a numeração dos cartões nesta atividade Kanban for Learning. Os números são únicos por quadro (ou seja, cartões em quadros pessoais / de grupo e no quadro compartilhado podem ter o mesmo número). |
 | `userboard` | Quadro pessoal de {$a} |
 | `userboards` | Quadros pessoais |
 | `userboards_help` | Ativa quadros pessoais para os participantes (visíveis apenas para eles e para os professores) |

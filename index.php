@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * View a kanbanccead instance
+ * View a kanbanlearning instance
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,17 +33,17 @@ require_course_login($course);
 
 $coursecontext = context_course::instance($course->id);
 
-$PAGE->set_url('/mod/kanbanccead/index.php', ['id' => $id]);
+$PAGE->set_url('/mod/kanbanlearning/index.php', ['id' => $id]);
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-$modulenameplural = get_string('modulenameplural', 'mod_kanbanccead');
+$modulenameplural = get_string('modulenameplural', 'mod_kanbanlearning');
 echo $OUTPUT->heading($modulenameplural);
 
-$kanbancceads = get_all_instances_in_course('kanbanccead', $course);
+$kanbanlearnings = get_all_instances_in_course('kanbanlearning', $course);
 $usesections = course_format_uses_sections($course->format);
 
 $table = new html_table();
@@ -57,36 +57,36 @@ if ($usesections) {
     $table->align = ['left'];
 }
 
-$kanbancceadfound = false;
+$kanbanlearningfound = false;
 
-foreach ($kanbancceads as $kanbanccead) {
-    $context = context_module::instance($kanbanccead->coursemodule, IGNORE_MISSING);
-    if (!$context || !has_capability('mod/kanbanccead:view', $context)) {
+foreach ($kanbanlearnings as $kanbanlearning) {
+    $context = context_module::instance($kanbanlearning->coursemodule, IGNORE_MISSING);
+    if (!$context || !has_capability('mod/kanbanlearning:view', $context)) {
         continue;
     }
 
-    $kanbancceadfound = true;
+    $kanbanlearningfound = true;
     $linkcss = null;
 
-    if (!$kanbanccead->visible) {
+    if (!$kanbanlearning->visible) {
         $linkcss = ['class' => 'dimmed'];
     }
 
     $link = html_writer::link(
-        new moodle_url('/mod/kanbanccead/view.php', ['id' => $kanbanccead->coursemodule]),
-        $kanbanccead->name,
+        new moodle_url('/mod/kanbanlearning/view.php', ['id' => $kanbanlearning->coursemodule]),
+        $kanbanlearning->name,
         $linkcss
     );
 
     if ($usesections) {
-        $table->data[] = [get_section_name($course, $kanbanccead->section), $link];
+        $table->data[] = [get_section_name($course, $kanbanlearning->section), $link];
     } else {
         $table->data[] = [$link];
     }
 }
 
-if (!$kanbancceadfound) {
-    notice(get_string('nokanbancceadinstances', 'mod_kanbanccead'), new moodle_url('/course/view.php', ['id' => $course->id]));
+if (!$kanbanlearningfound) {
+    notice(get_string('nokanbanlearninginstances', 'mod_kanbanlearning'), new moodle_url('/course/view.php', ['id' => $course->id]));
 } else {
     echo html_writer::table($table);
 }

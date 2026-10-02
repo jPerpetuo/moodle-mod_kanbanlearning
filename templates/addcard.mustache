@@ -15,17 +15,17 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/addcard
+    @template mod_kanbanlearning/addcard
 
-    Template for the whole kanbanccead board.
+    Template for the whole kanbanlearning board.
 
     Example context (json):
     {
         "id": 7,
-        "kanbanccead_column": 4,
+        "kanbanlearning_column": 4,
         "addcard": true
     }
 }}
-<div class="mod_kanbanccead_addcard_container row" data-id="{{^kanbanccead_column}}0{{/kanbanccead_column}}{{#kanbanccead_column}}{{id}}{{/kanbanccead_column}}">
-    <button class="mod_kanbanccead_addcard btn btn-icon icon-no-margin p-0{{^addcard}} hidden{{/addcard}}" id="mod_kanbanccead_addcard_{{id}}" data-action="add_card" data-columnid="{{#kanbanccead_column}}{{kanbanccead_column}}{{/kanbanccead_column}}{{^kanbanccead_column}}{{id}}{{/kanbanccead_column}}" data-id="{{id}}">{{#pix}} t/add, core, {{#str}} addcard, mod_kanbanccead {{/str}} {{/pix}}</button>
+<div class="mod_kanbanlearning_addcard_container row" data-id="{{^kanbanlearning_column}}0{{/kanbanlearning_column}}{{#kanbanlearning_column}}{{id}}{{/kanbanlearning_column}}">
+    <button class="mod_kanbanlearning_addcard btn btn-icon icon-no-margin p-0{{^addcard}} hidden{{/addcard}}" id="mod_kanbanlearning_addcard_{{id}}" data-action="add_card" data-columnid="{{#kanbanlearning_column}}{{kanbanlearning_column}}{{/kanbanlearning_column}}{{^kanbanlearning_column}}{{id}}{{/kanbanlearning_column}}" data-id="{{id}}">{{#pix}} t/add, core, {{#str}} addcard, mod_kanbanlearning {{/str}} {{/pix}}</button>
 </div>

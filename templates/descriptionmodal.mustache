@@ -15,36 +15,36 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/descriptionmodal
+    @template mod_kanbanlearning/descriptionmodal
 
     Example context (json):
     {
         "id": 4,
-        "kanbanccead_column": 1,
+        "kanbanlearning_column": 1,
         "title": "Task",
         "hasattachment": false,
         "duedate": 123456789
     }
 }}
-<div class="mod_kanbanccead_description_modal" id="mod_kanbanccead_description_{{uniqid}}">
+<div class="mod_kanbanlearning_description_modal" id="mod_kanbanlearning_description_{{uniqid}}">
     <div>
         {{{description}}}
     </div>
 
     {{#duedate}}
     <hr>
-        {{#str}} due, mod_kanbanccead {{/str}}: {{#userdate}} {{duedate}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}
+        {{#str}} due, mod_kanbanlearning {{/str}}: {{#userdate}} {{duedate}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}
     {{/duedate}}
 
     {{#hasassignees}}
     <hr>
-    <div class="mod_kanbanccead_description_modal_assignees_block">
-        <div class="mod_kanbanccead_description_modal_assignees_label">{{#str}} assignees, mod_kanbanccead {{/str}}:</div>
-        <div class="mod_kanbanccead_assignees mod_kanbanccead_description_modal_assignees" data-id="{{id}}">
+    <div class="mod_kanbanlearning_description_modal_assignees_block">
+        <div class="mod_kanbanlearning_description_modal_assignees_label">{{#str}} assignees, mod_kanbanlearning {{/str}}:</div>
+        <div class="mod_kanbanlearning_assignees mod_kanbanlearning_description_modal_assignees" data-id="{{id}}">
         {{#assignees}}
-            <div class="mod_kanbanccead_description_modal_assignee" title="{{fullname}}">
-                <span class="mod_kanbanccead_description_modal_assignee_avatar">{{{userpicture}}}</span>
-                <span class="mod_kanbanccead_description_modal_assignee_name">{{fullname}}</span>
+            <div class="mod_kanbanlearning_description_modal_assignee" title="{{fullname}}">
+                <span class="mod_kanbanlearning_description_modal_assignee_avatar">{{{userpicture}}}</span>
+                <span class="mod_kanbanlearning_description_modal_assignee_name">{{fullname}}</span>
             </div>
         {{/assignees}}
         </div>
@@ -54,13 +54,13 @@
 
     {{#hasattachment}}
     <hr>
-        <p>{{#str}} attachments, mod_kanbanccead {{/str}}:</p>
-        {{>mod_kanbanccead/attachmentitems}}
+        <p>{{#str}} attachments, mod_kanbanlearning {{/str}}:</p>
+        {{>mod_kanbanlearning/attachmentitems}}
     {{/hasattachment}}
 </div>
 
 {{#js}}
-require(['mod_kanbanccead/cardnumber'], function(cardnumber) {
-    cardnumber.init('mod_kanbanccead_description_{{uniqid}}');
+require(['mod_kanbanlearning/cardnumber'], function(cardnumber) {
+    cardnumber.init('mod_kanbanlearning_description_{{uniqid}}');
 });
 {{/js}}

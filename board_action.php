@@ -15,44 +15,44 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Execute board-level kanbanccead actions that are easier to handle via redirect than via reactive updates.
+ * Execute board-level kanbanlearning actions that are easier to handle via redirect than via reactive updates.
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2026 CCEAD PUC-Rio
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../config.php');
-require_once($CFG->dirroot . '/mod/kanbanccead/lib.php');
+require_once($CFG->dirroot . '/mod/kanbanlearning/lib.php');
 
-use mod_kanbanccead\boardmanager;
-use mod_kanbanccead\constants;
-use mod_kanbanccead\helper;
+use mod_kanbanlearning\boardmanager;
+use mod_kanbanlearning\constants;
+use mod_kanbanlearning\helper;
 
 $id = required_param('id', PARAM_INT);
 $boardid = required_param('boardid', PARAM_INT);
 $action = required_param('action', PARAM_ALPHAEXT);
 $confirmoverwrite = optional_param('confirmoverwrite', 0, PARAM_BOOL);
 
-[$course, $cm] = get_course_and_cm_from_cmid($id, 'kanbanccead');
+[$course, $cm] = get_course_and_cm_from_cmid($id, 'kanbanlearning');
 require_course_login($course, true, $cm);
 require_sesskey();
 
 $context = context_module::instance($cm->id);
-require_capability('mod/kanbanccead:manageboard', $context);
+require_capability('mod/kanbanlearning:manageboard', $context);
 
 $boardmanager = new boardmanager($cm->id, $boardid);
 $board = $boardmanager->get_board();
-$kanbanccead = $DB->get_record('kanbanccead', ['id' => $cm->instance], '*', MUST_EXIST);
-$boardmode = (int)($kanbanccead->boardmode ?? constants::MOD_KANBANCCEAD_BOARDMODE_SHARED);
+$kanbanlearning = $DB->get_record('kanbanlearning', ['id' => $cm->instance], '*', MUST_EXIST);
+$boardmode = (int)($kanbanlearning->boardmode ?? constants::MOD_KANBANLEARNING_BOARDMODE_SHARED);
 
 helper::check_permissions_for_user_or_group($board, $context, $cm);
 
-if ($boardmode !== constants::MOD_KANBANCCEAD_BOARDMODE_GROUP) {
-    throw new moodle_exception('templateactionsrequiregroupmode', 'mod_kanbanccead');
+if ($boardmode !== constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
+    throw new moodle_exception('templateactionsrequiregroupmode', 'mod_kanbanlearning');
 }
 
-$redirecturl = new moodle_url('/mod/kanbanccead/view.php', [
+$redirecturl = new moodle_url('/mod/kanbanlearning/view.php', [
     'id' => $cm->id,
     'boardid' => $boardid,
 ]);
@@ -60,13 +60,13 @@ $redirecturl = new moodle_url('/mod/kanbanccead/view.php', [
 switch ($action) {
     case 'save_template':
         $boardmanager->create_template();
-        redirect($redirecturl, get_string('templatesaved', 'mod_kanbanccead'), null, \core\output\notification::NOTIFY_SUCCESS);
+        redirect($redirecturl, get_string('templatesaved', 'mod_kanbanlearning'), null, \core\output\notification::NOTIFY_SUCCESS);
         break;
     case 'apply_template_to_board':
         $boardmanager->apply_template_to_board($boardid, 0, (bool)$confirmoverwrite);
         redirect(
             $redirecturl,
-            get_string('templateappliedtoboard', 'mod_kanbanccead'),
+            get_string('templateappliedtoboard', 'mod_kanbanlearning'),
             null,
             \core\output\notification::NOTIFY_SUCCESS
         );
@@ -78,7 +78,7 @@ switch ($action) {
         );
         redirect(
             $redirecturl,
-            get_string('templateappliedtoallgroupboards', 'mod_kanbanccead'),
+            get_string('templateappliedtoallgroupboards', 'mod_kanbanlearning'),
             null,
             \core\output\notification::NOTIFY_SUCCESS
         );

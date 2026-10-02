@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead\completion;
+namespace mod_kanbanlearning\completion;
 
 /**
- * Custom completion rules for mod_kanbanccead
+ * Custom completion rules for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,39 +36,39 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         $this->validate_rule($rule);
 
-        $kanbanccead = $DB->get_record(
-            "kanbanccead",
+        $kanbanlearning = $DB->get_record(
+            "kanbanlearning",
             ["id" => $this->cm->instance],
             'completioncreate, completioncomplete',
             MUST_EXIST
         );
 
         if ($rule == 'completioncreate') {
-            if ($kanbanccead->completioncreate > 0) {
+            if ($kanbanlearning->completioncreate > 0) {
                 $count = $DB->get_field_sql(
                     '
                     SELECT COUNT(DISTINCT c.id)
-                    FROM {kanbanccead_board} b
-                    INNER JOIN {kanbanccead_card} c ON b.kanbanccead_instance = :kanbancceadid AND c.kanbanccead_board = b.id
+                    FROM {kanbanlearning_board} b
+                    INNER JOIN {kanbanlearning_card} c ON b.kanbanlearning_instance = :kanbanlearningid AND c.kanbanlearning_board = b.id
                     WHERE c.createdby = :userid',
-                    ['userid' => $this->userid, 'kanbancceadid' => $this->cm->instance]
+                    ['userid' => $this->userid, 'kanbanlearningid' => $this->cm->instance]
                 );
-                return ($count >= $kanbanccead->completioncreate ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE);
+                return ($count >= $kanbanlearning->completioncreate ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE);
             }
         }
         if ($rule == 'completioncomplete') {
-            if ($kanbanccead->completioncomplete > 0) {
+            if ($kanbanlearning->completioncomplete > 0) {
                 $count = $DB->get_field_sql(
                     '
                     SELECT COUNT(DISTINCT c.id)
-                    FROM {kanbanccead_board} b
-                    INNER JOIN {kanbanccead_card} c ON b.kanbanccead_instance = :kanbancceadid
-                           AND c.kanbanccead_board = b.id AND c.completed != 0
-                    INNER JOIN {kanbanccead_assignee} a ON a.kanbanccead_card = c.id
+                    FROM {kanbanlearning_board} b
+                    INNER JOIN {kanbanlearning_card} c ON b.kanbanlearning_instance = :kanbanlearningid
+                           AND c.kanbanlearning_board = b.id AND c.completed != 0
+                    INNER JOIN {kanbanlearning_assignee} a ON a.kanbanlearning_card = c.id
                     WHERE a.userid = :userid',
-                    ['userid' => $this->userid, 'kanbancceadid' => $this->cm->instance]
+                    ['userid' => $this->userid, 'kanbanlearningid' => $this->cm->instance]
                 );
-                return ($count >= $kanbanccead->completioncomplete ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE);
+                return ($count >= $kanbanlearning->completioncomplete ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE);
             }
         }
 
@@ -97,8 +97,8 @@ class custom_completion extends \core_completion\activity_custom_completion {
         $completioncomplete = $this->cm->customdata['customcompletionrules']['completioncomplete'] ?? 0;
 
         return [
-            'completioncreate' => get_string('completiondetail:create', 'kanbanccead', $completioncreate),
-            'completioncomplete' => get_string('completiondetail:complete', 'kanbanccead', $completioncomplete),
+            'completioncreate' => get_string('completiondetail:create', 'kanbanlearning', $completioncreate),
+            'completioncomplete' => get_string('completiondetail:complete', 'kanbanlearning', $completioncomplete),
         ];
     }
 

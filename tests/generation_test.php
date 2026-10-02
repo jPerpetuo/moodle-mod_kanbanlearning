@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
- * Unit test for mod_kanbanccead
+ * Unit test for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      \mod_kanbanccead_generator
+ * @covers      \mod_kanbanlearning_generator
  */
 final class generation_test extends \advanced_testcase {
     /**
@@ -37,11 +37,11 @@ final class generation_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $this->assertFalse($DB->record_exists('kanbanccead', ['course' => $course->id]));
-        $kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $course]);
+        $this->assertFalse($DB->record_exists('kanbanlearning', ['course' => $course->id]));
+        $kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
 
-        $records = $DB->get_records('kanbanccead', ['course' => $course->id], 'id');
+        $records = $DB->get_records('kanbanlearning', ['course' => $course->id], 'id');
         $this->assertCount(1, $records);
-        $this->assertTrue(array_key_exists($kanbanccead->id, $records));
+        $this->assertTrue(array_key_exists($kanbanlearning->id, $records));
     }
 }

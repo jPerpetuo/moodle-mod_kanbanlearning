@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Language file for mod_kanbanccead
+ * Language file for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -152,24 +152,24 @@ $string['history_card_unassigned'] = '{$a->username} unassigned card from user {
 $string['history_card_updated'] = '{$a->username} changed card title to "{$a->title}"';
 $string['history_discussion_added'] = '{$a->username} added discussion message';
 $string['history_discussion_deleted'] = '{$a->username} deleted discussion message';
-$string['kanbanccead:addcard'] = 'Add a card to a Kanban board';
-$string['kanbanccead:addinstance'] = 'Add a Kanban board';
-$string['kanbanccead:assignothers'] = 'Assign others to a card';
-$string['kanbanccead:assignself'] = 'Assign self to a card';
-$string['kanbanccead:editallboards'] = 'Edit all boards';
-$string['kanbanccead:manageallcards'] = 'Edit / move all cards';
-$string['kanbanccead:manageapprovalseals'] = 'Manage teacher reactions on completed cards';
-$string['kanbanccead:manageassignedcards'] = 'Edit / move cards assigned to oneself';
-$string['kanbanccead:manageboard'] = 'Manage the board (templates, delete the board)';
-$string['kanbanccead:managecolumns'] = 'Edit the columns of the board';
-$string['kanbanccead:view'] = 'View a Kanban board';
-$string['kanbanccead:viewallboards'] = 'View all boards';
-$string['kanbanccead:viewhistory'] = 'View the history of the board';
+$string['kanbanlearning:addcard'] = 'Add a card to a Kanban board';
+$string['kanbanlearning:addinstance'] = 'Add a Kanban board';
+$string['kanbanlearning:assignothers'] = 'Assign others to a card';
+$string['kanbanlearning:assignself'] = 'Assign self to a card';
+$string['kanbanlearning:editallboards'] = 'Edit all boards';
+$string['kanbanlearning:manageallcards'] = 'Edit / move all cards';
+$string['kanbanlearning:manageapprovalseals'] = 'Manage teacher reactions on completed cards';
+$string['kanbanlearning:manageassignedcards'] = 'Edit / move cards assigned to oneself';
+$string['kanbanlearning:manageboard'] = 'Manage the board (templates, delete the board)';
+$string['kanbanlearning:managecolumns'] = 'Edit the columns of the board';
+$string['kanbanlearning:view'] = 'View a Kanban board';
+$string['kanbanlearning:viewallboards'] = 'View all boards';
+$string['kanbanlearning:viewhistory'] = 'View the history of the board';
 $string['linknumbers'] = 'Link card numbers';
 $string['linknumbers_help'] = 'Card numbers in card descriptions and discussion comments will be linked.';
 $string['liveupdatetime'] = 'Interval for live update in seconds';
 $string['liveupdatetimedescription'] = 'Boards will look for updates after this interval. Set to 0 to disable live update.';
-$string['loading'] = 'Loading kanbanccead board';
+$string['loading'] = 'Loading Kanban for Learning board';
 $string['loadingdiscussion'] = 'Loading discussion';
 $string['lock'] = 'Lock';
 $string['lockboardcolumns'] = 'Lock board columns';
@@ -194,7 +194,7 @@ $string['messageprovider:closed'] = 'Card closed / reopened';
 $string['messageprovider:discussion'] = 'Card discussion';
 $string['messageprovider:due'] = 'Card due';
 $string['messageprovider:moved'] = 'Card moved';
-$string['modulename'] = 'Kanban CCEAD';
+$string['modulename'] = 'Kanban for Learning';
 $string['modulename_help'] = 'This activity supports using the Kanban method for managing projects or learning processes.
 Kanban is an agile project management method that organizes tasks through a visual board to optimize workflow. Tasks are categorized into columns such as "To Do," "In Progress," and "Done" to make progress transparent. The goal is to identify bottlenecks in the workflow and continuously improve efficiency.
 <br>Depending on the settings, there can be several types of boards within a Kanban activity:
@@ -204,7 +204,7 @@ Kanban is an agile project management method that organizes tasks through a visu
     <li>Group boards</li>
     <li>Template boards: Anyone who can manage boards can copy an existing board as a template.</li>
 </ul>';
-$string['modulenameplural'] = 'Kanban CCEAD boards';
+$string['modulenameplural'] = 'Kanban for Learning boards';
 $string['moveaftercard'] = 'Move after';
 $string['movecard'] = 'Move card';
 $string['movecolumn'] = 'Move column';
@@ -214,14 +214,14 @@ $string['name_help'] = 'This name will be visible in course overview and as a ti
 $string['newcard'] = 'New card';
 $string['newcolumn'] = 'New column';
 $string['nogroupavailable'] = 'No group available';
-$string['nokanbancceadinstances'] = 'There are no kanbanccead boards in this course or you are not allowed to access them';
+$string['nokanbanlearninginstances'] = 'There are no Kanban for Learning boards in this course, or you do not have permission to access them.';
 $string['nonewduedate'] = 'No new due date';
 $string['notemplateavailable'] = 'There is no saved template available to apply.';
 $string['nouser'] = 'No user';
 $string['nouserboards'] = 'No personal boards';
 $string['plannedfor'] = 'Planned for';
-$string['pluginadministration'] = 'Kanban CCEAD administration';
-$string['pluginname'] = 'Kanban CCEAD';
+$string['pluginadministration'] = 'Kanban for Learning administration';
+$string['pluginname'] = 'Kanban for Learning';
 $string['privacy:metadata:action'] = "Action";
 $string['privacy:metadata:affected_userid'] = "Affected user";
 $string['privacy:metadata:approval_seal'] = 'Teacher feedback seal stored on the card.';
@@ -231,12 +231,12 @@ $string['privacy:metadata:createdby'] = "User that created the card";
 $string['privacy:metadata:description'] = 'Description';
 $string['privacy:metadata:duedate'] = 'Due date';
 $string['privacy:metadata:groupid'] = "Group id";
-$string['privacy:metadata:kanbanccead_assignee'] = "Assignee";
-$string['privacy:metadata:kanbanccead_board'] = "Board";
-$string['privacy:metadata:kanbanccead_card'] = "Card";
-$string['privacy:metadata:kanbanccead_column'] = "Column";
-$string['privacy:metadata:kanbanccead_comment'] = "Comment";
-$string['privacy:metadata:kanbanccead_history'] = "History";
+$string['privacy:metadata:kanbanlearning_assignee'] = "Assignee";
+$string['privacy:metadata:kanbanlearning_board'] = "Board";
+$string['privacy:metadata:kanbanlearning_card'] = "Card";
+$string['privacy:metadata:kanbanlearning_column'] = "Column";
+$string['privacy:metadata:kanbanlearning_comment'] = "Comment";
+$string['privacy:metadata:kanbanlearning_history'] = "History";
 $string['privacy:metadata:options'] = 'Stored configuration options';
 $string['privacy:metadata:parameters'] = "Information about the action";
 $string['privacy:metadata:reminderdate'] = 'Reminder date';
@@ -246,7 +246,7 @@ $string['privacy:metadata:timestamp'] = "Time of the action";
 $string['privacy:metadata:title'] = 'Title';
 $string['privacy:metadata:userid'] = "User id";
 $string['pushcard'] = 'Push card to all boards';
-$string['pushcardconfirm'] = 'This will send a copy of this card to all boards inside this kanbanccead activity including templates. Existing copies will be replaced.';
+$string['pushcardconfirm'] = 'This will send a copy of this card to all boards in this Kanban for Learning activity, including templates. Existing copies will be replaced.';
 $string['reminderdate'] = 'Reminder date';
 $string['remindertask'] = 'Send reminder notifications';
 $string['removeseal'] = 'Remove reaction';
@@ -257,7 +257,7 @@ $string['repeat_interval'] = 'Interval';
 $string['repeat_interval_type'] = 'Frequency';
 $string['repeat_newduedate'] = 'New due date';
 $string['reset_group'] = 'Reset group boards';
-$string['reset_kanbanccead'] = 'Reset shared boards';
+$string['reset_kanbanlearning'] = 'Reset shared boards';
 $string['reset_personal'] = 'Reset personal boards';
 $string['saveastemplate'] = 'Save as template';
 $string['saveastemplateconfirm'] = 'The template will save only this board structure: columns, order, settings and markers. Cards, attachments, assignees, discussions and history will not be included. It will replace the current template, if there is one.';
@@ -289,7 +289,7 @@ $string['uncomplete'] = 'Reopen';
 $string['unlock'] = 'Unlock';
 $string['unlockboardcolumns'] = 'Unlock board columns';
 $string['usenumbers'] = 'Use card numbers';
-$string['usenumbers_help'] = 'This enables card numbers for this kanbanccead activity. Numbers are unique per board (i.e. cards in user / group boards and the shared board can have the same number).';
+$string['usenumbers_help'] = 'This enables card numbers for this Kanban for Learning activity. Numbers are unique per board (i.e. cards in user / group boards and the shared board can have the same number).';
 $string['userboard'] = 'Personal board for {$a}';
 $string['userboards'] = 'Personal boards';
 $string['userboards_help'] = 'Enables personal boards for the participants (only visible to them and to the trainers)';

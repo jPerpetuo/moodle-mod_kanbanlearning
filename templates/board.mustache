@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/board
+    @template mod_kanbanlearning/board
 
-    Template for the whole kanbanccead board.
+    Template for the whole kanbanlearning board.
 
     Example context (json):
     {
@@ -52,49 +52,49 @@
         "usenumbers": true
     }
 }}
-<div class="container-fluid mod_kanbanccead_board {{#locked}}mod_kanbanccead_board_locked_columns{{/locked}} {{#addcard}}mod_kanbanccead_addcards{{/addcard}} {{#managecolumns}}mod_kanbanccead_managecolumns{{/managecolumns}} {{#manageassignedcards}}mod_kanbanccead_manageassignedcards{{/manageassignedcards}} {{#manageallcards}}mod_kanbanccead_manageallcards{{/manageallcards}} {{#hastemplate}}mod_kanbanccead_hastemplate{{/hastemplate}} {{#istemplate}}mod_kanbanccead_istemplate{{/istemplate}} {{#history}}mod_kanbanccead_history{{/history}} {{#userboardsonly}}mod_kanbanccead_userboardsonly{{/userboardsonly}} {{#iscourseboard}}mod_kanbanccead_iscourseboard{{/iscourseboard}} {{#manageboard}}mod_kanbanccead_manageboard{{/manageboard}} {{#ismyuserboard}}mod_kanbanccead_ismyuserboard{{/ismyuserboard}} {{#usenumbers}}mod_kanbanccead_usenumbers{{/usenumbers}}" id="mod_kanbanccead_board-{{id}}" data-id="{{id}}" data-cmid="{{cmid}}">
+<div class="container-fluid mod_kanbanlearning_board {{#locked}}mod_kanbanlearning_board_locked_columns{{/locked}} {{#addcard}}mod_kanbanlearning_addcards{{/addcard}} {{#managecolumns}}mod_kanbanlearning_managecolumns{{/managecolumns}} {{#manageassignedcards}}mod_kanbanlearning_manageassignedcards{{/manageassignedcards}} {{#manageallcards}}mod_kanbanlearning_manageallcards{{/manageallcards}} {{#hastemplate}}mod_kanbanlearning_hastemplate{{/hastemplate}} {{#istemplate}}mod_kanbanlearning_istemplate{{/istemplate}} {{#history}}mod_kanbanlearning_history{{/history}} {{#userboardsonly}}mod_kanbanlearning_userboardsonly{{/userboardsonly}} {{#iscourseboard}}mod_kanbanlearning_iscourseboard{{/iscourseboard}} {{#manageboard}}mod_kanbanlearning_manageboard{{/manageboard}} {{#ismyuserboard}}mod_kanbanlearning_ismyuserboard{{/ismyuserboard}} {{#usenumbers}}mod_kanbanlearning_usenumbers{{/usenumbers}}" id="mod_kanbanlearning_board-{{id}}" data-id="{{id}}" data-cmid="{{cmid}}">
     {{#boardselector.show}}
-    <div class="mod_kanbanccead_board_focus" data-id="{{id}}">
-        <div class="mod_kanbanccead_board_focus_head">
-            <div class="mod_kanbanccead_board_focus_primary">
-                <div class="mod_kanbanccead_board_focus_label">{{boardselector.label}}:</div>
-                {{>mod_kanbanccead/boardselector}}
+    <div class="mod_kanbanlearning_board_focus" data-id="{{id}}">
+        <div class="mod_kanbanlearning_board_focus_head">
+            <div class="mod_kanbanlearning_board_focus_primary">
+                <div class="mod_kanbanlearning_board_focus_label">{{boardselector.label}}:</div>
+                {{>mod_kanbanlearning/boardselector}}
             </div>
-            <div class="mod_kanbanccead_board_focus_controls">
-                {{>mod_kanbanccead/actionmenuboard}}
+            <div class="mod_kanbanlearning_board_focus_controls">
+                {{>mod_kanbanlearning/actionmenuboard}}
             </div>
         </div>
-        <div class="mod_kanbanccead_board_focus_meta">
+        <div class="mod_kanbanlearning_board_focus_meta">
             {{#boardselector.summary}}
-            <div class="mod_kanbanccead_board_focus_summary">{{boardselector.summary}}</div>
+            <div class="mod_kanbanlearning_board_focus_summary">{{boardselector.summary}}</div>
             {{/boardselector.summary}}
             {{#boardselector.groupmemberslabel}}
             {{#boardselector.hasgroupmembers}}
-            <button type="button" class="btn btn-link mod_kanbanccead_board_focus_group mod_kanbanccead_board_focus_group_trigger" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_group_members_modal_{{id}}" data-target="#mod_kanbanccead_group_members_modal_{{id}}">
-                <span class="mod_kanbanccead_board_focus_group_icon">{{#pix}} t/user, core, {{boardselector.groupmemberslabel}} {{/pix}}</span>
-                <span class="mod_kanbanccead_board_focus_group_text">{{boardselector.groupmemberslabel}}</span>
+            <button type="button" class="btn btn-link mod_kanbanlearning_board_focus_group mod_kanbanlearning_board_focus_group_trigger" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_group_members_modal_{{id}}" data-target="#mod_kanbanlearning_group_members_modal_{{id}}">
+                <span class="mod_kanbanlearning_board_focus_group_icon">{{#pix}} t/user, core, {{boardselector.groupmemberslabel}} {{/pix}}</span>
+                <span class="mod_kanbanlearning_board_focus_group_text">{{boardselector.groupmemberslabel}}</span>
             </button>
             {{/boardselector.hasgroupmembers}}
             {{^boardselector.hasgroupmembers}}
-            <div class="mod_kanbanccead_board_focus_group">
-                <span class="mod_kanbanccead_board_focus_group_icon">{{#pix}} t/user, core, {{boardselector.groupmemberslabel}} {{/pix}}</span>
-                <span class="mod_kanbanccead_board_focus_group_text">{{boardselector.groupmemberslabel}}</span>
+            <div class="mod_kanbanlearning_board_focus_group">
+                <span class="mod_kanbanlearning_board_focus_group_icon">{{#pix}} t/user, core, {{boardselector.groupmemberslabel}} {{/pix}}</span>
+                <span class="mod_kanbanlearning_board_focus_group_text">{{boardselector.groupmemberslabel}}</span>
             </div>
             {{/boardselector.hasgroupmembers}}
             {{#boardselector.hasgroupmembers}}
-            <div class="mod_kanbanccead_group_members_modal modal fade" id="mod_kanbanccead_group_members_modal_{{id}}" aria-hidden="true" tabindex="-1">
+            <div class="mod_kanbanlearning_group_members_modal modal fade" id="mod_kanbanlearning_group_members_modal_{{id}}" aria-hidden="true" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{#str}} groupmemberstitle, mod_kanbanccead {{/str}}</h5>
+                            <h5 class="modal-title">{{#str}} groupmemberstitle, mod_kanbanlearning {{/str}}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{#str}} closebuttontitle, core {{/str}}"></button>
                         </div>
-                        <div class="modal-body mod_kanbanccead_group_members_modal_body">
-                            <ul class="mod_kanbanccead_group_members_list">
+                        <div class="modal-body mod_kanbanlearning_group_members_modal_body">
+                            <ul class="mod_kanbanlearning_group_members_list">
                                 {{#boardselector.groupmembers}}
-                                <li class="mod_kanbanccead_group_members_item">
-                                    <span class="mod_kanbanccead_group_members_avatar">{{{userpicture}}}</span>
-                                    <span class="mod_kanbanccead_group_members_name">{{fullname}}</span>
+                                <li class="mod_kanbanlearning_group_members_item">
+                                    <span class="mod_kanbanlearning_group_members_avatar">{{{userpicture}}}</span>
+                                    <span class="mod_kanbanlearning_group_members_name">{{fullname}}</span>
                                 </li>
                                 {{/boardselector.groupmembers}}
                             </ul>
@@ -108,34 +108,34 @@
     </div>
     {{/boardselector.show}}
     {{^boardselector.show}}
-    <div class="mod_kanbanccead_board_title">{{heading}}</div>
+    <div class="mod_kanbanlearning_board_title">{{heading}}</div>
     {{/boardselector.show}}
-    <div class="row mod_kanbanccead_update_error">
+    <div class="row mod_kanbanlearning_update_error">
         <div class="col">
             <div class="alert alert-danger" role="alert">
-                {{#pix}} i/caution, core, {{#str}} connectionlost, mod_kanbanccead {{/str}} {{/pix}}
-                {{#str}} connectionlostmessage, mod_kanbanccead {{/str}}
+                {{#pix}} i/caution, core, {{#str}} connectionlost, mod_kanbanlearning {{/str}} {{/pix}}
+                {{#str}} connectionlostmessage, mod_kanbanlearning {{/str}}
             </div>
         </div>
     </div>
-    <div class="row mod_kanbanccead_scroll mod_kanbanccead_scroll_left">
-        <button class="mod_kanbanccead_scroll_button" type="button" aria-label="Rolar para a esquerda" title="Rolar para a esquerda">
-            <span class="mod_kanbanccead_scroll_button_icon" aria-hidden="true">&#10094;</span>
+    <div class="row mod_kanbanlearning_scroll mod_kanbanlearning_scroll_left">
+        <button class="mod_kanbanlearning_scroll_button" type="button" aria-label="Rolar para a esquerda" title="Rolar para a esquerda">
+            <span class="mod_kanbanlearning_scroll_button_icon" aria-hidden="true">&#10094;</span>
         </button>
     </div>
-    <div class="row mod_kanbanccead_scroll mod_kanbanccead_scroll_right">
-        <button class="mod_kanbanccead_scroll_button" type="button" aria-label="Rolar para a direita" title="Rolar para a direita">
-            <span class="mod_kanbanccead_scroll_button_icon" aria-hidden="true">&#10095;</span>
+    <div class="row mod_kanbanlearning_scroll mod_kanbanlearning_scroll_right">
+        <button class="mod_kanbanlearning_scroll_button" type="button" aria-label="Rolar para a direita" title="Rolar para a direita">
+            <span class="mod_kanbanlearning_scroll_button_icon" aria-hidden="true">&#10095;</span>
         </button>
     </div>
-    <div class="row mod_kanbanccead_main">
-        <ul class="row mod_kanbanccead_column_container" data-id="{{id}}" data-cmid="{{cmid}}">
-            <li class="mod_kanbanccead_addcolumn_first">
-                {{>mod_kanbanccead/addcolumn}}
+    <div class="row mod_kanbanlearning_main">
+        <ul class="row mod_kanbanlearning_column_container" data-id="{{id}}" data-cmid="{{cmid}}">
+            <li class="mod_kanbanlearning_addcolumn_first">
+                {{>mod_kanbanlearning/addcolumn}}
             </li>
             {{#hascolumns}}
                 {{#columns}}
-                    {{>mod_kanbanccead/column}}
+                    {{>mod_kanbanlearning/column}}
                 {{/columns}}
             {{/hascolumns}}
         </ul>
@@ -143,8 +143,8 @@
 </div>
 {{#js}}
 require(['core/inplace_editable']);
-require(['mod_kanbanccead/board'], function(component) {
-    component.init('mod_kanbanccead_board-{{id}}');
+require(['mod_kanbanlearning/board'], function(component) {
+    component.init('mod_kanbanlearning_board-{{id}}');
 });
 {{/js}}
 

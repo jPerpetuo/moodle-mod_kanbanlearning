@@ -2,7 +2,7 @@
 
 Repository maintainers are responsible for releases, security coordination, compatibility decisions, and final merge approval.
 
-This governance applies to Kanban CCEAD (`mod_kanbanccead`) only. It does not assign responsibility for this fork to the original `mod_kanban` maintainer. Attribution and the relationship to the predecessor are recorded in [NOTICE](NOTICE).
+This governance applies to Kanban for Learning (`mod_kanbanlearning`) only. Maintenance responsibility belongs to this project and is not assigned to the original `mod_kanban` maintainer. Attribution and the relationship to the predecessor are recorded in [NOTICE](NOTICE).
 
 ## Decisions
 

@@ -1,9 +1,9 @@
 import {BaseComponent} from 'core/reactive';
-import exporter from 'mod_kanbanccead/exporter';
+import exporter from 'mod_kanbanlearning/exporter';
 import Log from 'core/log';
 
 /**
- * Parent component for all kanbanccead boards of this cmid.
+ * Parent component for all kanbanlearning boards of this cmid.
  */
 export default class extends BaseComponent {
     /**
@@ -34,7 +34,7 @@ export default class extends BaseComponent {
     async stateReady(state) {
         this.subcomponent = await this.renderComponent(
             this.getElement(),
-            'mod_kanbanccead/board',
+            'mod_kanbanlearning/board',
             exporter.exportStateForTemplate(state),
         ).catch(error => {
             Log.debug(error);

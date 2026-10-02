@@ -15,27 +15,27 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/historymodal
+    @template mod_kanbanlearning/historymodal
 
     Example context (json):
     {
         "id": 4,
-        "kanbanccead_column": 1,
+        "kanbanlearning_column": 1,
         "title": "Task"
     }
 }}
-<div class="mod_kanbanccead_history_modal modal fade" id="mod_kanbanccead_history_modal_{{id}}" aria-hidden="true">
+<div class="mod_kanbanlearning_history_modal modal fade" id="mod_kanbanlearning_history_modal_{{id}}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{#str}} history, mod_kanbanccead {{/str}}: {{title}}</h5>
+                <h5 class="modal-title">{{#str}} history, mod_kanbanlearning {{/str}}: {{title}}</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="{{#str}} closebuttontitle, core {{/str}}"></button>
             </div>
             <div class="modal-body">
-                <div class="mod_kanbanccead_loading_status" role="status">
-                    {{> core/loading}} {{#str}} loadinghistory, mod_kanbanccead {{/str}}
+                <div class="mod_kanbanlearning_loading_status" role="status">
+                    {{> core/loading}} {{#str}} loadinghistory, mod_kanbanlearning {{/str}}
                 </div>
-                <div class="mod_kanbanccead_history" data-id="{{id}}">
+                <div class="mod_kanbanlearning_history" data-id="{{id}}">
                 </div>
             </div>
         </div>

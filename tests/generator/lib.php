@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mod_kanbanccead data generator
+ * mod_kanbanlearning data generator
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_kanbanccead_generator extends testing_module_generator {
+class mod_kanbanlearning_generator extends testing_module_generator {
     /**
-     * Creates an instance of a kanbanccead.
+     * Creates an instance of a kanbanlearning.
      *
      * @param array $record
      * @param array|null $options
-     * @return stdClass kanbanccead instance
+     * @return stdClass kanbanlearning instance
      */
     public function create_instance($record = null, ?array $options = null): stdClass { // phpcs:ignore
         $record = (array) $record + [
-                'name' => 'test kanbanccead',
+                'name' => 'test kanbanlearning',
                 'intro' => '',
                 'introformat' => 1,
             ];

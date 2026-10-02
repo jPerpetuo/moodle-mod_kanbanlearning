@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 /**
  * Tests for Kanban database upgrades.
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2026 CCEAD PUC-Rio
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      ::xmldb_kanbanccead_upgrade
+ * @covers      ::xmldb_kanbanlearning_upgrade
  */
 final class upgrade_test extends \advanced_testcase {
     /**
@@ -35,7 +35,7 @@ final class upgrade_test extends \advanced_testcase {
 
         parent::setUp();
         require_once($CFG->libdir . '/upgradelib.php');
-        require_once($CFG->dirroot . '/mod/kanbanccead/db/upgrade.php');
+        require_once($CFG->dirroot . '/mod/kanbanlearning/db/upgrade.php');
     }
 
     /**
@@ -50,13 +50,13 @@ final class upgrade_test extends \advanced_testcase {
         $this->preventResetByRollback();
 
         $course = $this->getDataGenerator()->create_course();
-        $kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', [
+        $kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', [
             'course' => $course,
             'name' => 'Legacy group board activity',
             'history' => 1,
         ]);
         $dbman = $DB->get_manager();
-        $table = new \xmldb_table('kanbanccead');
+        $table = new \xmldb_table('kanbanlearning');
 
         $boardgroups = new \xmldb_field('boardgroups', XMLDB_TYPE_TEXT, null, null, null, null, null, 'boardgroupid');
         $boardgroupid = new \xmldb_field('boardgroupid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'boardmode');
@@ -68,7 +68,7 @@ final class upgrade_test extends \advanced_testcase {
         $this->assertTrue($dbman->field_exists($table, $boardgroupid));
         $this->assertTrue($dbman->field_exists($table, $boardgroups));
 
-        $upgraded = $DB->get_record('kanbanccead', ['id' => $kanbanccead->id], '*', MUST_EXIST);
+        $upgraded = $DB->get_record('kanbanlearning', ['id' => $kanbanlearning->id], '*', MUST_EXIST);
         $this->assertEquals('Legacy group board activity', $upgraded->name);
         $this->assertEquals(1, (int) $upgraded->history);
         $this->assertNull($upgraded->boardgroupid);
@@ -87,26 +87,26 @@ final class upgrade_test extends \advanced_testcase {
         $this->preventResetByRollback();
 
         $course = $this->getDataGenerator()->create_course();
-        $kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $course]);
-        $boardmanager = new boardmanager($kanbanccead->cmid);
+        $kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
+        $boardmanager = new boardmanager($kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanccead_column', 'id', ['kanbanccead_board' => $boardid], IGNORE_MULTIPLE);
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
         $firstcardid = $boardmanager->add_card($columnid, 0, ['title' => 'First legacy card']);
         $secondcardid = $boardmanager->add_card($columnid, $firstcardid, ['title' => 'Second legacy card']);
-        $DB->set_field('kanbanccead_card', 'number', 0, ['id' => $firstcardid]);
-        $DB->set_field('kanbanccead_card', 'number', 0, ['id' => $secondcardid]);
+        $DB->set_field('kanbanlearning_card', 'number', 0, ['id' => $firstcardid]);
+        $DB->set_field('kanbanlearning_card', 'number', 0, ['id' => $secondcardid]);
 
         $dbman = $DB->get_manager();
-        $table = new \xmldb_table('kanbanccead_card');
+        $table = new \xmldb_table('kanbanlearning_card');
         $number = new \xmldb_field('number', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'timemodified');
         $dbman->drop_field($table, $number);
 
         $this->run_upgrade_from_version(2024121602);
 
         $this->assertTrue($dbman->field_exists($table, $number));
-        $firstcard = $DB->get_record('kanbanccead_card', ['id' => $firstcardid], 'id, number', MUST_EXIST);
-        $secondcard = $DB->get_record('kanbanccead_card', ['id' => $secondcardid], 'id, number', MUST_EXIST);
+        $firstcard = $DB->get_record('kanbanlearning_card', ['id' => $firstcardid], 'id, number', MUST_EXIST);
+        $secondcard = $DB->get_record('kanbanlearning_card', ['id' => $secondcardid], 'id, number', MUST_EXIST);
         $this->assertEquals(1, (int) $firstcard->number);
         $this->assertEquals(2, (int) $secondcard->number);
     }
@@ -128,23 +128,23 @@ final class upgrade_test extends \advanced_testcase {
         }
 
         $dbman = $DB->get_manager();
-        $newtable = new \xmldb_table('kanbanccead_comment');
+        $newtable = new \xmldb_table('kanbanlearning_comment');
         if ($dbman->table_exists($newtable)) {
             $dbman->drop_table($newtable);
         }
 
-        $oldtable = new \xmldb_table('kanbanccead_discussion_comment');
+        $oldtable = new \xmldb_table('kanbanlearning_discussion_comment');
         $oldtable->addField(new \xmldb_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE));
         $oldtable->addField(new \xmldb_field('content', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL));
         $oldtable->addKey(new \xmldb_key('primary', XMLDB_KEY_PRIMARY, ['id']));
         $dbman->create_table($oldtable);
-        $commentid = $DB->insert_record('kanbanccead_discussion_comment', ['content' => 'Legacy comment']);
+        $commentid = $DB->insert_record('kanbanlearning_discussion_comment', ['content' => 'Legacy comment']);
 
         $this->run_upgrade_from_version(2026051502);
 
         $this->assertFalse($dbman->table_exists($oldtable));
         $this->assertTrue($dbman->table_exists($newtable));
-        $comment = $DB->get_record('kanbanccead_comment', ['id' => $commentid], '*', MUST_EXIST);
+        $comment = $DB->get_record('kanbanlearning_comment', ['id' => $commentid], '*', MUST_EXIST);
         $this->assertEquals('Legacy comment', $comment->content);
     }
 
@@ -157,15 +157,15 @@ final class upgrade_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback();
         $course = $this->getDataGenerator()->create_course();
-        $activity = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $course]);
+        $activity = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
         $boardmanager = new boardmanager($activity->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanccead_column', 'id', ['kanbanccead_board' => $boardid], IGNORE_MULTIPLE);
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
         $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Card without a reaction']);
         $dbman = $DB->get_manager();
-        $activitytable = new \xmldb_table('kanbanccead');
-        $cardtable = new \xmldb_table('kanbanccead_card');
+        $activitytable = new \xmldb_table('kanbanlearning');
+        $cardtable = new \xmldb_table('kanbanlearning_card');
         $activityfield = new \xmldb_field(
             'approval_seals',
             XMLDB_TYPE_INTEGER,
@@ -184,8 +184,8 @@ final class upgrade_test extends \advanced_testcase {
 
         $this->assertTrue($dbman->field_exists($activitytable, $activityfield));
         $this->assertTrue($dbman->field_exists($cardtable, $cardfield));
-        $this->assertEquals(0, (int)$DB->get_field('kanbanccead', 'approval_seals', ['id' => $activity->id]));
-        $card = $DB->get_record('kanbanccead_card', ['id' => $cardid], '*', MUST_EXIST);
+        $this->assertEquals(0, (int)$DB->get_field('kanbanlearning', 'approval_seals', ['id' => $activity->id]));
+        $card = $DB->get_record('kanbanlearning_card', ['id' => $cardid], '*', MUST_EXIST);
         $this->assertEmpty($card->approval_seal);
     }
 
@@ -196,13 +196,13 @@ final class upgrade_test extends \advanced_testcase {
      * @return void
      */
     private function run_upgrade_from_version(int $oldversion): void {
-        $installedversion = get_config('mod_kanbanccead', 'version');
-        set_config('version', $oldversion, 'mod_kanbanccead');
+        $installedversion = get_config('mod_kanbanlearning', 'version');
+        set_config('version', $oldversion, 'mod_kanbanlearning');
 
         try {
-            \xmldb_kanbanccead_upgrade($oldversion);
+            \xmldb_kanbanlearning_upgrade($oldversion);
         } finally {
-            set_config('version', $installedversion, 'mod_kanbanccead');
+            set_config('version', $installedversion, 'mod_kanbanlearning');
         }
     }
 }

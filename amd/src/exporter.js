@@ -15,13 +15,13 @@
 
 /**
  * Exporter for use in mustache template.
- * @module mod_kanbanccead/exporter
+ * @module mod_kanbanlearning/exporter
  * @copyright 2024 ISB Bayern
  * @author Stefan Hanauska stefan.hanauska@csg-in.de
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import capabilities from 'mod_kanbanccead/capabilities';
+import capabilities from 'mod_kanbanlearning/capabilities';
 
 /**
  * Exporter for use in mustache template.
@@ -129,7 +129,7 @@ export default class {
         // Match the snake_case names consumed by the Mustache templates.
         // eslint-disable-next-line dot-notation
         card['approval_seal_enabled'] = Number(state.common.approval_seals) > 0 && Boolean(card.completed) &&
-            String(card.kanbanccead_column) === String(state.common.approvalcompletioncolumn);
+            String(card.kanbanlearning_column) === String(state.common.approvalcompletioncolumn);
         // eslint-disable-next-line dot-notation
         card['can_manage_approval_seal'] = Number(state.common.approval_seals) > 0 &&
             Boolean(this.exportCapabilities(state).manageapprovalseals);
@@ -165,7 +165,7 @@ export default class {
     static exportDiscussion(state, cardId) {
         let d = [];
         state.discussions.forEach((c) => {
-            if (c.kanbanccead_card == cardId) {
+            if (c.kanbanlearning_card == cardId) {
                 d.push(c);
             }
         });
@@ -183,7 +183,7 @@ export default class {
         let d = [];
         // Only get history of this card.
         state.history.forEach((c) => {
-            if (c.kanbanccead_card == cardId) {
+            if (c.kanbanlearning_card == cardId) {
                 d.push(c);
             }
         });

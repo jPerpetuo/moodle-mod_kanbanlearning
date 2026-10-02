@@ -17,13 +17,13 @@
 /**
  * Helper class
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 use calendar_event;
 use stdClass;
@@ -31,7 +31,7 @@ use stdClass;
 /**
  * Helper class
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -142,21 +142,21 @@ class helper {
      * @param object $board The record from the board table
      * @param \context $context The context of the course module
      * @param \cm_info $cminfo The course module info
-     * @param int $type Type of permission to check: constants::MOD_KANBANCCEAD_EDIT(default) or constants::MOD_KANBANCCEAD_VIEW
+     * @param int $type Type of permission to check: constants::MOD_KANBANLEARNING_EDIT(default) or constants::MOD_KANBANLEARNING_VIEW
      */
     public static function check_permissions_for_user_or_group(
         object $board,
         \context $context,
         \cm_info $cminfo,
-        int $type = constants::MOD_KANBANCCEAD_EDIT
+        int $type = constants::MOD_KANBANLEARNING_EDIT
     ): void {
         global $DB, $USER;
         if (!empty($board->template)) {
-            require_capability('mod/kanbanccead:manageboard', $context);
+            require_capability('mod/kanbanlearning:manageboard', $context);
         }
         if (!(empty($board->userid) && empty($board->groupid))) {
             if (!empty($board->userid) && $board->userid != $USER->id) {
-                require_capability(constants::MOD_KANBANCCEAD_CAPABILITY[$type], $context);
+                require_capability(constants::MOD_KANBANLEARNING_CAPABILITY[$type], $context);
             }
             if (!empty($board->groupid)) {
                 $members = groups_get_members($board->groupid, 'u.id');
@@ -165,25 +165,25 @@ class helper {
                 }, $members);
                 $ismember = in_array($USER->id, $members);
                 $groupmode = groups_get_activity_groupmode($cminfo, $cminfo->course);
-                $kanbanccead = $DB->get_record('kanbanccead', ['id' => $cminfo->instance], 'boardmode', IGNORE_MISSING);
-                $isgroupboardmode = $kanbanccead &&
-                    (int)$kanbanccead->boardmode === constants::MOD_KANBANCCEAD_BOARDMODE_GROUP;
+                $kanbanlearning = $DB->get_record('kanbanlearning', ['id' => $cminfo->instance], 'boardmode', IGNORE_MISSING);
+                $isgroupboardmode = $kanbanlearning &&
+                    (int)$kanbanlearning->boardmode === constants::MOD_KANBANLEARNING_BOARDMODE_GROUP;
                 $requiresgroupboardaccess = !$ismember && (
                     $isgroupboardmode ||
                     $groupmode == SEPARATEGROUPS ||
-                    ($groupmode == VISIBLEGROUPS && $type == constants::MOD_KANBANCCEAD_EDIT)
+                    ($groupmode == VISIBLEGROUPS && $type == constants::MOD_KANBANLEARNING_EDIT)
                 );
-                $hasgroupboardaccess = has_capability(constants::MOD_KANBANCCEAD_CAPABILITY[$type], $context);
-                if ($type == constants::MOD_KANBANCCEAD_VIEW) {
+                $hasgroupboardaccess = has_capability(constants::MOD_KANBANLEARNING_CAPABILITY[$type], $context);
+                if ($type == constants::MOD_KANBANLEARNING_VIEW) {
                     $hasgroupboardaccess = $hasgroupboardaccess ||
-                        has_capability('mod/kanbanccead:editallboards', $context);
+                        has_capability('mod/kanbanlearning:editallboards', $context);
                 }
 
                 if ($requiresgroupboardaccess && !$hasgroupboardaccess) {
                     throw new \moodle_exception(
                         'boardgroupaccessdenied',
-                        'mod_kanbanccead',
-                        new \moodle_url('/mod/kanbanccead/view.php', ['id' => $cminfo->id])
+                        'mod_kanbanlearning',
+                        new \moodle_url('/mod/kanbanlearning/view.php', ['id' => $cminfo->id])
                     );
                 }
             }
@@ -199,14 +199,14 @@ class helper {
      */
     public static function get_attachments(int $contextid, int $cardid): array {
         $fs = get_file_storage();
-        $attachments = $fs->get_area_files($contextid, 'mod_kanbanccead', 'attachments', $cardid, 'filename', false);
+        $attachments = $fs->get_area_files($contextid, 'mod_kanbanlearning', 'attachments', $cardid, 'filename', false);
 
         $attachmentslist = [];
         foreach ($attachments as $attachment) {
             $attachmentslist[] = [
                 'url' => \moodle_url::make_pluginfile_url(
                     $contextid,
-                    'mod_kanbanccead',
+                    'mod_kanbanlearning',
                     'attachments',
                     $cardid,
                     $attachment->get_filepath(),
@@ -240,14 +240,14 @@ class helper {
     ) {
         global $OUTPUT, $USER;
         $message = new \core\message\message();
-        $message->component = 'mod_kanbanccead';
+        $message->component = 'mod_kanbanlearning';
         $message->name = $messagename;
         if (!empty($altmessagename)) {
             $messagename = $altmessagename;
         }
         $message->userfrom = \core_user::get_noreply_user();
         $message->fullmessageformat = FORMAT_MARKDOWN;
-        $templatename = 'mod_kanbanccead/message_' . $messagename;
+        $templatename = 'mod_kanbanlearning/message_' . $messagename;
 
         $message->notification = 1;
         $url = $cm->get_url();
@@ -259,10 +259,10 @@ class helper {
         foreach ($users as $user) {
             $user = \core_user::get_user($user);
             self::fix_current_language($user->lang);
-            $message->subject = get_string('message_' . $messagename . '_smallmessage', 'mod_kanbanccead', $data);
-            $message->fullmessage = get_string('message_' . $messagename . '_fullmessage', 'mod_kanbanccead', $data);
+            $message->subject = get_string('message_' . $messagename . '_smallmessage', 'mod_kanbanlearning', $data);
+            $message->fullmessage = get_string('message_' . $messagename . '_fullmessage', 'mod_kanbanlearning', $data);
             $message->smallmessage = $message->subject;
-            $message->contexturlname = get_string('toboard', 'mod_kanbanccead', $data);
+            $message->contexturlname = get_string('toboard', 'mod_kanbanlearning', $data);
             $message->fullmessagehtml = format_text($message->fullmessage, FORMAT_MARKDOWN);
             if (file_exists(__DIR__ . '/../templates/' . basename($templatename) . '.mustache')) {
                 $message->fullmessagehtml = $OUTPUT->render_from_template($templatename, $data);
@@ -279,11 +279,11 @@ class helper {
     /**
      * Adds or updates a calendar event.
      *
-     * @param stdClass $kanbanccead The kanbanccead record from the database
+     * @param stdClass $kanbanlearning The kanbanlearning record from the database
      * @param stdClass $card The card record from the database
      * @param array $users The usersthat should have the event in their calendar
      */
-    public static function add_or_update_calendar_event(stdClass $kanbanccead, stdClass $card, array $users) {
+    public static function add_or_update_calendar_event(stdClass $kanbanlearning, stdClass $card, array $users) {
         global $CFG, $DB;
 
         if (empty($card->duedate)) {
@@ -294,23 +294,23 @@ class helper {
         $data = new stdClass();
         $data->eventtype = 'due';
         $data->type = CALENDAR_EVENT_TYPE_ACTION;
-        $data->name = get_string('message_due_smallmessage', 'mod_kanbanccead', $card);
+        $data->name = get_string('message_due_smallmessage', 'mod_kanbanlearning', $card);
         $data->description = $card->description;
         $data->format = $card->descriptionformat;
         $data->groupid = 0;
         $data->userid = 0;
-        $data->modulename = 'kanbanccead';
-        $data->instance = $kanbanccead->id;
+        $data->modulename = 'kanbanlearning';
+        $data->instance = $kanbanlearning->id;
         $data->timestart = $card->duedate;
-        $data->visible = instance_is_visible('kanbanccead', $kanbanccead);
+        $data->visible = instance_is_visible('kanbanlearning', $kanbanlearning);
         $data->timeduration = 0;
         $data->uuid = $card->id;
-        $data->name = get_string('message_due_smallmessage', 'mod_kanbanccead', $card);
+        $data->name = get_string('message_due_smallmessage', 'mod_kanbanlearning', $card);
         $data->description = $card->description;
         $data->format = $card->descriptionformat;
         foreach ($users as $user) {
             $data->userid = $user;
-            $eventrecord = $DB->get_record('event', ['uuid' => $card->id, 'instance' => $kanbanccead->id, 'userid' => $user]);
+            $eventrecord = $DB->get_record('event', ['uuid' => $card->id, 'instance' => $kanbanlearning->id, 'userid' => $user]);
             if (!$eventrecord) {
                 calendar_event::create($data, false);
             } else {
@@ -324,21 +324,21 @@ class helper {
     /**
      * Removes a calendar event.
      *
-     * @param stdClass $kanbanccead The kanbanccead record from the database
+     * @param stdClass $kanbanlearning The kanbanlearning record from the database
      * @param stdClass $card The card record from the database
      * @param array $users The users that should have the event deleted from their calendar. If empty, all events of this
      *                      card are deleted.
      */
-    public static function remove_calendar_event(stdClass $kanbanccead, stdClass $card, array $users = []) {
+    public static function remove_calendar_event(stdClass $kanbanlearning, stdClass $card, array $users = []) {
         global $DB;
         if (!empty($users)) {
             [$sql, $params] = $DB->get_in_or_equal($users, SQL_PARAMS_NAMED);
             $sql = 'instance = :id AND uuid = :cardid AND userid ' . $sql;
             $params['cardid'] = $card->id;
-            $params['id'] = $kanbanccead->id;
+            $params['id'] = $kanbanlearning->id;
             $DB->delete_records_select('event', $sql, $params);
         } else {
-            $DB->delete_records('event', ['modulename' => 'kanbanccead', 'instance' => $kanbanccead->id]);
+            $DB->delete_records('event', ['modulename' => 'kanbanlearning', 'instance' => $kanbanlearning->id]);
         }
     }
 
@@ -349,8 +349,8 @@ class helper {
      * @return stdClass board record
      */
     public static function get_cached_board(int $id): stdClass {
-        $cachekey = self::get_cache_key(constants::MOD_KANBANCCEAD_BOARD, $id);
-        $cache = \cache::make('mod_kanbanccead', constants::MOD_KANBANCCEAD_TYPES[constants::MOD_KANBANCCEAD_BOARD]);
+        $cachekey = self::get_cache_key(constants::MOD_KANBANLEARNING_BOARD, $id);
+        $cache = \cache::make('mod_kanbanlearning', constants::MOD_KANBANLEARNING_TYPES[constants::MOD_KANBANLEARNING_BOARD]);
         $board = $cache->get($cachekey);
         if (!$board) {
             $board = self::update_cached_board($id);
@@ -368,9 +368,9 @@ class helper {
      */
     public static function update_cached_board(int $id): stdClass {
         global $DB;
-        $cachekey = self::get_cache_key(constants::MOD_KANBANCCEAD_BOARD, $id);
-        $cache = \cache::make('mod_kanbanccead', constants::MOD_KANBANCCEAD_TYPES[constants::MOD_KANBANCCEAD_BOARD]);
-        $board = $DB->get_record('kanbanccead_board', ['id' => $id]);
+        $cachekey = self::get_cache_key(constants::MOD_KANBANLEARNING_BOARD, $id);
+        $cache = \cache::make('mod_kanbanlearning', constants::MOD_KANBANLEARNING_TYPES[constants::MOD_KANBANLEARNING_BOARD]);
+        $board = $DB->get_record('kanbanlearning_board', ['id' => $id]);
         $cache->set($cachekey, serialize($board));
         return $board;
     }
@@ -383,8 +383,8 @@ class helper {
      */
     public static function invalidate_cached_board(int $id): void {
         global $DB;
-        $cachekey = self::get_cache_key(constants::MOD_KANBANCCEAD_BOARD, $id);
-        $cache = \cache::make('mod_kanbanccead', constants::MOD_KANBANCCEAD_TYPES[constants::MOD_KANBANCCEAD_BOARD]);
+        $cachekey = self::get_cache_key(constants::MOD_KANBANLEARNING_BOARD, $id);
+        $cache = \cache::make('mod_kanbanlearning', constants::MOD_KANBANLEARNING_TYPES[constants::MOD_KANBANLEARNING_BOARD]);
         $cache->delete($cachekey);
     }
 
@@ -392,7 +392,7 @@ class helper {
      * Get the latest timestamp from cache (if it is not present in the cache, get it from db).
      *
      * @param int $boardid Id of the board
-     * @param int $type One of constants::MOD_KANBANCCEAD_COLUMN, constants::MOD_KANBANCCEAD_CARD
+     * @param int $type One of constants::MOD_KANBANLEARNING_COLUMN, constants::MOD_KANBANLEARNING_CARD
      * @return int timestamp
      */
     public static function get_cached_timestamp(int $boardid, int $type): int {
@@ -409,7 +409,7 @@ class helper {
      * Update the timestamp in cache from db or from parameter.
      *
      * @param int $boardid Id of the board
-     * @param int $type One of constants::MOD_KANBANCCEAD_COLUMN, constants::MOD_KANBANCCEAD_CARD
+     * @param int $type One of constants::MOD_KANBANLEARNING_COLUMN, constants::MOD_KANBANLEARNING_CARD
      * @param int $timestamp Timestamp to set
      * @return int updated timestamp
      */
@@ -419,8 +419,8 @@ class helper {
         $cache = self::get_timestamp_cache();
         $timestamp = $DB->get_field_sql(
             'SELECT MAX(timemodified)
-             FROM {kanbanccead_' . constants::MOD_KANBANCCEAD_TYPES[$type] . '}
-             WHERE kanbanccead_board = :id',
+             FROM {kanbanlearning_' . constants::MOD_KANBANLEARNING_TYPES[$type] . '}
+             WHERE kanbanlearning_board = :id',
             ['id' => $boardid]
         );
         if (is_null($timestamp)) {
@@ -434,12 +434,12 @@ class helper {
     /**
      * Returns the cache key for getting a timestamp from cache
      *
-     * @param int $type One of constants::MOD_KANBANCCEAD_COLUMN, constants::MOD_KANBANCCEAD_CARD
+     * @param int $type One of constants::MOD_KANBANLEARNING_COLUMN, constants::MOD_KANBANLEARNING_CARD
      * @param int $boardid Id of the board
      * @return string
      */
     public static function get_cache_key(int $type, int $boardid): string {
-        return constants::MOD_KANBANCCEAD_TYPES[$type] . '-' . $boardid;
+        return constants::MOD_KANBANLEARNING_TYPES[$type] . '-' . $boardid;
     }
 
     /**
@@ -448,7 +448,7 @@ class helper {
      * @return cache_application
      */
     public static function get_timestamp_cache(): \cache_application {
-        return \cache::make('mod_kanbanccead', 'timestamp');
+        return \cache::make('mod_kanbanlearning', 'timestamp');
     }
 
     /**

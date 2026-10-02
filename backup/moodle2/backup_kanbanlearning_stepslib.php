@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup steps for mod_kanbanccead
+ * Backup steps for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_kanbanccead_activity_structure_step extends backup_activity_structure_step {
+class backup_kanbanlearning_activity_structure_step extends backup_activity_structure_step {
     /**
-     * Defines the XML structure for kanbanccead backups
+     * Defines the XML structure for kanbanlearning backups
      *
      * @return backup_nested_element
      */
     protected function define_structure(): backup_nested_element {
         $userinfo = $this->get_setting_value('userinfo');
 
-        $kanbanccead = new backup_nested_element(
-            'kanbanccead',
+        $kanbanlearning = new backup_nested_element(
+            'kanbanlearning',
             ['id'],
             [
                 'course',
@@ -53,36 +53,36 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
                 'repeat_newduedate',
             ]
         );
-        $kanbanccead->set_source_table('kanbanccead', ['id' => backup::VAR_ACTIVITYID]);
-        $kanbanccead->annotate_files('mod_kanbanccead', 'intro', null);
+        $kanbanlearning->set_source_table('kanbanlearning', ['id' => backup::VAR_ACTIVITYID]);
+        $kanbanlearning->annotate_files('mod_kanbanlearning', 'intro', null);
 
         $boards = new backup_nested_element('boards');
         $board = new backup_nested_element(
-            'kanbanccead_board',
+            'kanbanlearning_board',
             ['id'],
             [
                 'sequence', 'timecreated', 'timemodified', 'userid', 'groupid',
-                'template', 'kanbanccead_instance', 'options', 'locked',
+                'template', 'kanbanlearning_instance', 'options', 'locked',
             ]
         );
 
         $columns = new backup_nested_element('columns');
         $column = new backup_nested_element(
-            'kanbanccead_column',
+            'kanbanlearning_column',
             ['id'],
-            ['title', 'sequence', 'timecreated', 'timemodified', 'kanbanccead_board', 'options', 'locked']
+            ['title', 'sequence', 'timecreated', 'timemodified', 'kanbanlearning_board', 'options', 'locked']
         );
 
         $cards = new backup_nested_element('cards');
         $card = new backup_nested_element(
-            'kanbanccead_card',
+            'kanbanlearning_card',
             ['id'],
             [
                 'title',
                 'timecreated',
                 'timemodified',
-                'kanbanccead_board',
-                'kanbanccead_column',
+                'kanbanlearning_board',
+                'kanbanlearning_column',
                 'options',
                 'duedate',
                 'reminderdate',
@@ -97,32 +97,32 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
                 'approval_seal',
             ]
         );
-        $card->annotate_files('mod_kanbanccead', 'attachments', 'id');
-        $card->annotate_ids('kanbanccead_card_id', 'originalid');
+        $card->annotate_files('mod_kanbanlearning', 'attachments', 'id');
+        $card->annotate_ids('kanbanlearning_card_id', 'originalid');
 
         $assignees = new backup_nested_element('assignees');
         $assignee = new backup_nested_element(
-            'kanbanccead_assignee',
+            'kanbanlearning_assignee',
             ['id'],
-            ['kanbanccead_card', 'userid']
+            ['kanbanlearning_card', 'userid']
         );
 
         $discussions = new backup_nested_element('discussions');
         $discussion = new backup_nested_element(
-            'kanbanccead_discussion_comment',
+            'kanbanlearning_discussion_comment',
             ['id'],
-            ['kanbanccead_card', 'userid', 'timecreated', 'content']
+            ['kanbanlearning_card', 'userid', 'timecreated', 'content']
         );
 
         $historyitems = new backup_nested_element('historyitems');
         $historyitem = new backup_nested_element(
-            'kanbanccead_history',
+            'kanbanlearning_history',
             ['id'],
             [
                 'userid',
-                'kanbanccead_board',
-                'kanbanccead_column',
-                'kanbanccead_card',
+                'kanbanlearning_board',
+                'kanbanlearning_column',
+                'kanbanlearning_card',
                 'action',
                 'parameters',
                 'timestamp',
@@ -131,7 +131,7 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
             ]
         );
 
-        $kanbanccead->add_child($boards);
+        $kanbanlearning->add_child($boards);
         $boards->add_child($board);
         $board->add_child($columns);
         $columns->add_child($column);
@@ -145,42 +145,42 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
         $historyitems->add_child($historyitem);
 
         if ($userinfo) {
-            $board->set_source_table('kanbanccead_board', ['kanbanccead_instance' => backup::VAR_PARENTID]);
+            $board->set_source_table('kanbanlearning_board', ['kanbanlearning_instance' => backup::VAR_PARENTID]);
             $board->annotate_ids('userid', 'userid');
             $board->annotate_ids('groupid', 'groupid');
-            $assignee->set_source_table('kanbanccead_assignee', ['kanbanccead_card' => backup::VAR_PARENTID]);
+            $assignee->set_source_table('kanbanlearning_assignee', ['kanbanlearning_card' => backup::VAR_PARENTID]);
             $assignee->annotate_ids('userid', 'userid');
-            $assignee->annotate_ids('kanbanccead_card_id', 'kanbanccead_card');
+            $assignee->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
             $card->annotate_ids('userid', 'createdby');
-            $discussion->set_source_table('kanbanccead_comment', ['kanbanccead_card' => backup::VAR_PARENTID]);
+            $discussion->set_source_table('kanbanlearning_comment', ['kanbanlearning_card' => backup::VAR_PARENTID]);
             $discussion->annotate_ids('userid', 'userid');
-            $discussion->annotate_ids('kanbanccead_card_id', 'kanbanccead_card');
-            $historyitem->set_source_table('kanbanccead_history', ['kanbanccead_board' => backup::VAR_PARENTID]);
+            $discussion->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
+            $historyitem->set_source_table('kanbanlearning_history', ['kanbanlearning_board' => backup::VAR_PARENTID]);
             $historyitem->annotate_ids('userid', 'userid');
             $historyitem->annotate_ids('userid', 'affected_userid');
-            $historyitem->annotate_ids('kanbanccead_card_id', 'kanbanccead_card');
-            $historyitem->annotate_ids('kanbanccead_column_id', 'kanbanccead_column');
-            $historyitem->annotate_ids('kanbanccead_board_id', 'kanbanccead_board');
+            $historyitem->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
+            $historyitem->annotate_ids('kanbanlearning_column_id', 'kanbanlearning_column');
+            $historyitem->annotate_ids('kanbanlearning_board_id', 'kanbanlearning_board');
         } else {
             $structureboardid = $this->get_structure_source_board_id();
             // A source is mandatory even when there is no existing board to copy.
-            $board->set_source_table('kanbanccead_board', ['id' => ['sqlparam' => $structureboardid]]);
+            $board->set_source_table('kanbanlearning_board', ['id' => ['sqlparam' => $structureboardid]]);
         }
-        $column->set_source_table('kanbanccead_column', ['kanbanccead_board' => backup::VAR_PARENTID]);
+        $column->set_source_table('kanbanlearning_column', ['kanbanlearning_board' => backup::VAR_PARENTID]);
 
         if ($userinfo) {
-            $card->set_source_table('kanbanccead_card', ['kanbanccead_column' => backup::VAR_PARENTID]);
+            $card->set_source_table('kanbanlearning_card', ['kanbanlearning_column' => backup::VAR_PARENTID]);
         } else {
             // Keep the XML element valid without exporting card content.
-            $card->set_source_table('kanbanccead_card', ['id' => ['sqlparam' => 0]]);
+            $card->set_source_table('kanbanlearning_card', ['id' => ['sqlparam' => 0]]);
         }
 
-        $board->annotate_ids('kanbanccead_id', 'kanbanccead_instance');
-        $column->annotate_ids('kanbanccead_board_id', 'kanbanccead_board');
-        $card->annotate_ids('kanbanccead_board_id', 'kanbanccead_board');
-        $card->annotate_ids('kanbanccead_column_id', 'kanbanccead_column');
+        $board->annotate_ids('kanbanlearning_id', 'kanbanlearning_instance');
+        $column->annotate_ids('kanbanlearning_board_id', 'kanbanlearning_board');
+        $card->annotate_ids('kanbanlearning_board_id', 'kanbanlearning_board');
+        $card->annotate_ids('kanbanlearning_column_id', 'kanbanlearning_column');
 
-        return $this->prepare_activity_structure($kanbanccead);
+        return $this->prepare_activity_structure($kanbanlearning);
     }
 
     /**
@@ -191,18 +191,18 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
     private function get_structure_source_board_id(): int {
         global $DB;
 
-        $kanbancceadid = $this->task->get_activityid();
-        $kanbanccead = $DB->get_record('kanbanccead', ['id' => $kanbancceadid], 'boardmode, boardgroupid', IGNORE_MISSING);
-        if (!$kanbanccead) {
+        $kanbanlearningid = $this->task->get_activityid();
+        $kanbanlearning = $DB->get_record('kanbanlearning', ['id' => $kanbanlearningid], 'boardmode, boardgroupid', IGNORE_MISSING);
+        if (!$kanbanlearning) {
             return 0;
         }
 
-        if ((int)$kanbanccead->boardmode === \mod_kanbanccead\constants::MOD_KANBANCCEAD_BOARDMODE_GROUP) {
-            if ($kanbanccead->boardgroupid) {
-                $groupboardid = $DB->get_field('kanbanccead_board', 'id', [
-                    'kanbanccead_instance' => $kanbancceadid,
+        if ((int)$kanbanlearning->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
+            if ($kanbanlearning->boardgroupid) {
+                $groupboardid = $DB->get_field('kanbanlearning_board', 'id', [
+                    'kanbanlearning_instance' => $kanbanlearningid,
                     'userid' => 0,
-                    'groupid' => $kanbanccead->boardgroupid,
+                    'groupid' => $kanbanlearning->boardgroupid,
                     'template' => 0,
                 ]);
                 if ($groupboardid) {
@@ -212,19 +212,19 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
 
             $groupboardid = $DB->get_field_sql(
                 'SELECT MIN(id)
-                   FROM {kanbanccead_board}
-                  WHERE kanbanccead_instance = :instance
+                   FROM {kanbanlearning_board}
+                  WHERE kanbanlearning_instance = :instance
                     AND userid = :userid
                     AND groupid > :groupid
                     AND template = :template',
-                ['instance' => $kanbancceadid, 'userid' => 0, 'groupid' => 0, 'template' => 0]
+                ['instance' => $kanbanlearningid, 'userid' => 0, 'groupid' => 0, 'template' => 0]
             );
             if ($groupboardid) {
                 return (int)$groupboardid;
             }
         } else {
-            $courseboardid = $DB->get_field('kanbanccead_board', 'id', [
-                'kanbanccead_instance' => $kanbancceadid,
+            $courseboardid = $DB->get_field('kanbanlearning_board', 'id', [
+                'kanbanlearning_instance' => $kanbanlearningid,
                 'userid' => 0,
                 'groupid' => 0,
                 'template' => 0,
@@ -236,10 +236,10 @@ class backup_kanbanccead_activity_structure_step extends backup_activity_structu
 
         return (int)$DB->get_field_sql(
             'SELECT id
-               FROM {kanbanccead_board}
-              WHERE kanbanccead_instance = :instance AND template = :template
+               FROM {kanbanlearning_board}
+              WHERE kanbanlearning_instance = :instance AND template = :template
               ORDER BY timemodified DESC',
-            ['instance' => $kanbancceadid, 'template' => 1],
+            ['instance' => $kanbanlearningid, 'template' => 1],
             IGNORE_MISSING
         );
     }

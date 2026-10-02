@@ -1,6 +1,6 @@
 # Documentation
 
-This directory documents the source behaviour and maintenance model of Kanban CCEAD. Read the [development status](../README.md#development-status-and-declared-compatibility) before installation; source descriptions do not establish successful runtime validation.
+This directory documents the source behaviour and maintenance model of Kanban for Learning. Read the [development status](../README.md#development-status-and-declared-compatibility) before installation; source descriptions do not establish successful runtime validation.
 
 ## Guides
 
@@ -18,9 +18,9 @@ This directory documents the source behaviour and maintenance model of Kanban CC
 
 ## Scope and terminology
 
-* **Activity instance**: a record in `{kanbanccead}` linked to a Moodle course module.
+* **Activity instance**: a record in `{kanbanlearning}` linked to a Moodle course module.
 * **Board**: a shared, group, personal, or template workspace for an activity.
 * **Structure**: board settings and columns, including column titles, order, colours, and locks.
 * **User data**: cards, attachments, descriptions, assignees, discussions, history, and user/group-specific board state.
 
-These documents describe the current `mod_kanbanccead` component. They are maintained alongside the code and should be updated whenever functionality, data handling, or supported Moodle versions change.
+These documents describe the current `mod_kanbanlearning` component. They are maintained alongside the code and should be updated whenever functionality, data handling, or supported Moodle versions change.

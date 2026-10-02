@@ -14,24 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead\task;
+namespace mod_kanbanlearning\task;
 
-use mod_kanbanccead\boardmanager;
+use mod_kanbanlearning\boardmanager;
 
 /**
- * Unit test for mod_kanbanccead
+ * Unit test for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      \mod_kanbanccead\task\reminder
+ * @covers      \mod_kanbanlearning\task\reminder
  */
 final class reminder_test extends \advanced_testcase {
     /** @var \stdClass The course used for testing */
     private $course;
-    /** @var \stdClass The kanbanccead used for testing */
-    private $kanbanccead;
+    /** @var \stdClass The kanbanlearning used for testing */
+    private $kanbanlearning;
     /** @var array The users used for testing */
     private $users;
 
@@ -44,7 +44,7 @@ final class reminder_test extends \advanced_testcase {
         parent::setUp();
 
         $this->course = $this->getDataGenerator()->create_course();
-        $this->kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $this->course]);
+        $this->kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $this->course]);
 
         for ($i = 0; $i < 3; $i++) {
             $this->users[$i] = $this->getDataGenerator()->create_user(
@@ -72,13 +72,13 @@ final class reminder_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
         $columnids = explode(',', $boardmanager->get_board()->sequence);
         $boardmanager->add_card($columnids[0], 0, ['title' => 'Testcard', 'duedate' => time() - 10000]);
 
-        $reminder = new \mod_kanbanccead\task\reminder();
+        $reminder = new \mod_kanbanlearning\task\reminder();
         $reminder->execute();
 
         $noreply = \core_user::get_noreply_user();

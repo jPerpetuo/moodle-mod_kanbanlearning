@@ -2,7 +2,7 @@
 
 Use the repository issue forms for reproducible defects, feature proposals, and usage questions. Check the [documentation index](docs/README.md) before opening an issue.
 
-Report Kanban CCEAD issues through the [dedicated GitHub issue tracker](https://github.com/jPerpetuo/moodle-mod_kanbanccead/issues). Do not direct fork-specific support requests to the upstream maintainer.
+Report Kanban for Learning issues through the [dedicated GitHub issue tracker](https://github.com/jPerpetuo/moodle-mod_kanbanlearning/issues). Do not direct support requests for this independently maintained plugin to the upstream maintainer.
 
 Support requests should include the Moodle version, plugin release, PHP version, database engine, and the relevant activity configuration. Do not include passwords, session keys, student data, or production logs containing personal information.
 

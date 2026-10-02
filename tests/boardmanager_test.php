@@ -14,24 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead;
+namespace mod_kanbanlearning;
 
 use context_course;
 
 /**
- * Unit test for mod_kanbanccead
+ * Unit test for mod_kanbanlearning
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      \mod_kanbanccead\boardmanager
+ * @covers      \mod_kanbanlearning\boardmanager
  */
 final class boardmanager_test extends \advanced_testcase {
     /** @var \stdClass The course used for testing */
     private $course;
-    /** @var \stdClass The kanbanccead used for testing */
-    private $kanbanccead;
+    /** @var \stdClass The kanbanlearning used for testing */
+    private $kanbanlearning;
     /** @var array The users used for testing */
     private $users;
 
@@ -45,7 +45,7 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
-        $this->kanbanccead = $this->getDataGenerator()->create_module('kanbanccead', ['course' => $this->course]);
+        $this->kanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $this->course]);
 
         for ($i = 0; $i < 3; $i++) {
             $this->users[$i] = $this->getDataGenerator()->create_user(
@@ -73,17 +73,17 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
-        $boards = $DB->get_records('kanbanccead_board', ['kanbanccead_instance' => $this->kanbanccead->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->kanbanlearning->id]);
         $this->assertCount(1, $boards);
         $boardid = $boardmanager->create_board();
         $this->assertNotEquals(false, $boardid);
-        $boards = $DB->get_records('kanbanccead_board', ['kanbanccead_instance' => $this->kanbanccead->id]);
+        $boards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->kanbanlearning->id]);
         $this->assertCount(2, $boards);
         // Board should consist of three columns without any cards as there is no template yet.
-        $columns = $DB->get_records('kanbanccead_column', ['kanbanccead_board' => $boardid]);
+        $columns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]);
         $this->assertCount(3, $columns);
-        $cards = $DB->get_records('kanbanccead_card', ['kanbanccead_board' => $boardid]);
+        $cards = $DB->get_records('kanbanlearning_card', ['kanbanlearning_board' => $boardid]);
         $this->assertCount(0, $cards);
     }
 
@@ -97,21 +97,21 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
-        $boardcount = $DB->count_records('kanbanccead_board', ['kanbanccead_instance' => $this->kanbanccead->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardcount = $DB->count_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->kanbanlearning->id]);
         $boardid = $boardmanager->create_board();
         $this->assertEquals(
             $boardcount + 1,
-            $DB->count_records('kanbanccead_board', ['kanbanccead_instance' => $this->kanbanccead->id])
+            $DB->count_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->kanbanlearning->id])
         );
-        $this->assertEquals(3, $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $boardid]));
+        $this->assertEquals(3, $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]));
 
         $boardmanager->delete_board($boardid);
         $this->assertEquals(
             $boardcount,
-            $DB->count_records('kanbanccead_board', ['kanbanccead_instance' => $this->kanbanccead->id])
+            $DB->count_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->kanbanlearning->id])
         );
-        $this->assertEquals(0, $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $boardid]));
+        $this->assertEquals(0, $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]));
     }
 
     /**
@@ -124,15 +124,15 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanccead_column', 'id', ['kanbanccead_board' => $boardid], IGNORE_MULTIPLE);
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
         $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
         $card = $boardmanager->get_card($cardid);
         $this->assertEquals('Testcard', $card->title);
-        $this->assertEquals($boardid, $card->kanbanccead_board);
-        $this->assertEquals($columnid, $card->kanbanccead_column);
+        $this->assertEquals($boardid, $card->kanbanlearning_board);
+        $this->assertEquals($columnid, $card->kanbanlearning_column);
 
         $card2id = $boardmanager->add_card($columnid, $cardid, ['title' => 'Testcard2']);
         $column = $boardmanager->get_column($columnid);
@@ -148,18 +148,18 @@ final class boardmanager_test extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $completioncolumnid = end($columnids);
-        $DB->set_field('kanbanccead_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
+        $DB->set_field('kanbanlearning_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
 
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Completed card']);
         $card = $boardmanager->get_card($cardid);
 
         $this->assertEquals(1, (int) $card->completed);
-        $this->assertEquals($completioncolumnid, (int) $card->kanbanccead_column);
+        $this->assertEquals($completioncolumnid, (int) $card->kanbanlearning_column);
     }
 
     /**
@@ -168,37 +168,37 @@ final class boardmanager_test extends \advanced_testcase {
      */
     public function test_approval_seal_lifecycle(): void {
         global $DB;
-        $DB->set_field('kanbanccead', 'approval_seals', 1, ['id' => $this->kanbanccead->id]);
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $completioncolumnid = end($columnids);
-        $DB->set_field('kanbanccead_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
+        $DB->set_field('kanbanlearning_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
 
         $boardmanager->set_approval_seal($cardid, 'approved');
-        $this->assertSame('approved', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('approved', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
         $boardmanager->update_card($cardid, ['repeat_interval' => 2]);
-        $this->assertSame('approved', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('approved', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
         $copyid = $boardmanager->duplicate_card($cardid);
-        $this->assertSame('', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $copyid]));
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $copyid]));
         $boardmanager->update_card($cardid, ['description' => 'The work changed']);
-        $this->assertSame('', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
 
         // Keep every supported reaction key covered so accidental renames are caught.
         foreach (['approved', 'clap', 'highlight', 'reflect'] as $seal) {
             $boardmanager->set_approval_seal($cardid, $seal);
-            $this->assertSame($seal, $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+            $this->assertSame($seal, $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
         }
 
         // An empty value removes the reaction.
         $boardmanager->set_approval_seal($cardid, '');
-        $this->assertSame('', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
 
         $boardmanager->set_approval_seal($cardid, 'highlight');
         $boardmanager->set_card_complete($cardid, 0);
-        $this->assertSame('', $DB->get_field('kanbanccead_card', 'approval_seal', ['id' => $cardid]));
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
     }
 
     /**
@@ -208,13 +208,13 @@ final class boardmanager_test extends \advanced_testcase {
     public function test_approval_seal_rejects_unknown_key(): void {
         global $DB;
 
-        $DB->set_field('kanbanccead', 'approval_seals', 1, ['id' => $this->kanbanccead->id]);
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $completioncolumnid = end($columnids);
-        $DB->set_field('kanbanccead_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
+        $DB->set_field('kanbanlearning_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
 
         $this->expectException(\invalid_parameter_exception::class);
@@ -228,12 +228,12 @@ final class boardmanager_test extends \advanced_testcase {
     public function test_approval_seal_requires_enabled_activity(): void {
         global $DB;
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $completioncolumnid = end($columnids);
-        $DB->set_field('kanbanccead_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
+        $DB->set_field('kanbanlearning_column', 'options', json_encode(['autoclose' => true]), ['id' => $completioncolumnid]);
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
 
         $this->expectException(\moodle_exception::class);
@@ -247,14 +247,14 @@ final class boardmanager_test extends \advanced_testcase {
     public function test_approval_seal_requires_completion_column(): void {
         global $DB;
 
-        $DB->set_field('kanbanccead', 'approval_seals', 1, ['id' => $this->kanbanccead->id]);
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $normalcolumnid = reset($columnids);
         $cardid = $boardmanager->add_card($normalcolumnid, 0, ['title' => 'Work in progress']);
-        $DB->set_field('kanbanccead_card', 'completed', 1, ['id' => $cardid]);
+        $DB->set_field('kanbanlearning_card', 'completed', 1, ['id' => $cardid]);
 
         $this->expectException(\moodle_exception::class);
         $boardmanager->set_approval_seal($cardid, 'approved');
@@ -269,14 +269,14 @@ final class boardmanager_test extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanccead_column', 'id', ['kanbanccead_board' => $boardid], IGNORE_MULTIPLE);
+        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
         $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Colored card']);
 
         $boardmanager->update_card($cardid, ['currentcolor' => '#F6EEB9']);
-        $card = $DB->get_record('kanbanccead_card', ['id' => $cardid], '*', MUST_EXIST);
+        $card = $DB->get_record('kanbanlearning_card', ['id' => $cardid], '*', MUST_EXIST);
         $options = json_decode($card->options, true);
         $this->assertEquals('#F6EEB9', $options['background']);
     }
@@ -290,10 +290,10 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         // Add one card to each column (three columns expected).
         $cards = [];
         foreach ($columnids as $columnid) {
@@ -302,7 +302,7 @@ final class boardmanager_test extends \advanced_testcase {
         }
         $boardmanager->move_card($cards[0]->id, 0, $columnids[2]);
         $cards[0] = $boardmanager->get_card($cards[0]->id);
-        $this->assertEquals($columnids[2], $cards[0]->kanbanccead_column);
+        $this->assertEquals($columnids[2], $cards[0]->kanbanlearning_column);
 
         $column = $boardmanager->get_column($columnids[0]);
         $this->assertEquals('', $column->sequence);
@@ -312,14 +312,14 @@ final class boardmanager_test extends \advanced_testcase {
 
         $boardmanager->move_card($cards[0]->id, $cards[2]->id);
         $cards[0] = $boardmanager->get_card($cards[0]->id);
-        $this->assertEquals($columnids[2], $cards[0]->kanbanccead_column);
+        $this->assertEquals($columnids[2], $cards[0]->kanbanlearning_column);
 
         $column = $boardmanager->get_column($columnids[2]);
         $this->assertEquals($column->sequence, join(',', [$cards[2]->id, $cards[0]->id]));
 
         $boardmanager->move_card($cards[1]->id, $cards[2]->id, $columnids[2]);
         $cards[1] = $boardmanager->get_card($cards[1]->id);
-        $this->assertEquals($columnids[2], $cards[1]->kanbanccead_column);
+        $this->assertEquals($columnids[2], $cards[1]->kanbanlearning_column);
 
         $column = $boardmanager->get_column($columnids[2]);
         $this->assertEquals($column->sequence, join(',', [$cards[2]->id, $cards[1]->id, $cards[0]->id]));
@@ -335,14 +335,14 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
 
         $cardid = $boardmanager->add_card($columnids[0], 0, ['title' => 'Testcard']);
         $boardmanager->delete_card($cardid);
-        $this->assertEquals(0, $DB->count_records('kanbanccead_card', ['id' => $cardid]));
+        $this->assertEquals(0, $DB->count_records('kanbanlearning_card', ['id' => $cardid]));
 
         $column = $boardmanager->get_column($columnids[0]);
         $this->assertEquals('', $column->sequence);
@@ -360,23 +360,23 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $columnid = $boardmanager->add_column(0, ['title' => 'Testcolumn']);
         $columnids = array_merge([$columnid], $columnids);
         $boardmanager->load_board($boardid);
         $this->assertEquals(join(',', $columnids), $boardmanager->get_board()->sequence);
 
-        $this->assertEquals(1, $DB->count_records('kanbanccead_column', ['id' => $columnid]));
+        $this->assertEquals(1, $DB->count_records('kanbanlearning_column', ['id' => $columnid]));
 
         $columnid = $boardmanager->add_column($columnids[3], ['title' => 'Testcolumn 2']);
         $columnids = array_merge($columnids, [$columnid]);
         $boardmanager->load_board($boardid);
         $this->assertEquals(join(',', $columnids), $boardmanager->get_board()->sequence);
 
-        $this->assertEquals(1, $DB->count_records('kanbanccead_column', ['id' => $columnid]));
+        $this->assertEquals(1, $DB->count_records('kanbanlearning_column', ['id' => $columnid]));
     }
 
     /**
@@ -389,10 +389,10 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
         $boardmanager->move_column($columnids[2], 0);
         $boardmanager->load_board($boardid);
         $this->assertEquals(join(',', [$columnids[2], $columnids[0], $columnids[1]]), $boardmanager->get_board()->sequence);
@@ -412,14 +412,14 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columncount = $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $boardid]);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columncount = $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
 
         $boardmanager->delete_column($columnids[0]);
-        $this->assertEquals($columncount - 1, $DB->count_records('kanbanccead_column', ['kanbanccead_board' => $boardid]));
+        $this->assertEquals($columncount - 1, $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]));
         array_shift($columnids);
         $this->assertEquals(join(',', $columnids), $boardmanager->get_board()->sequence);
     }
@@ -434,10 +434,10 @@ final class boardmanager_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $boardmanager = new boardmanager($this->kanbanccead->cmid);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanccead_column', 'id', 'kanbanccead_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
 
         // Teacher user.
         $this->setUser($this->users[2]);
@@ -459,12 +459,12 @@ final class boardmanager_test extends \advanced_testcase {
         // Teacher user should be able to edit every card.
         $this->assertEquals(true, $boardmanager->can_user_manage_specific_card($studentcard, $this->users[2]->id));
 
-        // Test explicitly the mod_kanbanccead/manageallcards capability.
+        // Test explicitly the mod_kanbanlearning/manageallcards capability.
         $context = context_course::instance($boardmanager->get_cminfo()->course);
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         // Current student user should not be able to edit teacher card.
         $this->assertEquals(false, $boardmanager->can_user_manage_specific_card($teachercard));
-        assign_capability('mod/kanbanccead:manageallcards', CAP_ALLOW, $studentrole->id, $context);
+        assign_capability('mod/kanbanlearning:manageallcards', CAP_ALLOW, $studentrole->id, $context);
         // Current student user now should be able to also edit teacher card.
         $this->assertEquals(true, $boardmanager->can_user_manage_specific_card($teachercard));
     }

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_kanbanccead/actionmenucard
+    @template mod_kanbanlearning/actionmenucard
 
     Template for the action menu for cards.
 
@@ -24,60 +24,60 @@
         "id": 4
     }
 }}
-<div class="mod_kanbanccead_action_menu">
-    <button class="mod_kanbanccead_action_menu_trigger mod_kanbanccead_action_menu_trigger_default btn btn-icon icon-no-margin p-0 dropdown-toggle">{{#pix}} i/menu, core, {{#str}} editcard, mod_kanbanccead {{/str}} {{/pix}}</button>
+<div class="mod_kanbanlearning_action_menu">
+    <button class="mod_kanbanlearning_action_menu_trigger mod_kanbanlearning_action_menu_trigger_default btn btn-icon icon-no-margin p-0 dropdown-toggle">{{#pix}} i/menu, core, {{#str}} editcard, mod_kanbanlearning {{/str}} {{/pix}}</button>
     <ul class="dropdown-menu dropdown-menu-right">
-        <li class="nav-item mod_kanbanccead_assign_self">
-            <a class="dropdown-item" data-action="assign_self" data-id="{{id}}">{{#pix}} t/user, core, {{#str}} assignme, mod_kanbanccead{{/str}} {{/pix}}{{#str}} assignme, mod_kanbanccead{{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_assign_self">
+            <a class="dropdown-item" data-action="assign_self" data-id="{{id}}">{{#pix}} t/user, core, {{#str}} assignme, mod_kanbanlearning{{/str}} {{/pix}}{{#str}} assignme, mod_kanbanlearning{{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_unassign_self">
-            <a class="dropdown-item" data-action="unassign_self" data-id="{{id}}">{{#pix}} t/removecontact, core, {{#str}} unassignme, mod_kanbanccead{{/str}} {{/pix}}{{#str}} unassignme, mod_kanbanccead{{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_unassign_self">
+            <a class="dropdown-item" data-action="unassign_self" data-id="{{id}}">{{#pix}} t/removecontact, core, {{#str}} unassignme, mod_kanbanlearning{{/str}} {{/pix}}{{#str}} unassignme, mod_kanbanlearning{{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_move_card">
+        <li class="nav-item mod_kanbanlearning_move_card">
             <a class="dropdown-item" data-action="move_card" data-id="{{id}}">{{#pix}} i/move_2d, core, {{#str}} move, core {{/str}} {{/pix}}{{#str}} move, core {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_duplicate_card">
+        <li class="nav-item mod_kanbanlearning_duplicate_card">
             <a class="dropdown-item" data-action="duplicate_card" data-id="{{id}}">{{#pix}} e/copy, core, {{#str}} duplicate, core {{/str}} {{/pix}}{{#str}} duplicate, core {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_complete_card">
+        <li class="nav-item mod_kanbanlearning_complete_card">
             <a class="dropdown-item" data-action="complete_card" data-id="{{id}}">{{#pix}} t/check, core, {{#str}} complete, core {{/str}} {{/pix}}{{#str}} complete, core {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_uncomplete_card">
-            <a class="dropdown-item" data-action="uncomplete_card" data-id="{{id}}">{{#pix}} t/reload, core, {{#str}} uncomplete, mod_kanbanccead {{/str}} {{/pix}}{{#str}} uncomplete, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_uncomplete_card">
+            <a class="dropdown-item" data-action="uncomplete_card" data-id="{{id}}">{{#pix}} t/reload, core, {{#str}} uncomplete, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} uncomplete, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_start_discussion">
-            <a class="dropdown-item" data-action="show_discussion" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_discussion_modal_{{id}}" data-target="#mod_kanbanccead_discussion_modal_{{id}}">{{#pix}} t/messages, core, {{#str}} startdiscussion, mod_kanbanccead {{/str}} {{/pix}}{{#str}} startdiscussion, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_start_discussion">
+            <a class="dropdown-item" data-action="show_discussion" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_discussion_modal_{{id}}" data-target="#mod_kanbanlearning_discussion_modal_{{id}}">{{#pix}} t/messages, core, {{#str}} startdiscussion, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} startdiscussion, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_open_discussion">
-            <a class="dropdown-item" data-action="show_discussion" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_discussion_modal_{{id}}" data-target="#mod_kanbanccead_discussion_modal_{{id}}">{{#pix}} t/messages, core, {{#str}} showdiscussion, mod_kanbanccead {{/str}} {{/pix}}{{#str}} showdiscussion, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_open_discussion">
+            <a class="dropdown-item" data-action="show_discussion" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_discussion_modal_{{id}}" data-target="#mod_kanbanlearning_discussion_modal_{{id}}">{{#pix}} t/messages, core, {{#str}} showdiscussion, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} showdiscussion, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_card_edit_details">
-            <a class="dropdown-item" data-action="edit_details" data-id="{{id}}">{{#pix}} t/edit, core, {{#str}} editdetails, mod_kanbanccead {{/str}} {{/pix}}{{#str}} editdetails, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_card_edit_details">
+            <a class="dropdown-item" data-action="edit_details" data-id="{{id}}">{{#pix}} t/edit, core, {{#str}} editdetails, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} editdetails, mod_kanbanlearning {{/str}}</a>
         </li>
         {{#can_manage_approval_seal}}
-        <li class="nav-item mod_kanbanccead_approval_seal_menu" {{^approval_seal_enabled}}hidden{{/approval_seal_enabled}}>
+        <li class="nav-item mod_kanbanlearning_approval_seal_menu" {{^approval_seal_enabled}}hidden{{/approval_seal_enabled}}>
             <a class="dropdown-item" href="#" data-action="toggle_approval_seal" data-id="{{id}}" data-current-seal="{{approval_seal}}"
-                aria-expanded="false" aria-controls="mod_kanbanccead_approval_seal_picker_{{id}}"
-                data-apply-label="{{#str}} applyseal, mod_kanbanccead {{/str}}" data-change-label="{{#str}} changeseal, mod_kanbanccead {{/str}}">
-                {{#pix}} reaction, mod_kanbanccead, {{#str}} applyseal, mod_kanbanccead {{/str}} {{/pix}}
-                <span class="mod_kanbanccead_approval_seal_action_label">{{#approval_seal}}{{#str}} changeseal, mod_kanbanccead {{/str}}{{/approval_seal}}{{^approval_seal}}{{#str}} applyseal, mod_kanbanccead {{/str}}{{/approval_seal}}</span>
+                aria-expanded="false" aria-controls="mod_kanbanlearning_approval_seal_picker_{{id}}"
+                data-apply-label="{{#str}} applyseal, mod_kanbanlearning {{/str}}" data-change-label="{{#str}} changeseal, mod_kanbanlearning {{/str}}">
+                {{#pix}} reaction, mod_kanbanlearning, {{#str}} applyseal, mod_kanbanlearning {{/str}} {{/pix}}
+                <span class="mod_kanbanlearning_approval_seal_action_label">{{#approval_seal}}{{#str}} changeseal, mod_kanbanlearning {{/str}}{{/approval_seal}}{{^approval_seal}}{{#str}} applyseal, mod_kanbanlearning {{/str}}{{/approval_seal}}</span>
             </a>
-            <div id="mod_kanbanccead_approval_seal_picker_{{id}}" class="mod_kanbanccead_approval_seal_picker" aria-hidden="true" inert>
-                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="approved" title="{{#str}} sealapproved, mod_kanbanccead {{/str}}" aria-label="{{#str}} sealapproved, mod_kanbanccead {{/str}}">✅</button>
-                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="clap" title="{{#str}} sealclap, mod_kanbanccead {{/str}}" aria-label="{{#str}} sealclap, mod_kanbanccead {{/str}}">👏</button>
-                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="highlight" title="{{#str}} sealhighlight, mod_kanbanccead {{/str}}" aria-label="{{#str}} sealhighlight, mod_kanbanccead {{/str}}">⭐</button>
-                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="reflect" title="{{#str}} sealreflect, mod_kanbanccead {{/str}}" aria-label="{{#str}} sealreflect, mod_kanbanccead {{/str}}">🤔</button>
-                <button type="button" tabindex="-1" class="mod_kanbanccead_approval_seal_remove" data-action="remove_approval_seal" data-id="{{id}}" title="{{#str}} removeseal, mod_kanbanccead {{/str}}" aria-label="{{#str}} removeseal, mod_kanbanccead {{/str}}" {{^approval_seal}}hidden{{/approval_seal}}>×</button>
+            <div id="mod_kanbanlearning_approval_seal_picker_{{id}}" class="mod_kanbanlearning_approval_seal_picker" aria-hidden="true" inert>
+                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="approved" title="{{#str}} sealapproved, mod_kanbanlearning {{/str}}" aria-label="{{#str}} sealapproved, mod_kanbanlearning {{/str}}">✅</button>
+                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="clap" title="{{#str}} sealclap, mod_kanbanlearning {{/str}}" aria-label="{{#str}} sealclap, mod_kanbanlearning {{/str}}">👏</button>
+                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="highlight" title="{{#str}} sealhighlight, mod_kanbanlearning {{/str}}" aria-label="{{#str}} sealhighlight, mod_kanbanlearning {{/str}}">⭐</button>
+                <button type="button" tabindex="-1" data-action="approval_seal" data-id="{{id}}" data-seal="reflect" title="{{#str}} sealreflect, mod_kanbanlearning {{/str}}" aria-label="{{#str}} sealreflect, mod_kanbanlearning {{/str}}">🤔</button>
+                <button type="button" tabindex="-1" class="mod_kanbanlearning_approval_seal_remove" data-action="remove_approval_seal" data-id="{{id}}" title="{{#str}} removeseal, mod_kanbanlearning {{/str}}" aria-label="{{#str}} removeseal, mod_kanbanlearning {{/str}}" {{^approval_seal}}hidden{{/approval_seal}}>×</button>
             </div>
         </li>
         {{/can_manage_approval_seal}}
-        <li class="nav-item mod_kanbanccead_card_view_history">
-            <a class="dropdown-item" data-action="show_history" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanccead_history_modal_{{id}}" data-target="#mod_kanbanccead_history_modal_{{id}}">{{#pix}} i/duration, core, {{#str}} history, mod_kanbanccead {{/str}} {{/pix}}{{#str}} history, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_card_view_history">
+            <a class="dropdown-item" data-action="show_history" data-id="{{id}}" data-bs-toggle="modal" data-toggle="modal" data-bs-target="#mod_kanbanlearning_history_modal_{{id}}" data-target="#mod_kanbanlearning_history_modal_{{id}}">{{#pix}} i/duration, core, {{#str}} history, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} history, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_push_card">
-            <a class="dropdown-item" data-action="push_card" data-id="{{id}}">{{#pix}} t/copy, core, {{#str}} pushcard, mod_kanbanccead {{/str}} {{/pix}}{{#str}} pushcard, mod_kanbanccead {{/str}}</a>
+        <li class="nav-item mod_kanbanlearning_push_card">
+            <a class="dropdown-item" data-action="push_card" data-id="{{id}}">{{#pix}} t/copy, core, {{#str}} pushcard, mod_kanbanlearning {{/str}} {{/pix}}{{#str}} pushcard, mod_kanbanlearning {{/str}}</a>
         </li>
-        <li class="nav-item mod_kanbanccead_delete_card">
+        <li class="nav-item mod_kanbanlearning_delete_card">
             <a class="dropdown-item text-danger" data-action="delete_card" data-id="{{id}}">{{#pix}} t/delete, core, {{#str}} delete, core {{/str}} {{/pix}}{{#str}} delete, core {{/str}}</a>
         </li>
     </ul>

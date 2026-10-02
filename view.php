@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * View a kanbanccead instance
+ * View a kanbanlearning instance
  *
- * @package     mod_kanbanccead
+ * @package     mod_kanbanlearning
  * @copyright   2023-2024 ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,9 +26,9 @@
 require('../../config.php');
 require_once('lib.php');
 
-use mod_kanbanccead\boardmanager;
-use mod_kanbanccead\constants;
-use mod_kanbanccead\helper;
+use mod_kanbanlearning\boardmanager;
+use mod_kanbanlearning\constants;
+use mod_kanbanlearning\helper;
 
 $id = required_param('id', PARAM_INT);
 $boardid = optional_param('boardid', 0, PARAM_INT);
@@ -37,11 +37,11 @@ $legacygroupid = optional_param('group', 0, PARAM_INT);
 $userid = optional_param('user', 0, PARAM_INT);
 $resetopcache = optional_param('resetopcache', 0, PARAM_BOOL);
 
-[$course, $cm] = get_course_and_cm_from_cmid($id, 'kanbanccead');
+[$course, $cm] = get_course_and_cm_from_cmid($id, 'kanbanlearning');
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/kanbanccead:view', $context);
+require_capability('mod/kanbanlearning:view', $context);
 
 if ($resetopcache && is_siteadmin() && confirm_sesskey()) {
     require_once($CFG->libdir . '/adminlib.php');
@@ -63,14 +63,14 @@ if ($resetopcache && is_siteadmin() && confirm_sesskey()) {
     if (!empty($userid)) {
         $redirectparams['user'] = $userid;
     }
-    redirect(new moodle_url('/mod/kanbanccead/view.php', $redirectparams));
+    redirect(new moodle_url('/mod/kanbanlearning/view.php', $redirectparams));
 }
 
-$kanbanccead = $DB->get_record('kanbanccead', ['id' => $cm->instance], '*', MUST_EXIST);
+$kanbanlearning = $DB->get_record('kanbanlearning', ['id' => $cm->instance], '*', MUST_EXIST);
 
-$PAGE->set_url(new moodle_url('/mod/kanbanccead/view.php', ['id' => $id]));
-$PAGE->set_title(get_string('pluginname', 'mod_kanbanccead') . ' ' . $kanbanccead->name);
-$PAGE->set_heading($kanbanccead->name);
+$PAGE->set_url(new moodle_url('/mod/kanbanlearning/view.php', ['id' => $id]));
+$PAGE->set_title(get_string('pluginname', 'mod_kanbanlearning') . ' ' . $kanbanlearning->name);
+$PAGE->set_heading($kanbanlearning->name);
 
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
@@ -80,9 +80,9 @@ echo $OUTPUT->header();
 $groupselector = '';
 $groupid = 0;
 $currentgroupid = 0;
-$boardmode = (int)($kanbanccead->boardmode ?? constants::MOD_KANBANCCEAD_BOARDMODE_SHARED);
-$canaccessotherboards = has_capability('mod/kanbanccead:viewallboards', $context) ||
-    has_capability('mod/kanbanccead:editallboards', $context);
+$boardmode = (int)($kanbanlearning->boardmode ?? constants::MOD_KANBANLEARNING_BOARDMODE_SHARED);
+$canaccessotherboards = has_capability('mod/kanbanlearning:viewallboards', $context) ||
+    has_capability('mod/kanbanlearning:editallboards', $context);
 $allowedgroups = [];
 $boardmanager = new boardmanager($cm->id);
 $defaultgroupid = $boardmanager->get_preferred_board_group_id();
@@ -102,12 +102,12 @@ if (empty($requestedgroupid) && !empty($legacygroupid)) {
     $requestedgroupid = $legacygroupid;
 }
 
-if (empty($boardid) && !empty($userid) && !empty($kanbanccead->userboards) && ($userid == $USER->id || $canaccessotherboards)) {
+if (empty($boardid) && !empty($userid) && !empty($kanbanlearning->userboards) && ($userid == $USER->id || $canaccessotherboards)) {
     $boardid = $boardmanager->get_or_create_board((int)$userid);
 }
 
 if (empty($boardid)) {
-    if ($boardmode == constants::MOD_KANBANCCEAD_BOARDMODE_GROUP) {
+    if ($boardmode == constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
         $groupid = 0;
         $allowedgroups = $boardmanager->get_available_board_groups();
 
@@ -137,7 +137,7 @@ if (empty($boardid)) {
             $boardid = $boardmanager->get_or_create_board(0, $groupid);
         } else {
             if (!$canaccessotherboards) {
-                throw new moodle_exception('nogroupavailable', 'mod_kanbanccead');
+                throw new moodle_exception('nogroupavailable', 'mod_kanbanlearning');
             }
             $boardid = $boardmanager->get_or_create_board_for_mode($boardmode, $groupid);
         }
@@ -147,18 +147,18 @@ if (empty($boardid)) {
     $boardmanager->load_board($boardid);
     $board = $boardmanager->get_board();
 } else {
-    $board = $DB->get_record('kanbanccead_board', ['id' => $boardid, 'kanbanccead_instance' => $kanbanccead->id]);
-    helper::check_permissions_for_user_or_group($board, $context, $cm, constants::MOD_KANBANCCEAD_VIEW);
+    $board = $DB->get_record('kanbanlearning_board', ['id' => $boardid, 'kanbanlearning_instance' => $kanbanlearning->id]);
+    helper::check_permissions_for_user_or_group($board, $context, $cm, constants::MOD_KANBANLEARNING_VIEW);
 }
 
 echo $OUTPUT->render_from_template(
-    'mod_kanbanccead/container',
+    'mod_kanbanlearning/container',
     [
         'cmid' => $cm->id,
         'id' => $boardid,
     ]
 );
 
-$PAGE->requires->js_call_amd('mod_kanbanccead/main', 'init', ['mod_kanbanccead_render_container-' . $cm->id, $cm->id, $boardid]);
+$PAGE->requires->js_call_amd('mod_kanbanlearning/main', 'init', ['mod_kanbanlearning_render_container-' . $cm->id, $cm->id, $boardid]);
 
 echo $OUTPUT->footer();

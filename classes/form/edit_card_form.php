@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_kanbanccead\form;
+namespace mod_kanbanlearning\form;
 
 use context;
 use context_module;
 use core_form\dynamic_form;
 use core_user;
-use mod_kanbanccead\boardmanager;
-use mod_kanbanccead\helper;
-use mod_kanbanccead\constants;
+use mod_kanbanlearning\boardmanager;
+use mod_kanbanlearning\helper;
+use mod_kanbanlearning\constants;
 use moodle_url;
 
 /**
  * From for editing a card.
  *
- * @package    mod_kanbanccead
+ * @package    mod_kanbanlearning
  * @copyright  2023-2024 ISB Bayern
  * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -50,7 +50,7 @@ class edit_card_form extends dynamic_form {
         $mform->addElement('hidden', 'cmid');
         $mform->setType('cmid', PARAM_INT);
 
-        $mform->addElement('text', 'title', get_string('cardtitle', 'kanbanccead'), ['size' => '50']);
+        $mform->addElement('text', 'title', get_string('cardtitle', 'kanbanlearning'), ['size' => '50']);
         $mform->setType('title', PARAM_TEXT);
 
         $userid = $this->optional_param('userid', 0, PARAM_INT);
@@ -58,7 +58,7 @@ class edit_card_form extends dynamic_form {
         $cardid = $this->optional_param('id', 0, PARAM_INT);
 
         $context = $this->get_context_for_dynamic_submission();
-        if (has_capability('mod/kanbanccead:assignothers', $context)) {
+        if (has_capability('mod/kanbanlearning:assignothers', $context)) {
             $userlist = get_enrolled_users($context, '', $groupid);
 
             $users = [];
@@ -70,9 +70,9 @@ class edit_card_form extends dynamic_form {
             }
             if (!empty($cardid)) {
                 $assignedusers = $DB->get_fieldset_select(
-                    'kanbanccead_assignee',
+                    'kanbanlearning_assignee',
                     'userid',
-                    'kanbanccead_card = :cardid',
+                    'kanbanlearning_card = :cardid',
                     ['cardid' => $cardid]
                 );
                 foreach ($assignedusers as $assigneduserid) {
@@ -88,7 +88,7 @@ class edit_card_form extends dynamic_form {
             $mform->addElement(
                 'autocomplete',
                 'assignees',
-                get_string('assignees', 'mod_kanbanccead'),
+                get_string('assignees', 'mod_kanbanlearning'),
                 $users,
                 ['multiple' => true]
             );
@@ -97,48 +97,48 @@ class edit_card_form extends dynamic_form {
         $mform->addElement('editor', 'description_editor', get_string('description'), null, ['maxfiles' => -1]);
         $mform->setType('description_editor', PARAM_RAW);
 
-        $mform->addElement('date_time_selector', 'duedate', get_string('duedate', 'kanbanccead'), ['optional' => true]);
+        $mform->addElement('date_time_selector', 'duedate', get_string('duedate', 'kanbanlearning'), ['optional' => true]);
 
-        $mform->addElement('date_time_selector', 'reminderdate', get_string('reminderdate', 'kanbanccead'), ['optional' => true]);
+        $mform->addElement('date_time_selector', 'reminderdate', get_string('reminderdate', 'kanbanlearning'), ['optional' => true]);
 
         $repeatgroup = [];
         $repeatgroup[] = $mform->createElement('advcheckbox', 'repeat_enable', get_string('enable'));
         $repeatgroup[] = $mform->createElement(
             'text',
             'repeat_interval',
-            get_string('repeat_interval', 'kanbanccead'),
+            get_string('repeat_interval', 'kanbanlearning'),
             ['size' => 3]
         );
         $repeatgroup[] = $mform->createElement(
             'select',
             'repeat_interval_type',
-            get_string('repeat_interval_type', 'kanbanccead'),
+            get_string('repeat_interval_type', 'kanbanlearning'),
             [
-            constants::MOD_KANBANCCEAD_REPEAT_HOURS => get_string('hours'),
-            constants::MOD_KANBANCCEAD_REPEAT_DAYS => get_string('days'),
-            constants::MOD_KANBANCCEAD_REPEAT_WEEKS => get_string('weeks'),
-            constants::MOD_KANBANCCEAD_REPEAT_MONTHS => get_string('months'),
-            constants::MOD_KANBANCCEAD_REPEAT_YEARS => get_string('years'),
+            constants::MOD_KANBANLEARNING_REPEAT_HOURS => get_string('hours'),
+            constants::MOD_KANBANLEARNING_REPEAT_DAYS => get_string('days'),
+            constants::MOD_KANBANLEARNING_REPEAT_WEEKS => get_string('weeks'),
+            constants::MOD_KANBANLEARNING_REPEAT_MONTHS => get_string('months'),
+            constants::MOD_KANBANLEARNING_REPEAT_YEARS => get_string('years'),
             ]
         );
-        $repeatgroup[] = $mform->createElement('select', 'repeat_newduedate', get_string('repeat_newduedate', 'kanbanccead'), [
-            constants::MOD_KANBANCCEAD_REPEAT_NONEWDUEDATE => get_string('nonewduedate', 'kanbanccead'),
-            constants::MOD_KANBANCCEAD_REPEAT_NEWDUEDATE_AFTERDUE => get_string('afterdue', 'kanbanccead'),
-            constants::MOD_KANBANCCEAD_REPEAT_NEWDUEDATE_AFTERCOMPLETION => get_string('aftercompletion', 'kanbanccead'),
+        $repeatgroup[] = $mform->createElement('select', 'repeat_newduedate', get_string('repeat_newduedate', 'kanbanlearning'), [
+            constants::MOD_KANBANLEARNING_REPEAT_NONEWDUEDATE => get_string('nonewduedate', 'kanbanlearning'),
+            constants::MOD_KANBANLEARNING_REPEAT_NEWDUEDATE_AFTERDUE => get_string('afterdue', 'kanbanlearning'),
+            constants::MOD_KANBANLEARNING_REPEAT_NEWDUEDATE_AFTERCOMPLETION => get_string('aftercompletion', 'kanbanlearning'),
         ]);
 
-        $mform->addElement('group', 'repeatgroup', get_string('repeat', 'kanbanccead'), $repeatgroup, ' ', false);
+        $mform->addElement('group', 'repeatgroup', get_string('repeat', 'kanbanlearning'), $repeatgroup, ' ', false);
 
         $mform->setType('repeat_interval', PARAM_INT);
         $mform->setType('repeat_interval_type', PARAM_INT);
         $mform->setDefault('repeat_enable', 0);
         $mform->setDefault('repeat_interval', 1);
         $mform->disabledIf('repeatgroup', 'repeat_enable');
-        $mform->disabledIf('repeat_interval', 'repeat_newduedate', 'eq', constants::MOD_KANBANCCEAD_REPEAT_NONEWDUEDATE);
-        $mform->disabledIf('repeat_interval_type', 'repeat_newduedate', 'eq', constants::MOD_KANBANCCEAD_REPEAT_NONEWDUEDATE);
-        $mform->addHelpButton('repeatgroup', 'repeat', 'kanbanccead');
+        $mform->disabledIf('repeat_interval', 'repeat_newduedate', 'eq', constants::MOD_KANBANLEARNING_REPEAT_NONEWDUEDATE);
+        $mform->disabledIf('repeat_interval_type', 'repeat_newduedate', 'eq', constants::MOD_KANBANLEARNING_REPEAT_NONEWDUEDATE);
+        $mform->addHelpButton('repeatgroup', 'repeat', 'kanbanlearning');
 
-        $mform->addElement('filemanager', 'attachments', get_string('attachments', 'kanbanccead'));
+        $mform->addElement('filemanager', 'attachments', get_string('attachments', 'kanbanlearning'));
 
         $mform->addElement('html', '<style>
             #fgroup_id_colorgroup .fgroup,
@@ -161,8 +161,8 @@ class edit_card_form extends dynamic_form {
                 margin: 0;
                 cursor: pointer;
             }
-            #fgroup_id_colorgroup .mod_kanbanccead_cardcolor_option,
-            #fitem_id_colorgroup .mod_kanbanccead_cardcolor_option {
+            #fgroup_id_colorgroup .mod_kanbanlearning_cardcolor_option,
+            #fitem_id_colorgroup .mod_kanbanlearning_cardcolor_option {
                 appearance: none;
                 -webkit-appearance: none;
                 width: 1.2rem;
@@ -173,41 +173,41 @@ class edit_card_form extends dynamic_form {
                 cursor: pointer;
                 transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
             }
-            #fgroup_id_colorgroup .mod_kanbanccead_cardcolor_option:hover,
-            #fgroup_id_colorgroup .mod_kanbanccead_cardcolor_option:focus,
-            #fitem_id_colorgroup .mod_kanbanccead_cardcolor_option:hover,
-            #fitem_id_colorgroup .mod_kanbanccead_cardcolor_option:focus {
+            #fgroup_id_colorgroup .mod_kanbanlearning_cardcolor_option:hover,
+            #fgroup_id_colorgroup .mod_kanbanlearning_cardcolor_option:focus,
+            #fitem_id_colorgroup .mod_kanbanlearning_cardcolor_option:hover,
+            #fitem_id_colorgroup .mod_kanbanlearning_cardcolor_option:focus {
                 transform: scale(1.08);
             }
-            #fgroup_id_colorgroup .mod_kanbanccead_cardcolor_option:checked,
-            #fitem_id_colorgroup .mod_kanbanccead_cardcolor_option:checked {
+            #fgroup_id_colorgroup .mod_kanbanlearning_cardcolor_option:checked,
+            #fitem_id_colorgroup .mod_kanbanlearning_cardcolor_option:checked {
                 border-color: #204f95;
                 box-shadow: 0 0 0 2px #fff, 0 0 0 3px #204f95;
             }
         </style>');
 
         $cardcolors = [
-            '#FFFFFF' => ['label' => get_string('cardcolorwhite', 'mod_kanbanccead')],
-            '#F6EEB9' => ['label' => get_string('cardcolorlightyellow', 'mod_kanbanccead')],
-            '#F8D0AF' => ['label' => get_string('cardcolorsoftorange', 'mod_kanbanccead')],
-            '#F7BBC0' => ['label' => get_string('cardcolorcoral', 'mod_kanbanccead')],
-            '#EFC2E9' => ['label' => get_string('cardcolorpink', 'mod_kanbanccead')],
-            '#D5C8F6' => ['label' => get_string('cardcolorlavender', 'mod_kanbanccead')],
-            '#D2E3FA' => ['label' => get_string('cardcolorlightblue', 'mod_kanbanccead')],
-            '#A9E5E1' => ['label' => get_string('cardcolorturquoise', 'mod_kanbanccead')],
-            '#E5F2BF' => ['label' => get_string('cardcolorlightlime', 'mod_kanbanccead')],
+            '#FFFFFF' => ['label' => get_string('cardcolorwhite', 'mod_kanbanlearning')],
+            '#F6EEB9' => ['label' => get_string('cardcolorlightyellow', 'mod_kanbanlearning')],
+            '#F8D0AF' => ['label' => get_string('cardcolorsoftorange', 'mod_kanbanlearning')],
+            '#F7BBC0' => ['label' => get_string('cardcolorcoral', 'mod_kanbanlearning')],
+            '#EFC2E9' => ['label' => get_string('cardcolorpink', 'mod_kanbanlearning')],
+            '#D5C8F6' => ['label' => get_string('cardcolorlavender', 'mod_kanbanlearning')],
+            '#D2E3FA' => ['label' => get_string('cardcolorlightblue', 'mod_kanbanlearning')],
+            '#A9E5E1' => ['label' => get_string('cardcolorturquoise', 'mod_kanbanlearning')],
+            '#E5F2BF' => ['label' => get_string('cardcolorlightlime', 'mod_kanbanlearning')],
         ];
         $colorelements = [];
         foreach ($cardcolors as $value => $meta) {
             $colorelements[] = $mform->createElement('radio', 'color', '', '', $value, [
-                'class' => 'mod_kanbanccead_cardcolor_option',
+                'class' => 'mod_kanbanlearning_cardcolor_option',
                 'style' => 'appearance:none;-webkit-appearance:none;background:' . s($value) .
                     ';width:1.35rem;height:1.35rem;border-radius:50%;border:1px solid #7a8494;margin:0;',
                 'title' => $meta['label'],
                 'aria-label' => $meta['label'],
             ]);
         }
-        $mform->addGroup($colorelements, 'colorgroup', get_string('color', 'mod_kanbanccead'), '', false);
+        $mform->addGroup($colorelements, 'colorgroup', get_string('color', 'mod_kanbanlearning'), '', false);
         $mform->setType('color', PARAM_TEXT);
         $mform->setDefault('color', '#FFFFFF');
     }
@@ -230,17 +230,17 @@ class edit_card_form extends dynamic_form {
         $context = $this->get_context_for_dynamic_submission();
         $cmid = $this->optional_param('cmid', null, PARAM_INT);
         $boardid = $this->optional_param('boardid', null, PARAM_INT);
-        $kanbancceadboard = helper::get_cached_board($boardid);
+        $kanbanlearningboard = helper::get_cached_board($boardid);
         $id = $this->optional_param('id', null, PARAM_INT);
         $boardmanager = new boardmanager($cmid, $boardid);
 
         if (!$boardmanager->can_user_manage_specific_card($id)) {
-            throw new moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanccead');
+            throw new moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanlearning');
         }
 
         $modinfo = get_fast_modinfo($COURSE);
         $cm = $modinfo->get_cm($cmid);
-        helper::check_permissions_for_user_or_group($kanbancceadboard, $context, $cm);
+        helper::check_permissions_for_user_or_group($kanbanlearningboard, $context, $cm);
     }
 
     /**
@@ -286,7 +286,7 @@ class edit_card_form extends dynamic_form {
         $formdata->background = $selectedcolor;
         $formdata->options = json_encode(['background' => $selectedcolor]);
 
-        if (!has_capability('mod/kanbanccead:assignothers', $context)) {
+        if (!has_capability('mod/kanbanlearning:assignothers', $context)) {
             unset($formdata->assignees);
         }
 
@@ -296,7 +296,7 @@ class edit_card_form extends dynamic_form {
         $fs = get_file_storage();
         $existingfiles = $fs->get_area_files(
             $context->id,
-            'mod_kanbanccead',
+            'mod_kanbanlearning',
             'attachments',
             $formdata->id,
             'filepath, filename',
@@ -309,7 +309,7 @@ class edit_card_form extends dynamic_form {
         $formdata->description = file_save_draft_area_files(
             $formdata->attachments,
             $context->id,
-            'mod_kanbanccead',
+            'mod_kanbanlearning',
             'attachments',
             $formdata->id,
             [],
@@ -318,7 +318,7 @@ class edit_card_form extends dynamic_form {
 
         $updatedfiles = $fs->get_area_files(
             $context->id,
-            'mod_kanbanccead',
+            'mod_kanbanlearning',
             'attachments',
             $formdata->id,
             'filepath, filename',
@@ -348,15 +348,15 @@ class edit_card_form extends dynamic_form {
         global $DB;
         $context = $this->get_context_for_dynamic_submission();
         $id = $this->optional_param('id', null, PARAM_INT);
-        $card = $DB->get_record('kanbanccead_card', ['id' => $id]);
+        $card = $DB->get_record('kanbanlearning_card', ['id' => $id]);
         $options = json_decode($card->options);
         $card->title = html_entity_decode($card->title, ENT_COMPAT, 'UTF-8');
         $card->cmid = $this->optional_param('cmid', null, PARAM_INT);
-        $card->boardid = $card->kanbanccead_board;
+        $card->boardid = $card->kanbanlearning_board;
         $card->assignees = $DB->get_fieldset_select(
-            'kanbanccead_assignee',
+            'kanbanlearning_assignee',
             'userid',
-            'kanbanccead_card = :cardid',
+            'kanbanlearning_card = :cardid',
             ['cardid' => $id]
         );
         $card->color = empty($options->background) ? '#FFFFFF' : strtoupper(clean_param($options->background, PARAM_TEXT));
@@ -364,7 +364,7 @@ class edit_card_form extends dynamic_form {
         $card->description = file_prepare_draft_area(
             $draftitemid,
             $context->id,
-            'mod_kanbanccead',
+            'mod_kanbanlearning',
             'attachments',
             $card->id,
             [],
@@ -388,6 +388,6 @@ class edit_card_form extends dynamic_form {
             'boardid' => $this->optional_param('boardid', null, PARAM_INT),
             'cmid' => $this->optional_param('cmid', null, PARAM_INT),
         ];
-        return new moodle_url('/mod/kanbanccead/view.php', $params);
+        return new moodle_url('/mod/kanbanlearning/view.php', $params);
     }
 }

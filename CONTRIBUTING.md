@@ -2,7 +2,7 @@
 
 Contributions must preserve Moodle compatibility, data privacy, and the behaviour documented in this repository.
 
-Changes target `mod_kanbanccead`. Preserve upstream copyright, author and licence notices as described in [NOTICE](NOTICE). Any additional attribution must identify actual contributions without replacing inherited notices.
+Changes target `mod_kanbanlearning`. Preserve upstream copyright, author and licence notices as described in [NOTICE](NOTICE). Any additional attribution must identify actual contributions without replacing inherited notices.
 
 ## Before opening an issue
 

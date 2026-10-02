@@ -1,18 +1,18 @@
 import {DragDrop} from 'core/reactive';
-import selectors from 'mod_kanbanccead/selectors';
-import capabilities from 'mod_kanbanccead/capabilities';
-import exporter from 'mod_kanbanccead/exporter';
+import selectors from 'mod_kanbanlearning/selectors';
+import capabilities from 'mod_kanbanlearning/capabilities';
+import exporter from 'mod_kanbanlearning/exporter';
 import {saveCancel} from 'core/notification';
 import * as Str from 'core/str';
 import {get_string as getString} from 'core/str';
 import ModalForm from 'core_form/modalform';
-import KanbanCceadComponent from 'mod_kanbanccead/kanbancceadcomponent';
+import kanbanlearningComponent from 'mod_kanbanlearning/kanbanlearningcomponent';
 import Log from "core/log";
 
 /**
- * Component representing a column in a kanbanccead board.
+ * Component representing a column in a kanbanlearning board.
  */
-export default class extends KanbanCceadComponent {
+export default class extends kanbanlearningComponent {
     /**
      * Function to initialize component, called by mustache template.
      * @param {*} target The id of the HTMLElement to attach to
@@ -60,7 +60,7 @@ export default class extends KanbanCceadComponent {
             this._addCard
         );
         this.addEventListener(
-            this.getElement('.mod_kanbanccead_addcard_link'),
+            this.getElement('.mod_kanbanlearning_addcard_link'),
             'click',
             this._addCard
         );
@@ -115,8 +115,8 @@ export default class extends KanbanCceadComponent {
      */
     _removeConfirm(event) {
         Str.get_strings([
-            {key: 'deletecolumn', component: 'mod_kanbanccead'},
-            {key: 'deletecolumnconfirm', component: 'mod_kanbanccead'},
+            {key: 'deletecolumn', component: 'mod_kanbanlearning'},
+            {key: 'deletecolumnconfirm', component: 'mod_kanbanlearning'},
             {key: 'delete', component: 'core'},
         ]).then((strings) => {
             return saveCancel(
@@ -224,7 +224,7 @@ export default class extends KanbanCceadComponent {
             this._updateCardDropZone(event);
         }
         if (dropdata.type == 'column') {
-            this.getElement(selectors.ADDCOLUMNCONTAINER).classList.add('mod_kanbanccead_insert');
+            this.getElement(selectors.ADDCOLUMNCONTAINER).classList.add('mod_kanbanlearning_insert');
         }
     }
 
@@ -235,10 +235,10 @@ export default class extends KanbanCceadComponent {
         this.carddropdata = null;
         const addcolumncontainer = this.getElement(selectors.ADDCOLUMNCONTAINER);
         if (addcolumncontainer) {
-            addcolumncontainer.classList.remove('mod_kanbanccead_insert');
+            addcolumncontainer.classList.remove('mod_kanbanlearning_insert');
         }
         this.getElements(selectors.ADDCARDCONTAINER).forEach((e) => {
-            e.classList.remove('mod_kanbanccead_insert');
+            e.classList.remove('mod_kanbanlearning_insert');
         });
     }
 
@@ -257,7 +257,7 @@ export default class extends KanbanCceadComponent {
 
         const containers = this.getElements(selectors.ADDCARDCONTAINER);
         containers.forEach((element) => {
-            element.classList.remove('mod_kanbanccead_insert');
+            element.classList.remove('mod_kanbanlearning_insert');
         });
         const firstcontainer = containers[0];
         if (!firstcontainer) {
@@ -268,7 +268,7 @@ export default class extends KanbanCceadComponent {
         const targetcontainer = aftercard == 0
             ? firstcontainer
             : this.getElement(selectors.ADDCARDCONTAINER, aftercard);
-        (targetcontainer || firstcontainer).classList.add('mod_kanbanccead_insert');
+        (targetcontainer || firstcontainer).classList.add('mod_kanbanlearning_insert');
     }
 
     /**
@@ -287,14 +287,14 @@ export default class extends KanbanCceadComponent {
      * @param {*} param0
      */
     async _cardCreated({element}) {
-        if (element.kanbanccead_column == this.id) {
+        if (element.kanbanlearning_column == this.id) {
             let data = JSON.parse(JSON.stringify(element));
             Object.assign(data, exporter.exportCapabilities(this.reactive.state));
             let placeholder = document.createElement('li');
             placeholder.setAttribute('data-id', data.id);
             let node = this.getElement(selectors.COLUMNINNER, this.id);
             node.appendChild(placeholder);
-            const newcomponent = await this.renderComponent(placeholder, 'mod_kanbanccead/card', data);
+            const newcomponent = await this.renderComponent(placeholder, 'mod_kanbanlearning/card', data);
             const newelement = newcomponent.getElement();
             node.replaceChild(newelement, placeholder);
         }
@@ -311,7 +311,7 @@ export default class extends KanbanCceadComponent {
         let aftercard = parseInt(data.id, 10) || 0;
 
         // The footer button should append to the end of the current column.
-        if (target.classList.contains('mod_kanbanccead_addcard_link')) {
+        if (target.classList.contains('mod_kanbanlearning_addcard_link')) {
             let cards = this.getElements(selectors.CARD);
             if (cards.length > 0) {
                 aftercard = parseInt(cards[cards.length - 1].dataset.id, 10) || 0;
@@ -332,7 +332,7 @@ export default class extends KanbanCceadComponent {
             // Remove all cards from frontend that are no longer present in the database.
             [...el.children]
                 .forEach((node) => {
-                    if (node.classList.contains('mod_kanbanccead_card') && !sequence.includes(node.dataset.id)) {
+                    if (node.classList.contains('mod_kanbanlearning_card') && !sequence.includes(node.dataset.id)) {
                         el.removeChild(node);
                     }
                 });
@@ -342,7 +342,7 @@ export default class extends KanbanCceadComponent {
                 .forEach(node => el.appendChild(node));
         }
         if (element.locked !== undefined) {
-            this.toggleClass(element.locked != 0, 'mod_kanbanccead_locked_column');
+            this.toggleClass(element.locked != 0, 'mod_kanbanlearning_locked_column');
             // Inplace editing of the column title is disabled if the column is locked.
             if (element.locked != 0) {
                 this.getElement(selectors.INPLACEEDITABLE).removeAttribute('data-inplaceeditable');
@@ -367,10 +367,10 @@ export default class extends KanbanCceadComponent {
             } catch (e) {
                 options = {};
             }
-            this.toggleClass(options.autohide, 'mod_kanbanccead_autohide');
-            this.toggleClass(options.wiplimit > 0, 'mod_kanbanccead_column_wiplimit');
+            this.toggleClass(options.autohide, 'mod_kanbanlearning_autohide');
+            this.toggleClass(options.wiplimit > 0, 'mod_kanbanlearning_column_wiplimit');
             this.getElement(selectors.WIPLIMIT).innerHTML = options.wiplimit;
-            const dot = this.getElement('.mod_kanbanccead_column_dot');
+            const dot = this.getElement('.mod_kanbanlearning_column_dot');
             if (dot) {
                 if (options.dotcolor) {
                     dot.style.setProperty('background', options.dotcolor);
@@ -429,13 +429,13 @@ export default class extends KanbanCceadComponent {
         event.preventDefault();
 
         const modalForm = new ModalForm({
-            formClass: "mod_kanbanccead\\form\\edit_column_form",
+            formClass: "mod_kanbanlearning\\form\\edit_column_form",
             args: {
                 id: this.id,
                 boardid: this.boardid,
                 cmid: this.cmid
             },
-            modalConfig: {title: getString('editcolumn', 'mod_kanbanccead')},
+            modalConfig: {title: getString('editcolumn', 'mod_kanbanlearning')},
             returnFocus: this.getElement(),
         });
         this.addEventListener(modalForm, modalForm.events.FORM_SUBMITTED, this._updateColumn);
@@ -454,13 +454,13 @@ export default class extends KanbanCceadComponent {
      * Show hidden cards.
      */
     _showHidden() {
-        this.getElement().classList.add('mod_kanbanccead_show_hidden');
+        this.getElement().classList.add('mod_kanbanlearning_show_hidden');
     }
 
     /**
      * Hide hidden cards.
      */
     _hideHidden() {
-        this.getElement().classList.remove('mod_kanbanccead_show_hidden');
+        this.getElement().classList.remove('mod_kanbanlearning_show_hidden');
     }
 }
