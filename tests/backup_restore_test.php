@@ -104,7 +104,13 @@ final class backup_restore_test extends advanced_testcase {
         ], '*', MUST_EXIST);
         $this->assertSame('{"color":"#f7d7d7"}', $templatecolumn->options);
 
-        $restoredcm = get_coursemodule_from_instance('kanbanlearning', $restoredkanbanlearning->id, $newcourseid, false, MUST_EXIST);
+        $restoredcm = get_coursemodule_from_instance(
+            'kanbanlearning',
+            $restoredkanbanlearning->id,
+            $newcourseid,
+            false,
+            MUST_EXIST
+        );
         $restoredmanager = new boardmanager($restoredcm->id);
         $restoredboardid = $restoredmanager->create_board();
 

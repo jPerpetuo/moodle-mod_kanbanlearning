@@ -142,7 +142,8 @@ class helper {
      * @param object $board The record from the board table
      * @param \context $context The context of the course module
      * @param \cm_info $cminfo The course module info
-     * @param int $type Type of permission to check: constants::MOD_KANBANLEARNING_EDIT(default) or constants::MOD_KANBANLEARNING_VIEW
+     * @param int $type Type of permission to check: constants::MOD_KANBANLEARNING_EDIT (default) or
+     *                  constants::MOD_KANBANLEARNING_VIEW
      */
     public static function check_permissions_for_user_or_group(
         object $board,

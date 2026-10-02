@@ -159,6 +159,10 @@ echo $OUTPUT->render_from_template(
     ]
 );
 
-$PAGE->requires->js_call_amd('mod_kanbanlearning/main', 'init', ['mod_kanbanlearning_render_container-' . $cm->id, $cm->id, $boardid]);
+$PAGE->requires->js_call_amd('mod_kanbanlearning/main', 'init', [
+    'mod_kanbanlearning_render_container-' . $cm->id,
+    $cm->id,
+    $boardid,
+]);
 
 echo $OUTPUT->footer();

@@ -1424,7 +1424,12 @@ class boardmanager {
      */
     public function set_board_columns_locked(int $state): void {
         global $DB;
-        $columns = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $this->board->id]);
+        $columns = $DB->get_fieldset_select(
+            'kanbanlearning_column',
+            'id',
+            'kanbanlearning_board = :id',
+            ['id' => $this->board->id]
+        );
         $update = ['id' => $this->board->id, 'locked' => $state, 'timemodified' => time()];
         $DB->update_record('kanbanlearning_board', $update);
         helper::update_cached_board($update['id']);
@@ -1755,9 +1760,9 @@ class boardmanager {
     }
 
     /**
-     * Push a copy of this card to other boards. If target boards array is empty, card is pushed to all boards in this kanbanlearning
-     * activity (including templates) to the leftmost column (if there is none, card is not copied). If there is already a copy
-     * of this card, it is replaced. History, assignees and discussion are not copied.
+     * Push a copy of this card to other boards. If target boards array is empty, card is pushed to all boards in this
+     * kanbanlearning activity (including templates) to the leftmost column (if there is none, card is not copied).
+     * If there is already a copy of this card, it is replaced. History, assignees and discussion are not copied.
      * For now, only boards inside the same kanbanlearning are supported.
      *
      * @param int $cardid Id of the card to push
@@ -1969,8 +1974,8 @@ class boardmanager {
     }
 
     /**
-     * Copy attachment files from one card to another (works only inside the same kanbanlearning instance). Overwrites files that have
-     * the same filename.
+     * Copy attachment files from one card to another (works only inside the same kanbanlearning instance). Overwrites
+     * files that have the same filename.
      *
      * @param int $contextid Context id of the instance
      * @param int $cardid Card id (original)

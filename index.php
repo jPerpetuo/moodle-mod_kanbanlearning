@@ -86,7 +86,10 @@ foreach ($kanbanlearnings as $kanbanlearning) {
 }
 
 if (!$kanbanlearningfound) {
-    notice(get_string('nokanbanlearninginstances', 'mod_kanbanlearning'), new moodle_url('/course/view.php', ['id' => $course->id]));
+    notice(
+        get_string('nokanbanlearninginstances', 'mod_kanbanlearning'),
+        new moodle_url('/course/view.php', ['id' => $course->id])
+    );
 } else {
     echo html_writer::table($table);
 }

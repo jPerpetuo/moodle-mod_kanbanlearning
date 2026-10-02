@@ -49,7 +49,8 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     '
                     SELECT COUNT(DISTINCT c.id)
                     FROM {kanbanlearning_board} b
-                    INNER JOIN {kanbanlearning_card} c ON b.kanbanlearning_instance = :kanbanlearningid AND c.kanbanlearning_board = b.id
+                    INNER JOIN {kanbanlearning_card} c ON b.kanbanlearning_instance = :kanbanlearningid
+                        AND c.kanbanlearning_board = b.id
                     WHERE c.createdby = :userid',
                     ['userid' => $this->userid, 'kanbanlearningid' => $this->cm->instance]
                 );

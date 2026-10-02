@@ -99,7 +99,12 @@ class edit_card_form extends dynamic_form {
 
         $mform->addElement('date_time_selector', 'duedate', get_string('duedate', 'kanbanlearning'), ['optional' => true]);
 
-        $mform->addElement('date_time_selector', 'reminderdate', get_string('reminderdate', 'kanbanlearning'), ['optional' => true]);
+        $mform->addElement(
+            'date_time_selector',
+            'reminderdate',
+            get_string('reminderdate', 'kanbanlearning'),
+            ['optional' => true]
+        );
 
         $repeatgroup = [];
         $repeatgroup[] = $mform->createElement('advcheckbox', 'repeat_enable', get_string('enable'));

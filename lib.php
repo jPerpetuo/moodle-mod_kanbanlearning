@@ -31,7 +31,11 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once('HTML/QuickForm/input.php');
 
-MoodleQuickForm::registerElementType('color', $CFG->dirroot . '/mod/kanbanlearning/classes/form/color.php', 'MoodleQuickForm_color');
+MoodleQuickForm::registerElementType(
+    'color',
+    $CFG->dirroot . '/mod/kanbanlearning/classes/form/color.php',
+    'MoodleQuickForm_color'
+);
 
 /**
  * Adds a new kanbanlearning instance
@@ -220,7 +224,11 @@ function kanbanlearning_inplace_editable($itemtype, $itemid, $newvalue) {
         require_capability('mod/kanbanlearning:managecolumns', $context);
     }
 
-    \mod_kanbanlearning\helper::check_permissions_for_user_or_group($boardmanager->get_board(), $context, $boardmanager->get_cminfo());
+    \mod_kanbanlearning\helper::check_permissions_for_user_or_group(
+        $boardmanager->get_board(),
+        $context,
+        $boardmanager->get_cminfo()
+    );
 
     if ($itemtype == 'card') {
         $boardmanager->update_card($itemid, ['title' => $newvalue]);

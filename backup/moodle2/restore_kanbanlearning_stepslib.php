@@ -35,7 +35,10 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('board', '/activity/kanbanlearning/boards/kanbanlearning_board');
-        $paths[] = new restore_path_element('column', '/activity/kanbanlearning/boards/kanbanlearning_board/columns/kanbanlearning_column');
+        $paths[] = new restore_path_element(
+            'column',
+            '/activity/kanbanlearning/boards/kanbanlearning_board/columns/kanbanlearning_column'
+        );
         $paths[] = new restore_path_element(
             'card',
             '/activity/kanbanlearning/boards/kanbanlearning_board/columns/kanbanlearning_column/cards/kanbanlearning_card'
@@ -77,7 +80,8 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         $data->course = $this->get_courseid();
         $includegroups = (bool)$this->get_setting_value('groups');
         $destinationgroups = [];
-        if (!empty($data->boardmode) && (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
+        if (!empty($data->boardmode)
+                && (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP) {
             $destinationgroups = groups_get_all_groups($this->get_courseid(), 0, 0, 'g.id, g.name');
         }
         if (!$includegroups) {
@@ -94,7 +98,8 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
             }
             $data->boardgroups = implode(',', array_unique($mappedgroupids));
         }
-        if ((int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP && empty($destinationgroups)) {
+        if ((int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
+                && empty($destinationgroups)) {
             $data->boardmode = \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_SHARED;
             $data->boardgroups = '';
             $data->boardgroupid = 0;
@@ -258,7 +263,9 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         global $DB;
         $this->add_related_files('mod_kanbanlearning', 'intro', null);
 
-        $kanbanlearningboards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $this->task->get_activityid()]);
+        $kanbanlearningboards = $DB->get_records('kanbanlearning_board', [
+            'kanbanlearning_instance' => $this->task->get_activityid(),
+        ]);
 
         foreach ($kanbanlearningboards as $board) {
             if ($board->sequence == '') {

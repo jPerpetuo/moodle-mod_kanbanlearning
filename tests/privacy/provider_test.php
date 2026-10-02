@@ -331,7 +331,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
 
-        $otherkanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $this->kanbanlearning->course]);
+        $otherkanbanlearning = $this->getDataGenerator()->create_module('kanbanlearning', [
+            'course' => $this->kanbanlearning->course,
+        ]);
         $otherboard = $DB->get_record('kanbanlearning_board', [
             'kanbanlearning_instance' => $otherkanbanlearning->id,
             'userid' => 0,

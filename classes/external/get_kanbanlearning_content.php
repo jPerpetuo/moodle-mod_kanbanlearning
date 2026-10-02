@@ -950,7 +950,12 @@ class get_kanbanlearning_content extends external_api {
         if (!empty($kanbanlearning->history)) {
             $kanbanlearningboard = helper::get_cached_board($boardid);
 
-            helper::check_permissions_for_user_or_group($kanbanlearningboard, $context, $cminfo, constants::MOD_KANBANLEARNING_VIEW);
+            helper::check_permissions_for_user_or_group(
+                $kanbanlearningboard,
+                $context,
+                $cminfo,
+                constants::MOD_KANBANLEARNING_VIEW
+            );
 
             $sql = 'kanbanlearning_card = :id AND timestamp > :time';
             $params = ['id' => $cardid, 'time' => $timestamp];
