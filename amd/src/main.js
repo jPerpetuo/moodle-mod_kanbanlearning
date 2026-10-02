@@ -1,6 +1,6 @@
 import Reactive from 'mod_kanbanlearning/reactive';
-import kanbanlearningParent from 'mod_kanbanlearning/kanbanlearningparent';
-import kanbanlearningMutations from 'mod_kanbanlearning/mutations';
+import KanbanlearningParent from 'mod_kanbanlearning/kanbanlearningparent';
+import KanbanlearningMutations from 'mod_kanbanlearning/mutations';
 
 const stateChangedEventName = 'mod_kanbanlearning:stateChanged';
 
@@ -17,10 +17,10 @@ export const init = (domElementId, cmId, boardId) => {
         eventName: stateChangedEventName,
         eventDispatch: dispatchkanbanlearningEvent,
         target: document.getElementById(domElementId),
-        mutations: new kanbanlearningMutations(),
+        mutations: new KanbanlearningMutations(),
     });
     reactiveInstance.loadBoard(cmId, boardId);
-    return new kanbanlearningParent({
+    return new KanbanlearningParent({
         element: document.getElementById(domElementId),
         reactive: reactiveInstance,
     });

@@ -316,7 +316,8 @@ a.mod_kanbanlearning_attachment_item {
 
 .mod_kanbanlearning_card:not(.mod_kanbanlearning_canedit) .mod_kanbanlearning_delete_card,
 .mod_kanbanlearning_card:not(.mod_kanbanlearning_canedit) .mod_kanbanlearning_card_edit_details,
-.mod_kanbanlearning_card:not(.mod_kanbanlearning_hasdescription):not(.mod_kanbanlearning_hasattachment) .mod_kanbanlearning_detail_trigger,
+.mod_kanbanlearning_card:not(.mod_kanbanlearning_hasdescription):not(.mod_kanbanlearning_hasattachment)
+.mod_kanbanlearning_detail_trigger,
 .mod_kanbanlearning_card:not(.mod_kanbanlearning_hasdiscussion) .mod_kanbanlearning_discussion_trigger,
 .mod_kanbanlearning_card.mod_kanbanlearning_hasdiscussion .mod_kanbanlearning_start_discussion,
 .mod_kanbanlearning_card:not(.mod_kanbanlearning_hasdiscussion) .mod_kanbanlearning_open_discussion,
@@ -347,7 +348,11 @@ a.mod_kanbanlearning_attachment_item {
 .mod_kanbanlearning_board_locked_columns .mod_kanbanlearning_unlock_column,
 .mod_kanbanlearning_board_locked_columns .mod_kanbanlearning_lock_board_columns,
 .mod_kanbanlearning_board:not(.mod_kanbanlearning_board_locked_columns) .mod_kanbanlearning_unlock_board_columns,
-.mod_kanbanlearning_board:not(.mod_kanbanlearning_addcards, .mod_kanbanlearning_manageassignedcards, .mod_kanbanlearning_manageallcards)
+.mod_kanbanlearning_board:not(
+    .mod_kanbanlearning_addcards,
+    .mod_kanbanlearning_manageassignedcards,
+    .mod_kanbanlearning_manageallcards
+)
 .mod_kanbanlearning_addcard_container,
 .mod_kanbanlearning_board:not(.mod_kanbanlearning_managecolumns) .mod_kanbanlearning_addcolumn_container,
 .mod_kanbanlearning_board:not(.mod_kanbanlearning_hastemplate) .mod_kanbanlearning_show_template,
@@ -361,7 +366,8 @@ a.mod_kanbanlearning_attachment_item {
 .mod_kanbanlearning_column.mod_kanbanlearning_autohide:not(.mod_kanbanlearning_show_hidden) [data-action="hide_hidden"],
 .mod_kanbanlearning_column.mod_kanbanlearning_autohide.mod_kanbanlearning_show_hidden [data-action="show_hidden"],
 .mod_kanbanlearning_column:not(.mod_kanbanlearning_autohide) .mod_kanbanlearning_hidden_actions,
-.mod_kanbanlearning_column.mod_kanbanlearning_autohide:not(.mod_kanbanlearning_show_hidden) .mod_kanbanlearning_card.mod_kanbanlearning_closed,
+.mod_kanbanlearning_column.mod_kanbanlearning_autohide:not(.mod_kanbanlearning_show_hidden)
+.mod_kanbanlearning_card.mod_kanbanlearning_closed,
 .mod_kanbanlearning_column:not(.mod_kanbanlearning_column_wiplimit) .mod_kanbanlearning_wipinfo,
 .mod_kanbanlearning_card.mod_kanbanlearning_closed .mod_kanbanlearning_complete_card,
 .mod_kanbanlearning_card:not(.mod_kanbanlearning_closed) .mod_kanbanlearning_uncomplete_card,
@@ -933,8 +939,10 @@ a.mod_kanbanlearning_attachment_item {
 }
 
 .mod_kanbanlearning_board_focus .mod_kanbanlearning_boardselector_menu .dropdown-item.mod_kanbanlearning_boardselector_item_current,
-.mod_kanbanlearning_board_focus .mod_kanbanlearning_boardselector_menu .dropdown-item.mod_kanbanlearning_boardselector_item_current:hover,
-.mod_kanbanlearning_board_focus .mod_kanbanlearning_boardselector_menu .dropdown-item.mod_kanbanlearning_boardselector_item_current:focus {
+.mod_kanbanlearning_board_focus .mod_kanbanlearning_boardselector_menu
+.dropdown-item.mod_kanbanlearning_boardselector_item_current:hover,
+.mod_kanbanlearning_board_focus .mod_kanbanlearning_boardselector_menu
+.dropdown-item.mod_kanbanlearning_boardselector_item_current:focus {
     background: #244f8f;
     color: #fff;
 }
@@ -1677,16 +1685,20 @@ a.mod_kanbanlearning_attachment_item {
     padding-bottom: 2.55rem;
 }
 
-.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi .mod_kanbanlearning_card_assignees_row,
-.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi .mod_kanbanlearning_card_meta_row {
+.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi
+.mod_kanbanlearning_card_assignees_row,
+.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi
+.mod_kanbanlearning_card_meta_row {
     bottom: .35rem;
 }
 
-.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi .mod_kanbanlearning_card_assignees_row {
+.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_multi
+.mod_kanbanlearning_card_assignees_row {
     right: 5.15rem;
 }
 
-.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_has_summary .mod_kanbanlearning_card_footer {
+.mod_kanbanlearning_card.mod_kanbanlearning_footer_compact.mod_kanbanlearning_assignees_has_summary
+.mod_kanbanlearning_card_footer {
     padding-bottom: 3.15rem;
 }
 
