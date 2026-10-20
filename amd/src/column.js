@@ -288,7 +288,8 @@ export default class extends kanbanlearningComponent {
      */
     async _cardCreated({element}) {
         if (element.kanbanlearning_column == this.id) {
-            let data = JSON.parse(JSON.stringify(element));
+            // Export the complete card view model, including derived feature flags.
+            let data = exporter.exportCard(this.reactive.state, element.id);
             Object.assign(data, exporter.exportCapabilities(this.reactive.state));
             let placeholder = document.createElement('li');
             placeholder.setAttribute('data-id', data.id);

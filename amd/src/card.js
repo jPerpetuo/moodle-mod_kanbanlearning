@@ -456,6 +456,8 @@ export default class extends kanbanlearningComponent {
     // eslint-disable-next-line complexity
     async _cardUpdated({element}) {
         if (this.getElement().querySelector('.mod_kanbanlearning_card_title_editor')) {
+            // Keep non-title UI in sync even while the title editor is active.
+            this._updateApprovalSealAvailability(element);
             return;
         }
         const card = this.getElement();
@@ -668,7 +670,11 @@ export default class extends kanbanlearningComponent {
     _completeCard(event) {
         let target = event.target.closest(selectors.COMPLETE);
         let data = Object.assign({}, target.dataset);
-        this.reactive.dispatch('completeCard', data.id);
+        this.reactive.dispatch('completeCard', data.id).then(() => {
+            // Completion may move the card and update its completed flag in one request.
+            // Reconcile the menu after the full response has been applied to reactive state.
+            this._updateApprovalSealAvailability();
+        }).catch(displayException);
     }
 
     /**
@@ -678,7 +684,9 @@ export default class extends kanbanlearningComponent {
     _uncompleteCard(event) {
         let target = event.target.closest(selectors.UNCOMPLETE);
         let data = Object.assign({}, target.dataset);
-        this.reactive.dispatch('uncompleteCard', data.id);
+        this.reactive.dispatch('uncompleteCard', data.id).then(() => {
+            this._updateApprovalSealAvailability();
+        }).catch(displayException);
     }
 
     /**
