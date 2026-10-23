@@ -48,3 +48,21 @@ Feature: Approval reactions are available on cards completed during a session
     And I click on ".mod_kanbanlearning_approval_seal_menu [data-action='approval_seal'][data-seal='approved']" "css_element"
     Then ".mod_kanbanlearning_approval_seal" "css_element" should exist
     And I should see "✅" in the ".mod_kanbanlearning_approval_seal" "css_element"
+
+  @javascript
+  Scenario: A teacher can change an existing reaction without reloading
+    Given I am on the "Learning Kanban" "kanbanlearning activity" page logged in as teacher1
+    When I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_addcard_link" "css_element"
+    And I wait until ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card" "css_element" exists
+    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card .mod_kanbanlearning_action_menu_trigger" "css_element"
+    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card .mod_kanbanlearning_complete_card a" "css_element"
+    And I wait until ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card" "css_element" exists
+    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card .mod_kanbanlearning_action_menu_trigger" "css_element"
+    And I click on ".mod_kanbanlearning_approval_seal_menu [data-action='toggle_approval_seal']" "css_element"
+    And I wait "1" seconds
+    And I click on ".mod_kanbanlearning_approval_seal_menu [data-action='approval_seal'][data-seal='approved']" "css_element"
+    And I should see "✅" in the ".mod_kanbanlearning_approval_seal" "css_element"
+    And I click on ".mod_kanbanlearning_approval_seal_menu [data-action='toggle_approval_seal']" "css_element"
+    And I wait "1" seconds
+    And I click on ".mod_kanbanlearning_approval_seal_menu [data-action='approval_seal'][data-seal='clap']" "css_element"
+    Then I should see "👏" in the ".mod_kanbanlearning_approval_seal" "css_element"
