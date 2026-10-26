@@ -23,6 +23,7 @@ namespace mod_kanbanlearning;
  * @copyright   2026 CCEAD PUC-Rio
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      ::kanbanlearning_normalize_board_group_settings
+ * @covers      ::kanbanlearning_get_coursemodule_info
  */
 final class lib_callbacks_test extends \advanced_testcase {
     /** @var array Original POST data to restore after the test. */
@@ -131,4 +132,68 @@ final class lib_callbacks_test extends \advanced_testcase {
         $this->assertSame(0, $data->boardgroupid);
         $this->assertSame(0, $data->linknumbers);
     }
+    /**
+     * Course module info includes the visible introduction and automatic completion rules.
+     *
+     * @return void
+     */
+    public function test_get_coursemodule_info_includes_description_and_completion_rules(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        [$course, $module] = $this->create_activity_for_course_info();
+        $DB->set_field('kanbanlearning', 'completioncreate', 1, ['id' => $module->id]);
+        $DB->set_field('kanbanlearning', 'completioncomplete', 1, ['id' => $module->id]);
+
+        $cm = get_coursemodule_from_id('kanbanlearning', $module->cmid, 0, false, MUST_EXIST);
+        $cm->showdescription = 1;
+        $cm->completion = COMPLETION_TRACKING_AUTOMATIC;
+
+        $info = kanbanlearning_get_coursemodule_info($cm);
+
+        $this->assertSame($module->name, $info->name);
+        $this->assertStringContainsString('Course info intro', $info->content);
+        $this->assertSame(1, (int) $info->customdata['customcompletionrules']['completioncreate']);
+        $this->assertSame(1, (int) $info->customdata['customcompletionrules']['completioncomplete']);
+    }
+
+    /**
+     * Course module info omits the introduction and completion rules when disabled.
+     *
+     * @return void
+     */
+    public function test_get_coursemodule_info_omits_hidden_description_and_disabled_completion(): void {
+        $this->resetAfterTest();
+        [$course, $module] = $this->create_activity_for_course_info();
+
+        $cm = get_coursemodule_from_id('kanbanlearning', $module->cmid, 0, false, MUST_EXIST);
+        $cm->showdescription = 0;
+        $cm->completion = COMPLETION_TRACKING_NONE;
+
+        $info = kanbanlearning_get_coursemodule_info($cm);
+
+        $this->assertSame($module->name, $info->name);
+        $this->assertEmpty($info->content ?? '');
+        $this->assertEmpty($info->customdata['customcompletionrules'] ?? []);
+    }
+
+    /**
+     * Create the course and activity fixture used by course module info tests.
+     *
+     * @return array
+     */
+    private function create_activity_for_course_info(): array {
+        $course = $this->getDataGenerator()->create_course([
+            'shortname' => 'kanbanlearning_cm_info_' . bin2hex(random_bytes(8)),
+        ]);
+        $module = $this->getDataGenerator()->create_module('kanbanlearning', [
+            'course' => $course,
+            'name' => 'Course info test activity',
+            'intro' => '<p>Course info intro</p>',
+            'introformat' => FORMAT_HTML,
+        ]);
+
+        return [$course, $module];
+    }
+
 }
