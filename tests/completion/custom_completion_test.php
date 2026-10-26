@@ -111,7 +111,8 @@ final class custom_completion_test extends \advanced_testcase {
             ['kanbanlearning_board' => $boardid],
             IGNORE_MULTIPLE
         );
-        $cm = get_fast_modinfo($course->id, 0, true)->get_cm($activity->cmid);
+        get_fast_modinfo($course->id, 0, true);
+        $cm = get_fast_modinfo($course->id)->get_cm($activity->cmid);
 
         return [
             'cm' => $cm,
