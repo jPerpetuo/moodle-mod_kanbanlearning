@@ -243,8 +243,8 @@ final class lib_callbacks_test extends \advanced_testcase {
         $cardeditable = kanbanlearning_inplace_editable('card', $fixture['cardid'], 'Updated card title');
         $columneditable = kanbanlearning_inplace_editable('column', $fixture['columnid'], 'Updated column title');
 
-        $this->assertInstanceOf(\\core\\output\\inplace_editable::class, $cardeditable);
-        $this->assertInstanceOf(\\core\\output\\inplace_editable::class, $columneditable);
+        $this->assertInstanceOf(\core\output\inplace_editable::class, $cardeditable);
+        $this->assertInstanceOf(\core\output\inplace_editable::class, $columneditable);
         $this->assertSame('Updated card title', $DB->get_field('kanbanlearning_card', 'title', ['id' => $fixture['cardid']]));
         $this->assertSame('Updated column title', $DB->get_field('kanbanlearning_column', 'title', ['id' => $fixture['columnid']]));
     }
@@ -258,7 +258,7 @@ final class lib_callbacks_test extends \advanced_testcase {
         $fixture = $this->create_inplace_editable_fixture();
         $this->setUser($fixture['student']);
 
-        $this->expectException(\\moodle_exception::class);
+        $this->expectException(\moodle_exception::class);
         kanbanlearning_inplace_editable('card', $fixture['cardid'], 'Unauthorized title');
     }
 
@@ -271,7 +271,7 @@ final class lib_callbacks_test extends \advanced_testcase {
         $fixture = $this->create_inplace_editable_fixture();
         $this->setUser($fixture['student']);
 
-        $this->expectException(\\required_capability_exception::class);
+        $this->expectException(\required_capability_exception::class);
         kanbanlearning_inplace_editable('column', $fixture['columnid'], 'Unauthorized column title');
     }
 
