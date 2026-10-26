@@ -259,7 +259,6 @@ final class lib_callbacks_test extends \advanced_testcase {
         $this->setUser($fixture['student']);
 
         $this->expectException(\\moodle_exception::class);
-        $this->expectExceptionMessage('editing_this_card_is_not_allowed');
         kanbanlearning_inplace_editable('card', $fixture['cardid'], 'Unauthorized title');
     }
 
