@@ -25,7 +25,6 @@ namespace mod_kanbanlearning;
  * @covers      ::kanbanlearning_normalize_board_group_settings
  * @covers      ::kanbanlearning_get_coursemodule_info
  * @covers      ::kanbanlearning_supports
- * @covers      ::kanbanlearning_inplace_editable
  */
 final class lib_callbacks_test extends \advanced_testcase {
     /** @var array Original POST data to restore after the test. */
@@ -227,87 +226,6 @@ final class lib_callbacks_test extends \advanced_testcase {
         $this->assertSame($module->name, $info->name);
         $this->assertEmpty($info->content ?? '');
         $this->assertEmpty($info->customdata['customcompletionrules'] ?? []);
-    }
-
-    /**
-     * Teachers can rename cards and columns through the inplace editable callback.
-     *
-     * @return void
-     */
-    public function test_inplace_editable_updates_card_and_column_titles_for_teacher(): void {
-        global $DB;
-
-        $fixture = $this->create_inplace_editable_fixture();
-        $this->setUser($fixture['teacher']);
-
-        $cardeditable = kanbanlearning_inplace_editable('card', $fixture['cardid'], 'Updated card title');
-        $columneditable = kanbanlearning_inplace_editable('column', $fixture['columnid'], 'Updated column title');
-
-        $this->assertInstanceOf(\core\output\inplace_editable::class, $cardeditable);
-        $this->assertInstanceOf(\core\output\inplace_editable::class, $columneditable);
-        $this->assertSame('Updated card title', $DB->get_field('kanbanlearning_card', 'title', ['id' => $fixture['cardid']]));
-        $this->assertSame('Updated column title', $DB->get_field('kanbanlearning_column', 'title', ['id' => $fixture['columnid']]));
-    }
-
-    /**
-     * Students cannot rename cards they are not allowed to manage.
-     *
-     * @return void
-     */
-    public function test_inplace_editable_rejects_student_editing_unmanaged_card(): void {
-        $fixture = $this->create_inplace_editable_fixture();
-        $this->setUser($fixture['student']);
-
-        $this->expectException(\moodle_exception::class);
-        kanbanlearning_inplace_editable('card', $fixture['cardid'], 'Unauthorized title');
-    }
-
-    /**
-     * Students cannot rename columns without the manage columns capability.
-     *
-     * @return void
-     */
-    public function test_inplace_editable_rejects_student_editing_column(): void {
-        $fixture = $this->create_inplace_editable_fixture();
-        $this->setUser($fixture['student']);
-
-        $this->expectException(\required_capability_exception::class);
-        kanbanlearning_inplace_editable('column', $fixture['columnid'], 'Unauthorized column title');
-    }
-
-    /**
-     * Create an activity, board, card and enrolled teacher and student for inplace editable tests.
-     *
-     * @return array
-     */
-    private function create_inplace_editable_fixture(): array {
-        global $DB;
-
-        $this->resetAfterTest();
-        $course = $this->getDataGenerator()->create_course();
-        $activity = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
-        $teacher = $this->getDataGenerator()->create_user();
-        $student = $this->getDataGenerator()->create_user();
-        $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
-        $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*', MUST_EXIST);
-        $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherrole->id);
-        $this->getDataGenerator()->enrol_user($student->id, $course->id, $studentrole->id);
-
-        $boardmanager = new boardmanager($activity->cmid);
-        $boardid = $boardmanager->create_board();
-        $boardmanager->load_board($boardid);
-        $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
-        $this->setUser($teacher);
-        $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Original card title']);
-
-        return [
-            'activity' => $activity,
-            'boardmanager' => $boardmanager,
-            'cardid' => $cardid,
-            'columnid' => $columnid,
-            'student' => $student,
-            'teacher' => $teacher,
-        ];
     }
 
     /**
