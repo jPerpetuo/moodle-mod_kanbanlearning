@@ -251,9 +251,12 @@ final class boardmanager_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
-        $normalcolumnid = reset($columnids);
-        $cardid = $boardmanager->add_card($normalcolumnid, 0, ['title' => 'Work in progress']);
+        $columns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid], 'id ASC');
+        $normalcolumn = reset($columns);
+        $normalcolumn->title = 'Work in progress';
+        $normalcolumn->options = '{}';
+        $DB->update_record('kanbanlearning_column', $normalcolumn);
+        $cardid = $boardmanager->add_card($normalcolumn->id, 0, ['title' => 'Work in progress']);
         $DB->set_field('kanbanlearning_card', 'completed', 1, ['id' => $cardid]);
 
         $this->expectException(\moodle_exception::class);
