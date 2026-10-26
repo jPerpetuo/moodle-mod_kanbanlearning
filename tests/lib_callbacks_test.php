@@ -195,5 +195,4 @@ final class lib_callbacks_test extends \advanced_testcase {
 
         return [$course, $module];
     }
-
 }
