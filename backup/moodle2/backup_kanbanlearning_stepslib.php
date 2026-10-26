@@ -29,7 +29,7 @@ class backup_kanbanlearning_activity_structure_step extends backup_activity_stru
      * @return backup_nested_element
      */
     protected function define_structure(): backup_nested_element {
-        $userinfo = $this->get_setting_value('userinfo');
+        $userinfo = $this->get_setting_value('users');
 
         $kanbanlearning = new backup_nested_element(
             'kanbanlearning',
