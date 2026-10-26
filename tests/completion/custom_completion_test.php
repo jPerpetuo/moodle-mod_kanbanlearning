@@ -64,19 +64,22 @@ final class custom_completion_test extends \advanced_testcase {
     public function test_complete_rule_counts_assigned_completed_cards_up_to_threshold(): void {
         $fixture = $this->create_fixture(0, 2);
         $manager = $fixture['manager'];
-        $studentcard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser'], true);
+        $studentcard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser']);
+        $this->complete_card($studentcard);
         $this->assign_card($studentcard, $fixture['student']->id);
 
         $incompletecard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser']);
         $this->assign_card($incompletecard, $fixture['student']->id);
 
-        $otherusercard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser'], true);
+        $otherusercard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser']);
+        $this->complete_card($otherusercard);
         $this->assign_card($otherusercard, $fixture['otheruser']->id);
 
         $completion = new custom_completion($fixture['cm'], $fixture['student']->id);
         $this->assertSame(COMPLETION_INCOMPLETE, $completion->get_state('completioncomplete'));
 
-        $secondcompletedcard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser'], true);
+        $secondcompletedcard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser']);
+        $this->complete_card($secondcompletedcard);
         $this->assign_card($secondcompletedcard, $fixture['student']->id);
         $this->assertSame(COMPLETION_COMPLETE, $completion->get_state('completioncomplete'));
     }
@@ -128,15 +131,21 @@ final class custom_completion_test extends \advanced_testcase {
      * @param bool $completed Whether the card is completed.
      * @return int Card ID.
      */
-    private function add_card(\mod_kanbanlearning\boardmanager $manager, int $columnid, \stdClass $creator, bool $completed = false): int {
+    private function add_card(\\mod_kanbanlearning\\boardmanager $manager, int $columnid, \\stdClass $creator): int {
+        $this->setUser($creator);
+        return $manager->add_card($columnid, 0, ['title' => 'Completion test card']);
+    }
+
+    /**
+     * Mark a card completed.
+     *
+     * @param int $cardid Card ID.
+     * @return void
+     */
+    private function complete_card(int $cardid): void {
         global $DB;
 
-        $this->setUser($creator);
-        $cardid = $manager->add_card($columnid, 0, ['title' => 'Completion test card']);
-        if ($completed) {
-            $DB->set_field('kanbanlearning_card', 'completed', 1, ['id' => $cardid]);
-        }
-        return $cardid;
+        $DB->set_field('kanbanlearning_card', 'completed', 1, ['id' => $cardid]);
     }
 
     /**
