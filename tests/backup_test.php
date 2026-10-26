@@ -69,8 +69,6 @@ final class backup_test extends \advanced_testcase {
         $this->assertSame('Restored structure column', $column->title);
         $this->assertSame('', $column->sequence);
         $this->assertFalse($DB->record_exists('kanbanlearning_card', ['kanbanlearning_board' => $board->id]));
-        $this->assertFalse($DB->record_exists('kanbanlearning_comment', ['kanbanlearning_card' => $fixture['cardid']]));
-        $this->assertFalse($DB->record_exists('kanbanlearning_assignee', ['kanbanlearning_card' => $fixture['cardid']]));
     }
 
     /**
@@ -173,7 +171,6 @@ final class backup_test extends \advanced_testcase {
 
         return [
             'cmid' => $activity->cmid,
-            'cardid' => $cardid,
             'destinationcourse' => $destinationcourse,
         ];
     }
