@@ -206,7 +206,7 @@ final class backup_test extends \advanced_testcase {
             $cmid,
             \backup::FORMAT_MOODLE,
             \backup::INTERACTIVE_NO,
-            \backup::MODE_GENERAL,
+            \backup::MODE_IMPORT,
             $USER->id
         );
         try {
@@ -225,7 +225,7 @@ final class backup_test extends \advanced_testcase {
             $backupid,
             $destinationcourseid,
             \backup::INTERACTIVE_NO,
-            \backup::MODE_GENERAL,
+            \backup::MODE_SAMESITE,
             $USER->id,
             \backup::TARGET_EXISTING_ADDING
         );
