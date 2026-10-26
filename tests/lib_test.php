@@ -110,6 +110,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertFalse($DB->record_exists('kanbanlearning_comment', ['kanbanlearning_card' => $cardid]));
         $this->assertFalse($DB->record_exists('kanbanlearning_assignee', ['kanbanlearning_card' => $cardid]));
     }
+
     /**
      * Resetting personal boards preserves the shared and group boards.
      *
@@ -271,5 +272,4 @@ final class lib_test extends \advanced_testcase {
             'groupcardid' => $cardids['group'],
         ];
     }
-
 }
