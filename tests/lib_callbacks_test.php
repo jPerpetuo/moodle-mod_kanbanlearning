@@ -141,7 +141,7 @@ final class lib_callbacks_test extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        [$course, $module] = $this->create_activity_for_course_info();
+        [, $module] = $this->create_activity_for_course_info();
         $DB->set_field('kanbanlearning', 'completioncreate', 1, ['id' => $module->id]);
         $DB->set_field('kanbanlearning', 'completioncomplete', 1, ['id' => $module->id]);
 
@@ -164,7 +164,7 @@ final class lib_callbacks_test extends \advanced_testcase {
      */
     public function test_get_coursemodule_info_omits_hidden_description_and_disabled_completion(): void {
         $this->resetAfterTest();
-        [$course, $module] = $this->create_activity_for_course_info();
+        [, $module] = $this->create_activity_for_course_info();
 
         $cm = get_coursemodule_from_id('kanbanlearning', $module->cmid, 0, false, MUST_EXIST);
         $cm->showdescription = 0;
