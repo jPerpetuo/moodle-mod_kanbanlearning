@@ -246,11 +246,13 @@ final class lib_test extends \advanced_testcase {
         $templateid = $manager->create_template();
 
         $cardids = [];
-        foreach ([
-            'shared' => $sharedboardid,
-            'personal' => $personalboardid,
-            'group' => $groupboardid,
-        ] as $scope => $boardid) {
+        foreach (
+            [
+                'shared' => $sharedboardid,
+                'personal' => $personalboardid,
+                'group' => $groupboardid,
+            ] as $scope => $boardid
+        ) {
             $manager->load_board($boardid);
             $columnid = (int) $DB->get_field(
                 'kanbanlearning_column',
