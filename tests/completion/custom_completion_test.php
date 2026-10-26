@@ -99,6 +99,7 @@ final class custom_completion_test extends \advanced_testcase {
         $activity = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
         $DB->set_field('kanbanlearning', 'completioncreate', $completioncreate, ['id' => $activity->id]);
         $DB->set_field('kanbanlearning', 'completioncomplete', $completioncomplete, ['id' => $activity->id]);
+        $DB->set_field('course_modules', 'completion', COMPLETION_TRACKING_AUTOMATIC, ['id' => $activity->cmid]);
 
         $student = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
