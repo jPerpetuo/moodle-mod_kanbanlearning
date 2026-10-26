@@ -194,7 +194,7 @@ final class backup_test extends \advanced_testcase {
      *
      * @param int $cmid Source course module id.
      * @param int $destinationcourseid Destination course id.
-     * @param bool $withuserinfo Whether user data should be included in the backup.
+     * @param bool $withuserinfo Whether activity user data should be included in the backup.
      * @return void
      */
     private function backup_and_restore_activity(int $cmid, int $destinationcourseid, bool $withuserinfo): void {
@@ -209,7 +209,7 @@ final class backup_test extends \advanced_testcase {
             $USER->id
         );
         try {
-            $backup->get_plan()->get_setting('users')->set_value($withuserinfo);
+            $backup->get_plan()->get_setting('userinfo')->set_value($withuserinfo);
             $backup->execute_plan();
             $backupid = $backup->get_backupid();
             $backupfile = $backup->get_results()['backup_destination'];
