@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * PHPUnit coverage configuration for mod_kanbanlearning.
  *
@@ -21,8 +23,7 @@
  * @copyright   2023-2025 ISB Bayern
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-return new class extends phpunit_coverage_info {
+class mod_kanbanlearning_coverage extends phpunit_coverage_info {
     /** @var array Additional production folders to include in coverage reports. */
     protected $includelistfolders = [
         'backup',
@@ -36,4 +37,6 @@ return new class extends phpunit_coverage_info {
         'settings.php',
         'view.php',
     ];
-};
+}
+
+return new mod_kanbanlearning_coverage();
