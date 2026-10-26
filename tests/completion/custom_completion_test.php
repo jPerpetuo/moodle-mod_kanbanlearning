@@ -123,15 +123,14 @@ final class custom_completion_test extends \advanced_testcase {
     }
 
     /**
-     * Add a card created by the supplied user and optionally mark it completed.
+     * Add a card created by the supplied user.
      *
      * @param \mod_kanbanlearning\boardmanager $manager Board manager.
      * @param int $columnid Target column.
      * @param \stdClass $creator Card creator.
-     * @param bool $completed Whether the card is completed.
      * @return int Card ID.
      */
-    private function add_card(\\mod_kanbanlearning\\boardmanager $manager, int $columnid, \\stdClass $creator): int {
+    private function add_card(\mod_kanbanlearning\boardmanager $manager, int $columnid, \stdClass $creator): int {
         $this->setUser($creator);
         return $manager->add_card($columnid, 0, ['title' => 'Completion test card']);
     }
