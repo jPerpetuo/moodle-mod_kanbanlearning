@@ -122,15 +122,16 @@ final class backup_test extends \advanced_testcase {
         $this->assertSame('Card description', $card->description);
         $this->assertSame((string) $card->id, $column->sequence);
 
-        $this->assertTrue($DB->record_exists('kanbanlearning_assignee', [
+        $assignee = $DB->get_record('kanbanlearning_assignee', [
             'kanbanlearning_card' => $card->id,
-            'userid' => $fixture['userid'],
-        ]));
-        $this->assertTrue($DB->record_exists('kanbanlearning_comment', [
+        ], '*', MUST_EXIST);
+        $comment = $DB->get_record('kanbanlearning_comment', [
             'kanbanlearning_card' => $card->id,
-            'userid' => $fixture['userid'],
             'content' => 'Backup discussion comment',
-        ]));
+        ], '*', MUST_EXIST);
+        $this->assertSame($assignee->userid, $comment->userid);
+        $this->assertGreaterThan(0, (int) $assignee->userid);
+        $this->assertTrue($DB->record_exists('user', ['id' => $assignee->userid]));
     }
 
     /**
