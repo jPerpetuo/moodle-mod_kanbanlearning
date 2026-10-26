@@ -89,7 +89,7 @@ final class backup_test extends \advanced_testcase {
      * @covers \restore_kanbanlearning_activity_structure_step::after_execute
      */
     public function test_restore_with_user_data_preserves_cards_and_related_records(): void {
-        global $DB, $USER;
+        global $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -124,11 +124,11 @@ final class backup_test extends \advanced_testcase {
 
         $this->assertTrue($DB->record_exists('kanbanlearning_assignee', [
             'kanbanlearning_card' => $card->id,
-            'userid' => $USER->id,
+            'userid' => $fixture['userid'],
         ]));
         $this->assertTrue($DB->record_exists('kanbanlearning_comment', [
             'kanbanlearning_card' => $card->id,
-            'userid' => $USER->id,
+            'userid' => $fixture['userid'],
             'content' => 'Backup discussion comment',
         ]));
     }
@@ -139,7 +139,7 @@ final class backup_test extends \advanced_testcase {
      * @return array
      */
     private function create_backup_fixture(): array {
-        global $DB, $USER;
+        global $DB;
 
         $sourcecourse = $this->getDataGenerator()->create_course();
         $destinationcourse = $this->getDataGenerator()->create_course();
@@ -164,17 +164,19 @@ final class backup_test extends \advanced_testcase {
         );
         $columncount = $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]);
         $DB->set_field('kanbanlearning_column', 'title', 'Restored structure column', ['id' => $columnid]);
+        $user = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($user->id, $sourcecourse->id);
         $cardid = $manager->add_card($columnid, 0, [
             'title' => 'Backup card',
             'description' => 'Card description',
         ]);
         $DB->insert_record('kanbanlearning_assignee', (object) [
             'kanbanlearning_card' => $cardid,
-            'userid' => $USER->id,
+            'userid' => $user->id,
         ]);
         $DB->insert_record('kanbanlearning_comment', (object) [
             'kanbanlearning_card' => $cardid,
-            'userid' => $USER->id,
+            'userid' => $user->id,
             'content' => 'Backup discussion comment',
             'timecreated' => time(),
         ]);
@@ -182,6 +184,7 @@ final class backup_test extends \advanced_testcase {
         return [
             'cmid' => $activity->cmid,
             'columncount' => $columncount,
+            'userid' => $user->id,
             'destinationcourse' => $destinationcourse,
         ];
     }
