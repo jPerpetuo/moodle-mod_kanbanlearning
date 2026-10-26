@@ -146,18 +146,18 @@ class backup_kanbanlearning_activity_structure_step extends backup_activity_stru
 
         if ($userinfo) {
             $board->set_source_table('kanbanlearning_board', ['kanbanlearning_instance' => backup::VAR_PARENTID]);
-            $board->annotate_ids('userid', 'userid');
+            $board->annotate_ids('user', 'userid');
             $board->annotate_ids('groupid', 'groupid');
             $assignee->set_source_table('kanbanlearning_assignee', ['kanbanlearning_card' => backup::VAR_PARENTID]);
-            $assignee->annotate_ids('userid', 'userid');
+            $assignee->annotate_ids('user', 'userid');
             $assignee->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
-            $card->annotate_ids('userid', 'createdby');
+            $card->annotate_ids('user', 'createdby');
             $discussion->set_source_table('kanbanlearning_comment', ['kanbanlearning_card' => backup::VAR_PARENTID]);
-            $discussion->annotate_ids('userid', 'userid');
+            $discussion->annotate_ids('user', 'userid');
             $discussion->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
             $historyitem->set_source_table('kanbanlearning_history', ['kanbanlearning_board' => backup::VAR_PARENTID]);
-            $historyitem->annotate_ids('userid', 'userid');
-            $historyitem->annotate_ids('userid', 'affected_userid');
+            $historyitem->annotate_ids('user', 'userid');
+            $historyitem->annotate_ids('user', 'affected_userid');
             $historyitem->annotate_ids('kanbanlearning_card_id', 'kanbanlearning_card');
             $historyitem->annotate_ids('kanbanlearning_column_id', 'kanbanlearning_column');
             $historyitem->annotate_ids('kanbanlearning_board_id', 'kanbanlearning_board');
