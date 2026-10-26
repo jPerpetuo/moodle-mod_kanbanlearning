@@ -90,6 +90,7 @@ jobs:
             database: 'mariadb'
             mariadb_image: '10.11'
             postgres_image: '16'
+            coverage: 'xdebug'
           - php: '8.4'
             moodle-branch: 'MOODLE_502_STABLE'
             database: 'pgsql'
@@ -139,7 +140,7 @@ jobs:
           ini-values: max_input_vars=5000
           # If you are not using code coverage, keep "none". Otherwise, use "pcov" (Moodle 3.10 and up) or "xdebug".
           # If you try to use code coverage with "none", it will fallback to phpdbg (which has known problems).
-          coverage: none
+          coverage: ${{ matrix.coverage || 'none' }}
 
       - name: Initialise moodle-plugin-ci
         run: |
@@ -197,8 +198,21 @@ jobs:
       - name: Grunt
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
+      - name: PHPUnit tests with coverage
+        if: matrix.coverage == 'xdebug'
+        run: moodle-plugin-ci phpunit --fail-on-warning --coverage-clover --coverage-text --coverage-xdebug
+
       - name: PHPUnit tests
+        if: matrix.coverage != 'xdebug'
         run: moodle-plugin-ci phpunit --fail-on-warning
+
+      - name: Upload PHPUnit coverage report
+        if: always() && matrix.coverage == 'xdebug' && hashFiles('coverage.xml') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-coverage-${{ matrix.moodle-branch }}-${{ matrix.database }}
+          path: coverage.xml
+          if-no-files-found: error
 
       - name: Behat features
         run: moodle-plugin-ci behat --profile chrome
