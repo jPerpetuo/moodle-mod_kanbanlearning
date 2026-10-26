@@ -52,7 +52,9 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
         $this->resetAfterTest();
         require_once($CFG->libdir . '/externallib.php');
 
-        $this->course = $this->getDataGenerator()->create_course();
+        $this->course = $this->getDataGenerator()->create_course([
+            'shortname' => 'kanbanlearning_test_' . bin2hex(random_bytes(8)),
+        ]);
         $this->kanbanlearning = $this->getDataGenerator()->create_module(
             'kanbanlearning',
             ['course' => $this->course]
@@ -106,7 +108,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
         $card = $this->find_updated_card($updates, $cardid);
 
         $this->assertSame(1, (int) $card['completed']);
-        $this->assertTrue($card['approval_seal_enabled']);
+        $this->assertSame(1, (int) $card['approval_seal_enabled']);
         $this->assertTrue($card['can_manage_approval_seal']);
         $this->assertSame('', $card['approval_seal_icon']);
     }
@@ -160,7 +162,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
         global $DB;
 
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
-        $boardid = $boardmanager->create_board();
+        $boardid = $boardmanager->get_or_create_board();
         $columnids = $DB->get_fieldset_sql(
             'SELECT id FROM {kanbanlearning_column} WHERE kanbanlearning_board = :boardid ORDER BY id ASC',
             ['boardid' => $boardid]
