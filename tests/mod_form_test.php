@@ -22,7 +22,7 @@ namespace mod_kanbanlearning;
  * @package     mod_kanbanlearning
  * @copyright   2026 CCEAD PUC-Rio
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers      ::mod_kanbanlearning_mod_form
+ * @covers      \mod_kanbanlearning_mod_form::validation
  */
 final class mod_form_test extends \advanced_testcase {
     /**
