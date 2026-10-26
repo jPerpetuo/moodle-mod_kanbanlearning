@@ -160,7 +160,7 @@ final class backup_test extends \advanced_testcase {
               WHERE kanbanlearning_board = :boardid
            ORDER BY sequence ASC, id ASC',
             ['boardid' => $boardid],
-            MUST_EXIST
+            IGNORE_MULTIPLE
         );
         $columncount = $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]);
         $DB->set_field('kanbanlearning_column', 'title', 'Restored structure column', ['id' => $columnid]);
