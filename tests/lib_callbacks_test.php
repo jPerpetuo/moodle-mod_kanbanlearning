@@ -24,6 +24,7 @@ namespace mod_kanbanlearning;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      ::kanbanlearning_normalize_board_group_settings
  * @covers      ::kanbanlearning_get_coursemodule_info
+ * @covers      ::kanbanlearning_supports
  */
 final class lib_callbacks_test extends \advanced_testcase {
     /** @var array Original POST data to restore after the test. */
@@ -132,6 +133,56 @@ final class lib_callbacks_test extends \advanced_testcase {
         $this->assertSame(0, $data->boardgroupid);
         $this->assertSame(0, $data->linknumbers);
     }
+    /**
+     * Supported activity features are reported as supported.
+     *
+     * @return void
+     */
+    public function test_supports_returns_true_for_supported_features(): void {
+        $features = [
+            FEATURE_IDNUMBER,
+            FEATURE_GROUPS,
+            FEATURE_GROUPINGS,
+            FEATURE_MOD_INTRO,
+            FEATURE_COMPLETION_TRACKS_VIEWS,
+            FEATURE_COMPLETION_HAS_RULES,
+            FEATURE_SHOW_DESCRIPTION,
+            FEATURE_BACKUP_MOODLE2,
+        ];
+
+        foreach ($features as $feature) {
+            $this->assertTrue(kanbanlearning_supports($feature), $feature);
+        }
+    }
+
+    /**
+     * Grade features that are not implemented are reported as unsupported.
+     *
+     * @return void
+     */
+    public function test_supports_returns_false_for_unsupported_grade_features(): void {
+        $this->assertFalse(kanbanlearning_supports(FEATURE_GRADE_HAS_GRADE));
+        $this->assertFalse(kanbanlearning_supports(FEATURE_GRADE_OUTCOMES));
+    }
+
+    /**
+     * The activity reports its collaboration purpose.
+     *
+     * @return void
+     */
+    public function test_supports_returns_collaboration_purpose(): void {
+        $this->assertSame(MOD_PURPOSE_COLLABORATION, kanbanlearning_supports(FEATURE_MOD_PURPOSE));
+    }
+
+    /**
+     * Unknown features remain unknown to the module.
+     *
+     * @return void
+     */
+    public function test_supports_returns_null_for_unknown_feature(): void {
+        $this->assertNull(kanbanlearning_supports('mod_kanbanlearning/unknown_feature'));
+    }
+
     /**
      * Course module info includes the visible introduction and automatic completion rules.
      *
