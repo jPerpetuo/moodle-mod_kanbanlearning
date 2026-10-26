@@ -43,8 +43,6 @@ final class custom_completion_test extends \advanced_testcase {
      * @return void
      */
     public function test_create_rule_counts_target_user_cards_up_to_threshold(): void {
-        global $DB;
-
         $fixture = $this->create_fixture(2, 0);
         $manager = $fixture['manager'];
         $this->add_card($manager, $fixture['columnid'], $fixture['student']);
@@ -64,8 +62,6 @@ final class custom_completion_test extends \advanced_testcase {
      * @return void
      */
     public function test_complete_rule_counts_assigned_completed_cards_up_to_threshold(): void {
-        global $DB;
-
         $fixture = $this->create_fixture(0, 2);
         $manager = $fixture['manager'];
         $studentcard = $this->add_card($manager, $fixture['columnid'], $fixture['otheruser'], true);
