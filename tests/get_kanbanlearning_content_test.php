@@ -74,7 +74,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
      * @return void
      */
     public function test_initial_data_marks_completed_card_as_reaction_eligible(): void {
-        list($boardmanager, $boardid, $completioncolumnid, $normalcolumnid) = $this->create_board();
+        [$boardmanager, $boardid, $completioncolumnid, $normalcolumnid] = $this->create_board();
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
 
         $response = get_kanbanlearning_content::get_kanbanlearning_content_init(
@@ -98,7 +98,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
      * @return void
      */
     public function test_incremental_update_enables_reaction_when_card_enters_completion_column(): void {
-        list($boardmanager, $boardid, $completioncolumnid, $normalcolumnid) = $this->create_board();
+        [$boardmanager, $boardid, $completioncolumnid, $normalcolumnid] = $this->create_board();
         $cardid = $boardmanager->add_card($normalcolumnid, 0, ['title' => 'Work in progress']);
 
         $boardmanager->move_card($cardid, 0, $completioncolumnid);
@@ -117,7 +117,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
      * @return void
      */
     public function test_incremental_update_disables_reaction_when_card_leaves_completion_column(): void {
-        list($boardmanager, $boardid, $completioncolumnid, $normalcolumnid) = $this->create_board();
+        [$boardmanager, $boardid, $completioncolumnid, $normalcolumnid] = $this->create_board();
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
         $boardmanager->set_approval_seal($cardid, 'approved');
 
@@ -137,7 +137,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
      * @return void
      */
     public function test_student_can_see_reaction_but_cannot_manage_it(): void {
-        list($boardmanager, $boardid, $completioncolumnid) = $this->create_board();
+        [$boardmanager, $boardid, $completioncolumnid] = $this->create_board();
         $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Finished work']);
         $boardmanager->set_approval_seal($cardid, 'approved');
         $this->setUser($this->student);
