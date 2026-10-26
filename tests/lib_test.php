@@ -57,7 +57,7 @@ final class lib_test extends \advanced_testcase {
             }
         }
 
-        $this->assertTrue($result);
+        $this->assertSame(1, $result);
         $stored = $DB->get_record('kanbanlearning', ['id' => $activity->id]);
         $this->assertSame('Updated Kanban Learning', $stored->name);
         $this->assertSame('17,23', $stored->boardgroups);
