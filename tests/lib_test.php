@@ -110,4 +110,166 @@ final class lib_test extends \advanced_testcase {
         $this->assertFalse($DB->record_exists('kanbanlearning_comment', ['kanbanlearning_card' => $cardid]));
         $this->assertFalse($DB->record_exists('kanbanlearning_assignee', ['kanbanlearning_card' => $cardid]));
     }
+    /**
+     * Resetting personal boards preserves the shared and group boards.
+     *
+     * @return void
+     * @covers ::kanbanlearning_reset_userdata
+     */
+    public function test_reset_userdata_removes_only_personal_boards_when_selected(): void {
+        global $DB;
+
+        $fixture = $this->create_reset_fixture();
+        $status = \\kanbanlearning_reset_userdata((object) [
+            'courseid' => $fixture['course']->id,
+            'reset_kanbanlearning_personal' => 1,
+        ]);
+
+        $this->assertCount(1, $status);
+        $this->assertFalse($DB->record_exists('kanbanlearning_board', ['id' => $fixture['personalboardid']]));
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['id' => $fixture['personalcardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['sharedboardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['groupboardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['templateid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $fixture['sharedcardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $fixture['groupcardid']]));
+    }
+
+    /**
+     * Resetting group boards preserves personal and shared boards.
+     *
+     * @return void
+     * @covers ::kanbanlearning_reset_userdata
+     */
+    public function test_reset_userdata_removes_only_group_boards_when_selected(): void {
+        global $DB;
+
+        $fixture = $this->create_reset_fixture();
+        $status = \\kanbanlearning_reset_userdata((object) [
+            'courseid' => $fixture['course']->id,
+            'reset_kanbanlearning_group' => 1,
+        ]);
+
+        $this->assertCount(1, $status);
+        $this->assertFalse($DB->record_exists('kanbanlearning_board', ['id' => $fixture['groupboardid']]));
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['id' => $fixture['groupcardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['sharedboardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['personalboardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['templateid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $fixture['sharedcardid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $fixture['personalcardid']]));
+    }
+
+    /**
+     * Resetting all activity boards removes shared, personal and group boards but keeps templates.
+     *
+     * @return void
+     * @covers ::kanbanlearning_reset_userdata
+     */
+    public function test_reset_userdata_removes_all_non_template_boards_for_course(): void {
+        global $DB;
+
+        $fixture = $this->create_reset_fixture();
+        $othercourse = $this->getDataGenerator()->create_course();
+        $otheractivity = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $othercourse]);
+        $otherboardid = (int) $DB->get_field(
+            'kanbanlearning_board',
+            'id',
+            ['kanbanlearning_instance' => $otheractivity->id],
+            MUST_EXIST
+        );
+
+        $status = \\kanbanlearning_reset_userdata((object) [
+            'courseid' => $fixture['course']->id,
+            'reset_kanbanlearning' => 1,
+        ]);
+
+        $this->assertCount(3, $status);
+        foreach (['sharedboardid', 'personalboardid', 'groupboardid'] as $key) {
+            $this->assertFalse($DB->record_exists('kanbanlearning_board', ['id' => $fixture[$key]]));
+        }
+        foreach (['sharedcardid', 'personalcardid', 'groupcardid'] as $key) {
+            $this->assertFalse($DB->record_exists('kanbanlearning_card', ['id' => $fixture[$key]]));
+        }
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture['templateid']]));
+        $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $otherboardid]));
+    }
+
+    /**
+     * Resetting a course with no Kanban options selected leaves its boards unchanged.
+     *
+     * @return void
+     * @covers ::kanbanlearning_reset_userdata
+     */
+    public function test_reset_userdata_with_no_options_preserves_boards(): void {
+        global $DB;
+
+        $fixture = $this->create_reset_fixture();
+        $status = \\kanbanlearning_reset_userdata((object) [
+            'courseid' => $fixture['course']->id,
+        ]);
+
+        $this->assertSame([], $status);
+        foreach (['sharedboardid', 'personalboardid', 'groupboardid', 'templateid'] as $key) {
+            $this->assertTrue($DB->record_exists('kanbanlearning_board', ['id' => $fixture[$key]]));
+        }
+        foreach (['sharedcardid', 'personalcardid', 'groupcardid'] as $key) {
+            $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $fixture[$key]]));
+        }
+    }
+
+    /**
+     * Create shared, personal and group boards, their cards, and a structural template.
+     *
+     * @return array
+     */
+    private function create_reset_fixture(): array {
+        global $DB;
+
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        $activity = $this->getDataGenerator()->create_module('kanbanlearning', ['course' => $course]);
+        $manager = new boardmanager($activity->cmid);
+        $sharedboardid = (int) $DB->get_field(
+            'kanbanlearning_board',
+            'id',
+            ['kanbanlearning_instance' => $activity->id, 'userid' => 0, 'groupid' => 0, 'template' => 0],
+            MUST_EXIST
+        );
+
+        $user = $this->getDataGenerator()->create_user();
+        $personalboardid = $manager->create_user_board($user->id);
+        $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $groupboardid = $manager->create_group_board($group->id);
+        $manager->load_board($sharedboardid);
+        $templateid = $manager->create_template();
+
+        $cardids = [];
+        foreach ([
+            'shared' => $sharedboardid,
+            'personal' => $personalboardid,
+            'group' => $groupboardid,
+        ] as $scope => $boardid) {
+            $manager->load_board($boardid);
+            $columnid = (int) $DB->get_field(
+                'kanbanlearning_column',
+                'id',
+                ['kanbanlearning_board' => $boardid],
+                IGNORE_MULTIPLE
+            );
+            $cardids[$scope] = $manager->add_card($columnid, 0, ['title' => $scope . ' reset test card']);
+        }
+
+        return [
+            'course' => $course,
+            'sharedboardid' => $sharedboardid,
+            'personalboardid' => $personalboardid,
+            'groupboardid' => $groupboardid,
+            'templateid' => $templateid,
+            'sharedcardid' => $cardids['shared'],
+            'personalcardid' => $cardids['personal'],
+            'groupcardid' => $cardids['group'],
+        ];
+    }
+
 }
