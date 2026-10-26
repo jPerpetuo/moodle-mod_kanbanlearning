@@ -109,7 +109,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
 
         $this->assertSame(1, (int) $card['completed']);
         $this->assertSame(1, (int) $card['approval_seal_enabled']);
-        $this->assertTrue($card['can_manage_approval_seal']);
+        $this->assertSame(1, (int) $card['can_manage_approval_seal']);
         $this->assertSame('', $card['approval_seal_icon']);
     }
 
@@ -147,7 +147,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
         $updates = $this->get_incremental_updates($boardid);
         $card = $this->find_updated_card($updates, $cardid);
 
-        $this->assertTrue($card['approval_seal_enabled']);
+        $this->assertSame(1, (int) $card['approval_seal_enabled']);
         $this->assertFalse($card['can_manage_approval_seal']);
         $this->assertSame('approved', $card['approval_seal']);
         $this->assertSame('✅', $card['approval_seal_icon']);
