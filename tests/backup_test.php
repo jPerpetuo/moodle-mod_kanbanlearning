@@ -209,6 +209,10 @@ final class backup_test extends \advanced_testcase {
             $backup->get_plan()->get_setting('users')->set_value($withuserinfo);
             $backup->execute_plan();
             $backupid = $backup->get_backupid();
+            $backupfile = $backup->get_results()['backup_destination'];
+            $tempdir = make_temp_directory('backup/' . $backupid);
+            $packer = get_file_packer('application/vnd.moodle.backup');
+            $packer->extract_to_pathname($backupfile, $tempdir);
         } finally {
             $backup->destroy();
         }
