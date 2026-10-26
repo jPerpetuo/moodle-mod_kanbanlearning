@@ -121,7 +121,7 @@ final class lib_test extends \advanced_testcase {
         global $DB;
 
         $fixture = $this->create_reset_fixture();
-        $status = \\kanbanlearning_reset_userdata((object) [
+        $status = \kanbanlearning_reset_userdata((object) [
             'courseid' => $fixture['course']->id,
             'reset_kanbanlearning_personal' => 1,
         ]);
@@ -146,7 +146,7 @@ final class lib_test extends \advanced_testcase {
         global $DB;
 
         $fixture = $this->create_reset_fixture();
-        $status = \\kanbanlearning_reset_userdata((object) [
+        $status = \kanbanlearning_reset_userdata((object) [
             'courseid' => $fixture['course']->id,
             'reset_kanbanlearning_group' => 1,
         ]);
@@ -180,7 +180,7 @@ final class lib_test extends \advanced_testcase {
             MUST_EXIST
         );
 
-        $status = \\kanbanlearning_reset_userdata((object) [
+        $status = \kanbanlearning_reset_userdata((object) [
             'courseid' => $fixture['course']->id,
             'reset_kanbanlearning' => 1,
         ]);
@@ -206,7 +206,7 @@ final class lib_test extends \advanced_testcase {
         global $DB;
 
         $fixture = $this->create_reset_fixture();
-        $status = \\kanbanlearning_reset_userdata((object) [
+        $status = \kanbanlearning_reset_userdata((object) [
             'courseid' => $fixture['course']->id,
         ]);
 
