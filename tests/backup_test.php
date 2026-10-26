@@ -64,10 +64,15 @@ final class backup_test extends \advanced_testcase {
         $this->assertSame(1, (int) $board->locked);
 
         $columns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $board->id]);
-        $this->assertCount(1, $columns);
-        $column = reset($columns);
+        $this->assertCount($fixture['columncount'], $columns);
+        $column = $DB->get_record('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Restored structure column',
+        ], '*', MUST_EXIST);
+        foreach ($columns as $restoredcolumn) {
+            $this->assertSame('', $restoredcolumn->sequence);
+        }
         $this->assertSame('Restored structure column', $column->title);
-        $this->assertSame('', $column->sequence);
         $this->assertFalse($DB->record_exists('kanbanlearning_card', ['kanbanlearning_board' => $board->id]));
     }
 
@@ -103,8 +108,11 @@ final class backup_test extends \advanced_testcase {
         $this->assertSame(0, (int) $board->template);
         $this->assertSame(1, (int) $board->locked);
         $columns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $board->id]);
-        $this->assertCount(1, $columns);
-        $column = reset($columns);
+        $this->assertCount($fixture['columncount'], $columns);
+        $column = $DB->get_record('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Restored structure column',
+        ], '*', MUST_EXIST);
         $this->assertSame('Restored structure column', $column->title);
 
         $cards = $DB->get_records('kanbanlearning_card', ['kanbanlearning_board' => $board->id]);
@@ -147,12 +155,14 @@ final class backup_test extends \advanced_testcase {
         );
         $DB->set_field('kanbanlearning_board', 'locked', 1, ['id' => $boardid]);
         $manager = new boardmanager($activity->cmid, $boardid);
-        $columnid = (int) $DB->get_field(
-            'kanbanlearning_column',
-            'id',
-            ['kanbanlearning_board' => $boardid],
+        $columnid = (int) $DB->get_field_sql(
+            'SELECT id FROM {kanbanlearning_column}
+              WHERE kanbanlearning_board = :boardid
+           ORDER BY sequence ASC, id ASC',
+            ['boardid' => $boardid],
             MUST_EXIST
         );
+        $columncount = $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid]);
         $DB->set_field('kanbanlearning_column', 'title', 'Restored structure column', ['id' => $columnid]);
         $cardid = $manager->add_card($columnid, 0, [
             'title' => 'Backup card',
@@ -171,6 +181,7 @@ final class backup_test extends \advanced_testcase {
 
         return [
             'cmid' => $activity->cmid,
+            'columncount' => $columncount,
             'destinationcourse' => $destinationcourse,
         ];
     }
