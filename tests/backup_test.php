@@ -127,8 +127,8 @@ final class backup_test extends \advanced_testcase {
         ], '*', MUST_EXIST);
         $comment = $DB->get_record('kanbanlearning_comment', [
             'kanbanlearning_card' => $card->id,
-            'content' => 'Backup discussion comment',
         ], '*', MUST_EXIST);
+        $this->assertSame('Backup discussion comment', $comment->content);
         $this->assertSame($assignee->userid, $comment->userid);
         $this->assertGreaterThan(0, (int) $assignee->userid);
         $this->assertTrue($DB->record_exists('user', ['id' => $assignee->userid]));
