@@ -232,6 +232,74 @@ final class backup_test extends \advanced_testcase {
     }
 
     /**
+     * Restoring an activity preserves and remaps every selected group ID in order.
+     *
+     * @return void
+     * @covers \restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     */
+    public function test_restore_multiple_selected_groups_maps_all_group_ids(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $fixture = $this->create_group_backup_fixture();
+        $secondgroup = $this->getDataGenerator()->create_group([
+            'courseid' => $fixture['sourcecourseid'],
+            'name' => 'Second selected group',
+        ]);
+        $DB->update_record('kanbanlearning', [
+            'id' => $DB->get_field('course_modules', 'instance', [
+                'id' => $fixture['cmid'],
+            ]),
+            'boardgroupid' => $fixture['groupid'],
+            'boardgroups' => $fixture['groupid'] . ',' . $secondgroup->id,
+        ]);
+
+        $this->backup_and_restore_activity(
+            $fixture['cmid'],
+            $fixture['destinationcourse']->id,
+            [
+                'users' => false,
+                'groups' => true,
+                'scope' => 'course',
+                'sourcecourseid' => $fixture['sourcecourseid'],
+            ]
+        );
+
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $fixture['destinationcourse']->id,
+            'name' => 'Group backup restore fixture',
+        ], '*', MUST_EXIST);
+        $groups = groups_get_all_groups($fixture['destinationcourse']->id);
+        $this->assertCount(2, $groups);
+        $groupsbyname = [];
+        foreach ($groups as $group) {
+            $groupsbyname[$group->name] = $group;
+        }
+        $expectedgroupids = [
+            (int) $groupsbyname['Selected project group']->id,
+            (int) $groupsbyname['Second selected group']->id,
+        ];
+
+        $this->assertSame(\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
+        $this->assertSame($expectedgroupids[0], (int) $activity->boardgroupid);
+        $this->assertSame(
+            $expectedgroupids,
+            array_map('intval', explode(',', (string) $activity->boardgroups))
+        );
+
+        $boards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $activity->id]);
+        $this->assertCount(1, $boards);
+        $board = reset($boards);
+        $this->assertSame(1, (int) $board->template);
+        $this->assertTrue($DB->record_exists('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Selected group structure',
+        ]));
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['kanbanlearning_board' => $board->id]));
+    }
+
+    /**
      * Restoring a group board with user data preserves its cards and related records.
      *
      * @return void
