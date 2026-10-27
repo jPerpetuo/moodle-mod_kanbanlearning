@@ -135,6 +135,139 @@ final class backup_test extends \advanced_testcase {
     }
 
     /**
+     * Restoring without user data preserves selected group settings when groups are included.
+     *
+     * @return void
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \\backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_column
+     */
+    public function test_restore_group_structure_and_selection_with_groups_included(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $fixture = $this->create_group_backup_fixture();
+
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, false, true);
+
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $fixture['destinationcourse']->id,
+            'name' => 'Group backup restore fixture',
+        ], '*', MUST_EXIST);
+        $groups = groups_get_all_groups($fixture['destinationcourse']->id);
+        $this->assertCount(1, $groups);
+        $restoredgroup = reset($groups);
+        $this->assertSame(\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
+        $this->assertSame((int) $restoredgroup->id, (int) $activity->boardgroupid);
+        $this->assertSame((string) $restoredgroup->id, (string) $activity->boardgroups);
+
+        $boards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $activity->id]);
+        $this->assertCount(1, $boards);
+        $board = reset($boards);
+        $this->assertSame(1, (int) $board->template);
+        $this->assertSame(0, (int) $board->groupid);
+        $this->assertTrue($DB->record_exists('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Selected group structure',
+        ]));
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['kanbanlearning_board' => $board->id]));
+    }
+
+    /**
+     * Restoring without group data clears selected groups and falls back to a shared board.
+     *
+     * @return void
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \\backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
+     */
+    public function test_restore_group_structure_without_groups_falls_back_to_shared_board(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $fixture = $this->create_group_backup_fixture();
+
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, false, false);
+
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $fixture['destinationcourse']->id,
+            'name' => 'Group backup restore fixture',
+        ], '*', MUST_EXIST);
+        $this->assertSame(\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_SHARED, (int) $activity->boardmode);
+        $this->assertSame(0, (int) $activity->boardgroupid);
+        $this->assertSame('', (string) $activity->boardgroups);
+        $this->assertEmpty(groups_get_all_groups($fixture['destinationcourse']->id));
+
+        $boards = $DB->get_records('kanbanlearning_board', ['kanbanlearning_instance' => $activity->id]);
+        $this->assertCount(1, $boards);
+        $board = reset($boards);
+        $this->assertSame(1, (int) $board->template);
+        $this->assertSame(0, (int) $board->groupid);
+        $this->assertTrue($DB->record_exists('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Selected group structure',
+        ]));
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['kanbanlearning_board' => $board->id]));
+    }
+
+    /**
+     * Create a group-mode activity with a selected group board containing custom structure.
+     *
+     * @return array
+     */
+    private function create_group_backup_fixture(): array {
+        global $DB;
+
+        $sourcecourse = $this->getDataGenerator()->create_course();
+        $destinationcourse = $this->getDataGenerator()->create_course();
+        $group = $this->getDataGenerator()->create_group([
+            'courseid' => $sourcecourse->id,
+            'name' => 'Selected project group',
+        ]);
+        $activity = $this->getDataGenerator()->create_module('kanbanlearning', [
+            'course' => $sourcecourse,
+            'name' => 'Group backup restore fixture',
+        ]);
+        $DB->update_record('kanbanlearning', [
+            'id' => $activity->id,
+            'boardmode' => \\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
+            'boardgroupid' => $group->id,
+            'boardgroups' => (string) $group->id,
+        ]);
+
+        $sourceboard = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $activity->id,
+            'userid' => 0,
+            'groupid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $groupboard = clone $sourceboard;
+        unset($groupboard->id);
+        $groupboard->groupid = $group->id;
+        $groupboard->sequence = '';
+        $groupboard->id = $DB->insert_record('kanbanlearning_board', $groupboard);
+
+        $sourcecolumns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $sourceboard->id]);
+        foreach ($sourcecolumns as $sourcecolumn) {
+            $column = clone $sourcecolumn;
+            unset($column->id);
+            $column->kanbanlearning_board = $groupboard->id;
+            $column->sequence = '';
+            $column->id = $DB->insert_record('kanbanlearning_column', $column);
+            $DB->set_field('kanbanlearning_column', 'title', 'Selected group structure', ['id' => $column->id]);
+            break;
+        }
+
+        return [
+            'cmid' => $activity->cmid,
+            'destinationcourse' => $destinationcourse,
+        ];
+    }
+
+    /**
      * Create a source activity with custom structure, a card and user-related records.
      *
      * @return array
@@ -198,7 +331,12 @@ final class backup_test extends \advanced_testcase {
      * @param bool $withuserinfo Whether activity user data should be included in the backup.
      * @return void
      */
-    private function backup_and_restore_activity(int $cmid, int $destinationcourseid, bool $withuserinfo): void {
+    private function backup_and_restore_activity(
+        int $cmid,
+        int $destinationcourseid,
+        bool $withuserinfo,
+        bool $includegroups = true
+    ): void {
         global $USER;
 
         $backup = new \backup_controller(
@@ -211,6 +349,7 @@ final class backup_test extends \advanced_testcase {
         );
         try {
             $backup->get_plan()->get_setting('users')->set_value($withuserinfo);
+            $backup->get_plan()->get_setting('groups')->set_value($includegroups);
             $backup->execute_plan();
             $backupid = $backup->get_backupid();
             $backupfile = $backup->get_results()['backup_destination'];
@@ -230,6 +369,7 @@ final class backup_test extends \advanced_testcase {
             \backup::TARGET_EXISTING_ADDING
         );
         try {
+            $restore->get_plan()->get_setting('groups')->set_value($includegroups);
             $restore->execute_precheck();
             $restore->execute_plan();
         } finally {
