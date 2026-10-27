@@ -89,16 +89,23 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         if (!$includegroups) {
             $data->boardgroups = '';
             $data->boardgroupid = 0;
-        } else if (!empty($data->boardgroups)) {
-            $mappedgroupids = [];
-            $groupids = preg_split('/[;,]/', (string)$data->boardgroups, -1, PREG_SPLIT_NO_EMPTY);
-            foreach ($groupids as $groupid) {
-                $mappedgroupid = $this->get_mappingid('group', (int)$groupid);
-                if (!empty($mappedgroupid)) {
-                    $mappedgroupids[] = (int)$mappedgroupid;
-                }
+        } else {
+            if (!empty($data->boardgroupid)) {
+                $mappedboardgroupid = $this->get_mappingid('group', (int)$data->boardgroupid);
+                $data->boardgroupid = !empty($mappedboardgroupid) ? (int)$mappedboardgroupid : 0;
             }
-            $data->boardgroups = implode(',', array_unique($mappedgroupids));
+
+            if (!empty($data->boardgroups)) {
+                $mappedgroupids = [];
+                $groupids = preg_split('/[;,]/', (string)$data->boardgroups, -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($groupids as $groupid) {
+                    $mappedgroupid = $this->get_mappingid('group', (int)$groupid);
+                    if (!empty($mappedgroupid)) {
+                        $mappedgroupids[] = (int)$mappedgroupid;
+                    }
+                }
+                $data->boardgroups = implode(',', array_unique($mappedgroupids));
+            }
         }
         if (
             (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
