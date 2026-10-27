@@ -138,10 +138,10 @@ final class backup_test extends \advanced_testcase {
      * Restoring without user data preserves selected group settings when groups are included.
      *
      * @return void
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
-     * @covers \\backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_column
+     * @covers \restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
+     * @covers \restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \restore_kanbanlearning_activity_structure_step::process_column
      */
     public function test_restore_group_structure_and_selection_with_groups_included(): void {
         global $DB;
@@ -179,9 +179,9 @@ final class backup_test extends \advanced_testcase {
      * Restoring without group data clears selected groups and falls back to a shared board.
      *
      * @return void
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
-     * @covers \\backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \backup_kanbanlearning_activity_structure_step::get_structure_source_board_id
+     * @covers \restore_kanbanlearning_activity_structure_step::process_board
      */
     public function test_restore_group_structure_without_groups_falls_back_to_shared_board(): void {
         global $DB;
@@ -233,7 +233,7 @@ final class backup_test extends \advanced_testcase {
         ]);
         $DB->update_record('kanbanlearning', [
             'id' => $activity->id,
-            'boardmode' => \\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
+            'boardmode' => \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
             'boardgroupid' => $group->id,
             'boardgroups' => (string) $group->id,
         ]);
@@ -251,15 +251,22 @@ final class backup_test extends \advanced_testcase {
         $groupboard->id = $DB->insert_record('kanbanlearning_board', $groupboard);
 
         $sourcecolumns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $sourceboard->id]);
+        $columnids = [];
         foreach ($sourcecolumns as $sourcecolumn) {
             $column = clone $sourcecolumn;
             unset($column->id);
             $column->kanbanlearning_board = $groupboard->id;
             $column->sequence = '';
             $column->id = $DB->insert_record('kanbanlearning_column', $column);
-            $DB->set_field('kanbanlearning_column', 'title', 'Selected group structure', ['id' => $column->id]);
-            break;
+            $columnids[$sourcecolumn->id] = $column->id;
         }
+        $firstcolumnid = reset($columnids);
+        $DB->set_field('kanbanlearning_column', 'title', 'Selected group structure', ['id' => $firstcolumnid]);
+        $groupboard->sequence = implode(',', array_intersect_key($columnids, array_flip(explode(',', $sourceboard->sequence))));
+        $DB->update_record('kanbanlearning_board', [
+            'id' => $groupboard->id,
+            'sequence' => $groupboard->sequence,
+        ]);
 
         return [
             'cmid' => $activity->cmid,
