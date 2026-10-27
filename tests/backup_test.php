@@ -48,7 +48,7 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, false);
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => false]);
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
@@ -95,7 +95,7 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, true);
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => true]);
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
@@ -150,7 +150,7 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_group_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, false, true);
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => false, 'groups' => true]);
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
@@ -190,7 +190,7 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_group_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, false, false);
+        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => false, 'groups' => false]);
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
@@ -331,19 +331,17 @@ final class backup_test extends \advanced_testcase {
     }
 
     /**
-     * Run an activity backup and restore with or without user data.
+     * Run an activity backup and restore with selected backup options.
      *
      * @param int $cmid Source course module id.
      * @param int $destinationcourseid Destination course id.
-     * @param bool $withuserinfo Whether activity user data should be included in the backup.
+     * @param array $options Backup options. Supported keys are users and groups.
      * @return void
      */
-    private function backup_and_restore_activity(
-        int $cmid,
-        int $destinationcourseid,
-        bool $withuserinfo,
-        bool $includegroups = true
-    ): void {
+    private function backup_and_restore_activity(int $cmid, int $destinationcourseid, array $options = []): void {
+        $withuserinfo = (bool)($options['users'] ?? false);
+        $includegroups = (bool)($options['groups'] ?? true);
+
         global $USER;
 
         $backup = new \backup_controller(
