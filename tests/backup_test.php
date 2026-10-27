@@ -235,14 +235,14 @@ final class backup_test extends \advanced_testcase {
      * Restoring a group board with user data preserves its cards and related records.
      *
      * @return void
-     * @covers \\backup_kanbanlearning_activity_structure_step::define_structure
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_column
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_card
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_assignee
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_discussion_comment
-     * @covers \\restore_kanbanlearning_activity_structure_step::after_execute
+     * @covers \backup_kanbanlearning_activity_structure_step::define_structure
+     * @covers \restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \restore_kanbanlearning_activity_structure_step::process_column
+     * @covers \restore_kanbanlearning_activity_structure_step::process_card
+     * @covers \restore_kanbanlearning_activity_structure_step::process_assignee
+     * @covers \restore_kanbanlearning_activity_structure_step::process_discussion_comment
+     * @covers \restore_kanbanlearning_activity_structure_step::after_execute
      */
     public function test_restore_group_board_with_user_data_preserves_cards_and_relations(): void {
         global $DB;
@@ -286,7 +286,7 @@ final class backup_test extends \advanced_testcase {
         $groups = groups_get_all_groups($fixture['destinationcourse']->id);
         $this->assertCount(1, $groups);
         $restoredgroup = reset($groups);
-        $this->assertSame(\\mod_kanbanlearning\\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
+        $this->assertSame(\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
         $this->assertSame((int) $restoredgroup->id, (int) $activity->boardgroupid);
         $this->assertSame((string) $restoredgroup->id, (string) $activity->boardgroups);
 
