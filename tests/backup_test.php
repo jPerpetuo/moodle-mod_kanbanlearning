@@ -153,7 +153,12 @@ final class backup_test extends \advanced_testcase {
         $this->backup_and_restore_activity(
             $fixture['cmid'],
             $fixture['destinationcourse']->id,
-            ['users' => false, 'groups' => true]
+            [
+                'users' => false,
+                'groups' => true,
+                'scope' => 'course',
+                'sourcecourseid' => $fixture['sourcecourseid'],
+            ]
         );
 
         $activity = $DB->get_record('kanbanlearning', [
@@ -197,7 +202,12 @@ final class backup_test extends \advanced_testcase {
         $this->backup_and_restore_activity(
             $fixture['cmid'],
             $fixture['destinationcourse']->id,
-            ['users' => false, 'groups' => false]
+            [
+                'users' => false,
+                'groups' => false,
+                'scope' => 'course',
+                'sourcecourseid' => $fixture['sourcecourseid'],
+            ]
         );
 
         $activity = $DB->get_record('kanbanlearning', [
@@ -278,6 +288,7 @@ final class backup_test extends \advanced_testcase {
 
         return [
             'cmid' => $activity->cmid,
+            'sourcecourseid' => $sourcecourse->id,
             'destinationcourse' => $destinationcourse,
         ];
     }
@@ -332,6 +343,7 @@ final class backup_test extends \advanced_testcase {
 
         return [
             'cmid' => $activity->cmid,
+            'sourcecourseid' => $sourcecourse->id,
             'columncount' => $columncount,
             'userid' => $user->id,
             'destinationcourse' => $destinationcourse,
@@ -352,9 +364,12 @@ final class backup_test extends \advanced_testcase {
 
         global $USER;
 
+        $scope = $options['scope'] ?? 'activity';
+        $backuptype = $scope === 'course' ? \backup::TYPE_1COURSE : \backup::TYPE_1ACTIVITY;
+        $backupitemid = $scope === 'course' ? $options['sourcecourseid'] : $cmid;
         $backup = new \backup_controller(
-            \backup::TYPE_1ACTIVITY,
-            $cmid,
+            $backuptype,
+            $backupitemid,
             \backup::FORMAT_MOODLE,
             \backup::INTERACTIVE_NO,
             \backup::MODE_GENERAL,
