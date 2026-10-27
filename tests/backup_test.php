@@ -150,7 +150,11 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_group_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => false, 'groups' => true]);
+        $this->backup_and_restore_activity(
+            $fixture['cmid'],
+            $fixture['destinationcourse']->id,
+            ['users' => false, 'groups' => true]
+        );
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
@@ -190,7 +194,11 @@ final class backup_test extends \advanced_testcase {
         $this->setAdminUser();
         $fixture = $this->create_group_backup_fixture();
 
-        $this->backup_and_restore_activity($fixture['cmid'], $fixture['destinationcourse']->id, ['users' => false, 'groups' => false]);
+        $this->backup_and_restore_activity(
+            $fixture['cmid'],
+            $fixture['destinationcourse']->id,
+            ['users' => false, 'groups' => false]
+        );
 
         $activity = $DB->get_record('kanbanlearning', [
             'course' => $fixture['destinationcourse']->id,
