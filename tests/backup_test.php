@@ -232,6 +232,94 @@ final class backup_test extends \advanced_testcase {
     }
 
     /**
+     * Restoring a group board with user data preserves its cards and related records.
+     *
+     * @return void
+     * @covers \\backup_kanbanlearning_activity_structure_step::define_structure
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_column
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_card
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_assignee
+     * @covers \\restore_kanbanlearning_activity_structure_step::process_discussion_comment
+     * @covers \\restore_kanbanlearning_activity_structure_step::after_execute
+     */
+    public function test_restore_group_board_with_user_data_preserves_cards_and_relations(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $fixture = $this->create_group_backup_fixture();
+        $user = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($user->id, $fixture['sourcecourseid']);
+        $cardmanager = new boardmanager($fixture['cmid'], $fixture['groupboardid']);
+        $cardid = $cardmanager->add_card($fixture['groupcolumnid'], 0, [
+            'title' => 'Group board backup card',
+            'description' => 'Group card description',
+        ]);
+        $DB->insert_record('kanbanlearning_assignee', (object) [
+            'kanbanlearning_card' => $cardid,
+            'userid' => $user->id,
+        ]);
+        $DB->insert_record('kanbanlearning_comment', (object) [
+            'kanbanlearning_card' => $cardid,
+            'userid' => $user->id,
+            'content' => 'Group board discussion comment',
+            'timecreated' => time(),
+        ]);
+
+        $this->backup_and_restore_activity(
+            $fixture['cmid'],
+            $fixture['destinationcourse']->id,
+            [
+                'users' => true,
+                'groups' => true,
+                'scope' => 'course',
+                'sourcecourseid' => $fixture['sourcecourseid'],
+            ]
+        );
+
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $fixture['destinationcourse']->id,
+            'name' => 'Group backup restore fixture',
+        ], '*', MUST_EXIST);
+        $groups = groups_get_all_groups($fixture['destinationcourse']->id);
+        $this->assertCount(1, $groups);
+        $restoredgroup = reset($groups);
+        $this->assertSame(\\mod_kanbanlearning\\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
+        $this->assertSame((int) $restoredgroup->id, (int) $activity->boardgroupid);
+        $this->assertSame((string) $restoredgroup->id, (string) $activity->boardgroups);
+
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $activity->id,
+            'userid' => 0,
+            'groupid' => $restoredgroup->id,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $column = $DB->get_record('kanbanlearning_column', [
+            'kanbanlearning_board' => $board->id,
+            'title' => 'Selected group structure',
+        ], '*', MUST_EXIST);
+        $cards = $DB->get_records('kanbanlearning_card', ['kanbanlearning_board' => $board->id]);
+        $this->assertCount(1, $cards);
+        $card = reset($cards);
+        $this->assertSame('Group board backup card', $card->title);
+        $this->assertSame('Group card description', $card->description);
+        $this->assertSame((string) $card->id, $column->sequence);
+
+        $assignee = $DB->get_record('kanbanlearning_assignee', [
+            'kanbanlearning_card' => $card->id,
+        ], '*', MUST_EXIST);
+        $comment = $DB->get_record('kanbanlearning_comment', [
+            'kanbanlearning_card' => $card->id,
+        ], '*', MUST_EXIST);
+        $this->assertSame('Group board discussion comment', $comment->content);
+        $this->assertSame((int) $assignee->userid, (int) $comment->userid);
+        $this->assertGreaterThan(0, (int) $assignee->userid);
+        $this->assertTrue($DB->record_exists('user', ['id' => $assignee->userid]));
+    }
+
+    /**
      * Create a group-mode activity with a selected group board containing custom structure.
      *
      * @return array
@@ -289,6 +377,9 @@ final class backup_test extends \advanced_testcase {
         return [
             'cmid' => $activity->cmid,
             'sourcecourseid' => $sourcecourse->id,
+            'groupid' => $group->id,
+            'groupboardid' => $groupboard->id,
+            'groupcolumnid' => $firstcolumnid,
             'destinationcourse' => $destinationcourse,
         ];
     }
