@@ -84,6 +84,7 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
             ['id' => $boardid],
             MUST_EXIST
         )));
+        $DB->set_field('kanbanlearning_column', 'locked', 0, ['kanbanlearning_board' => $boardid]);
 
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
             $this->kanbanlearning->cmid,
