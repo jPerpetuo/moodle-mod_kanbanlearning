@@ -301,13 +301,13 @@ final class backup_test extends \advanced_testcase {
      * Restoring multiple selected group boards with user data preserves each board's records.
      *
      * @return void
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_kanbanlearning
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_board
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_column
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_card
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_assignee
-     * @covers \\restore_kanbanlearning_activity_structure_step::process_discussion_comment
-     * @covers \\restore_kanbanlearning_activity_structure_step::after_execute
+     * @covers \restore_kanbanlearning_activity_structure_step::process_kanbanlearning
+     * @covers \restore_kanbanlearning_activity_structure_step::process_board
+     * @covers \restore_kanbanlearning_activity_structure_step::process_column
+     * @covers \restore_kanbanlearning_activity_structure_step::process_card
+     * @covers \restore_kanbanlearning_activity_structure_step::process_assignee
+     * @covers \restore_kanbanlearning_activity_structure_step::process_discussion_comment
+     * @covers \restore_kanbanlearning_activity_structure_step::after_execute
      */
     public function test_restore_multiple_group_boards_with_user_data_preserves_records(): void {
         global $DB;
@@ -342,7 +342,7 @@ final class backup_test extends \advanced_testcase {
             'boardgroups' => $fixture['groupid'] . ',' . $secondgroup->id,
         ]);
         $secondboardid = $firstmanager->create_group_board($secondgroup->id);
-        $secondcolumnids = array_map('intval', explode(',', (string)$DB->get_field(
+        $secondcolumnids = array_map('intval', explode(',', (string) $DB->get_field(
             'kanbanlearning_board',
             'sequence',
             ['id' => $secondboardid],
@@ -400,7 +400,7 @@ final class backup_test extends \advanced_testcase {
         $expectedgroupids = [];
         foreach ($expectedgroups as $groupname => $expected) {
             $this->assertArrayHasKey($groupname, $groupsbyname);
-            $groupid = (int)$groupsbyname[$groupname]->id;
+            $groupid = (int) $groupsbyname[$groupname]->id;
             $expectedgroupids[] = $groupid;
             $board = $DB->get_record('kanbanlearning_board', [
                 'kanbanlearning_instance' => $activity->id,
@@ -420,15 +420,15 @@ final class backup_test extends \advanced_testcase {
                 'kanbanlearning_card' => $card->id,
             ], '*', MUST_EXIST);
             $this->assertSame($expected['comment'], $comment->content);
-            $this->assertSame((int)$assignee->userid, (int)$comment->userid);
+            $this->assertSame((int) $assignee->userid, (int) $comment->userid);
             $this->assertTrue($DB->record_exists('user', ['id' => $assignee->userid]));
         }
 
-        $this->assertSame(\\mod_kanbanlearning\\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int)$activity->boardmode);
-        $this->assertSame($expectedgroupids[0], (int)$activity->boardgroupid);
+        $this->assertSame(\mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, (int) $activity->boardmode);
+        $this->assertSame($expectedgroupids[0], (int) $activity->boardgroupid);
         $this->assertSame(
             $expectedgroupids,
-            array_map('intval', explode(',', (string)$activity->boardgroups))
+            array_map('intval', explode(',', (string) $activity->boardgroups))
         );
     }
 
