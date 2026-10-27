@@ -78,7 +78,12 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        $columnids = array_map('intval', explode(',', $DB->get_field(
+            'kanbanlearning_board',
+            'sequence',
+            ['id' => $boardid],
+            MUST_EXIST
+        )));
 
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
             $this->kanbanlearning->cmid,
