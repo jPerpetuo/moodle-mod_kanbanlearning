@@ -248,9 +248,7 @@ final class backup_test extends \advanced_testcase {
             'name' => 'Second selected group',
         ]);
         $DB->update_record('kanbanlearning', [
-            'id' => $DB->get_field('course_modules', 'instance', [
-                'id' => $fixture['cmid'],
-            ]),
+            'id' => $fixture['activityid'],
             'boardgroupid' => $fixture['groupid'],
             'boardgroups' => $fixture['groupid'] . ',' . $secondgroup->id,
         ]);
@@ -444,6 +442,7 @@ final class backup_test extends \advanced_testcase {
 
         return [
             'cmid' => $activity->cmid,
+            'activityid' => $activity->id,
             'sourcecourseid' => $sourcecourse->id,
             'groupid' => $group->id,
             'groupboardid' => $groupboard->id,
