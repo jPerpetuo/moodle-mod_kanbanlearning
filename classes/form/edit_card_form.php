@@ -240,7 +240,7 @@ class edit_card_form extends dynamic_form {
         $boardmanager = new boardmanager($cmid, $boardid);
 
         if (!$boardmanager->can_user_manage_specific_card($id)) {
-            throw new moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanlearning');
+            throw new \\moodle_exception('editing_this_card_is_not_allowed', 'mod_kanbanlearning');
         }
 
         $modinfo = get_fast_modinfo($COURSE);
