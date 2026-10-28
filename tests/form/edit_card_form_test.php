@@ -75,6 +75,7 @@ final class edit_card_form_test extends \advanced_testcase {
         $this->setUser($this->teacher);
         $boardmanager = new boardmanager($this->cmid);
         $this->boardid = (int) $boardmanager->get_or_create_board();
+        $boardmanager->load_board($this->boardid);
         $columnids = $DB->get_fieldset_select(
             'kanbanlearning_column',
             'id',
