@@ -154,6 +154,60 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
     }
 
     /**
+     * Group members can read their board, while students in another group cannot.
+     *
+     * @return void
+     */
+    public function test_group_board_content_is_restricted_to_group_members(): void {
+        global $DB;
+
+        $groupa = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
+        $groupb = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
+        groups_add_member($groupa->id, $this->student->id);
+
+        $outsider = $this->getDataGenerator()->create_user();
+        $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*', MUST_EXIST);
+        $this->getDataGenerator()->enrol_user($outsider->id, $this->course->id, $studentrole->id);
+        groups_add_member($groupb->id, $outsider->id);
+
+        $DB->set_field(
+            'kanbanlearning',
+            'boardmode',
+            constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
+            ['id' => $this->kanbanlearning->id]
+        );
+        $creator = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $creator->create_group_board($groupa->id);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid, $boardid);
+        $columnid = (int) $DB->get_field(
+            'kanbanlearning_column',
+            'id',
+            ['kanbanlearning_board' => $boardid],
+            MUST_EXIST
+        );
+        $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Group A private work']);
+
+        $this->setUser($this->student);
+        $response = get_kanbanlearning_content::get_kanbanlearning_content_init(
+            $this->kanbanlearning->cmid,
+            $boardid
+        );
+        $card = $this->find_initial_card($response['cards'], $cardid);
+        $this->assertSame('Group A private work', $card->title);
+
+        $this->setUser($outsider);
+        try {
+            get_kanbanlearning_content::get_kanbanlearning_content_init(
+                $this->kanbanlearning->cmid,
+                $boardid
+            );
+            $this->fail('A student outside the group must not receive its board content.');
+        } catch (\\moodle_exception $exception) {
+            $this->assertSame('boardgroupaccessdenied', $exception->errorcode);
+        }
+    }
+
+    /**
      * Create a board with a deterministic completion column.
      *
      * @return array
