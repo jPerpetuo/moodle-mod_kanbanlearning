@@ -32,7 +32,6 @@ Feature: Course backup and restore retain Kanban board structure without card da
       | Confirmation | Filename               | kanban-backup.mbz  |
     And I restore "kanban-backup.mbz" backup into a new course using this options:
       | Schema | Course name | Restored course |
-    And I am on the "Restored course" course page
     And I click on "Source Kanban" "link"
     Then ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(5)" "css_element" should exist
     And ".mod_kanbanlearning_column_container .mod_kanbanlearning_card" "css_element" should not exist
@@ -55,7 +54,6 @@ Feature: Course backup and restore retain Kanban board structure without card da
       | Confirmation | Filename                   | kanban-backup.mbz |
     And I restore "kanban-backup.mbz" backup into a new course using this options:
       | Schema | Course name | Restored course |
-    And I am on the "Restored course" course page
     And I click on "Source Kanban" "link"
     Then I should see "Shared board" in the ".mod_kanbanlearning_boardselector_current" "css_element"
     And ".mod_kanbanlearning_column_container .mod_kanbanlearning_column" "css_element" should exist
