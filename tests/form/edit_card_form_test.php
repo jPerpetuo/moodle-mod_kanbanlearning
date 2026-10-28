@@ -84,6 +84,10 @@ final class edit_card_form_test extends \advanced_testcase {
         );
         $columnid = (int) reset($columnids);
         $this->cardid = (int) $boardmanager->add_card($columnid, 0, ['title' => 'Teacher card']);
+        $DB->insert_record('kanbanlearning_assignee', [
+            'kanbanlearning_card' => $this->cardid,
+            'userid' => $this->teacher->id,
+        ]);
     }
 
     /**
