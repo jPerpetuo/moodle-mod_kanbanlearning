@@ -30,9 +30,10 @@ Feature: Course import preserves Kanban board structure and group mode
 
   @javascript
   Scenario: Imported group boards retain their groups when groups are included
-    Given I am on the "Source course" course page logged in as teacher1
+    Given I am on the "Destination course" course page logged in as teacher1
     When I import "Source course" course into "Destination course" course using this options:
       | Initial | Include groups and groupings | 1 |
+    And I am on the "Destination course" course page
     And I click on "Source Kanban" "link"
     And I click on ".mod_kanbanlearning_boardselector_button" "css_element"
     Then I should see "Group A" in the ".mod_kanbanlearning_boardselector_menu" "css_element"
@@ -40,9 +41,10 @@ Feature: Course import preserves Kanban board structure and group mode
 
   @javascript
   Scenario: Imported group boards become shared when groups are excluded
-    Given I am on the "Source course" course page logged in as teacher1
+    Given I am on the "Destination course" course page logged in as teacher1
     When I import "Source course" course into "Destination course" course using this options:
       | Initial | Include groups and groupings | 0 |
+    And I am on the "Destination course" course page
     And I click on "Source Kanban" "link"
     Then ".mod_kanbanlearning_boardselector" "css_element" should not exist
     And ".mod_kanbanlearning_column_container .mod_kanbanlearning_column" "css_element" should exist
