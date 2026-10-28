@@ -17,16 +17,16 @@ Feature: Course import preserves Kanban board structure and group mode
       | teacher1 | C1     | editingteacher |
       | teacher1 | C2     | editingteacher |
     And the following "groups" exist:
-      | name    | course |
-      | Group A | C1     |
-      | Group B | C1     |
+      | name    | idnumber | course |
+      | Group A | groupa   | C1     |
+      | Group B | groupb   | C1     |
     And the following "activity" exists:
-      | activity | kanbanlearning  |
-      | course   | C1              |
-      | idnumber | sourcekanban    |
-      | name     | Source Kanban   |
-      | section  | 1               |
-      | boardmode| 1               |
+      | activity | kanbanlearning |
+      | course   | C1             |
+      | idnumber | sourcekanban   |
+      | name     | Source Kanban  |
+      | section  | 1              |
+      | boardmode| 1              |
 
   @javascript
   Scenario: Imported group boards retain their groups when groups are included
