@@ -1777,10 +1777,10 @@ class boardmanager {
             'kanbanlearning_instance = :id',
             ['id' => $this->kanbanlearning->id]
         );
-        if (empty($boards)) {
+        if (empty($boardids)) {
             $boardids = $allboardids;
         } else {
-            $boardids = array_intersect($boards, $allboardids);
+            $boardids = array_intersect($boardids, $allboardids);
         }
         $card = $this->get_card($cardid);
         $originalboard = $card->kanbanlearning_board;

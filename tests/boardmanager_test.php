@@ -205,6 +205,42 @@ final class boardmanager_test extends \advanced_testcase {
      * Unsupported reaction keys must not be persisted.
      * @return void
      */
+    /**
+     * Sending a card copy to another board does not carry or retain its reaction.
+     *
+     * @return void
+     */
+    public function test_push_card_copy_does_not_copy_approval_seal(): void {
+        global $DB;
+
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $sourceboardid = $boardmanager->create_board();
+        $targetboardid = $boardmanager->create_board();
+        $otherboardid = $boardmanager->create_board();
+        $boardmanager->load_board($sourceboardid);
+        $completioncolumnid = $boardmanager->get_first_completion_column();
+        $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Completed card']);
+        $boardmanager->set_approval_seal($cardid, 'approved');
+
+        $boardmanager->push_card_copy($cardid, [$targetboardid]);
+        $copy = $DB->get_record('kanbanlearning_card', [
+            'kanbanlearning_board' => $targetboardid,
+            'originalid' => $cardid,
+        ], '*', MUST_EXIST);
+
+        $this->assertSame('', $copy->approval_seal);
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', [
+            'kanbanlearning_board' => $otherboardid,
+            'originalid' => $cardid,
+        ]));
+
+        $DB->set_field('kanbanlearning_card', 'approval_seal', 'highlight', ['id' => $copy->id]);
+        $boardmanager->push_card_copy($cardid, [$targetboardid]);
+
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $copy->id]));
+        $this->assertSame('approved', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
+    }
     public function test_approval_seal_rejects_unknown_key(): void {
         global $DB;
 
