@@ -179,12 +179,13 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
         $creator = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $creator->create_group_board($groupa->id);
         $boardmanager = new boardmanager($this->kanbanlearning->cmid, $boardid);
-        $columnid = (int) $DB->get_field(
+        $columnids = $DB->get_fieldset_select(
             'kanbanlearning_column',
             'id',
-            ['kanbanlearning_board' => $boardid],
-            MUST_EXIST
+            'kanbanlearning_board = :boardid',
+            ['boardid' => $boardid]
         );
+        $columnid = (int) reset($columnids);
         $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Group A private work']);
 
         $this->setUser($this->student);
