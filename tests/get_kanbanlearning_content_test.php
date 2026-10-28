@@ -202,7 +202,7 @@ final class get_kanbanlearning_content_test extends \advanced_testcase {
                 $boardid
             );
             $this->fail('A student outside the group must not receive its board content.');
-        } catch (\\moodle_exception $exception) {
+        } catch (\moodle_exception $exception) {
             $this->assertSame('boardgroupaccessdenied', $exception->errorcode);
         }
     }
