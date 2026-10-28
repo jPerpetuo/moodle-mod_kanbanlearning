@@ -112,7 +112,7 @@ final class edit_card_form_test extends \advanced_testcase {
         try {
             $this->create_dynamic_form();
             $this->fail('A student who cannot manage the card must be denied access.');
-        } catch (\moodle_exception $exception) {
+        } catch (\\moodle_exception $exception) {
             $this->assertSame('editing_this_card_is_not_allowed', $exception->errorcode);
         }
     }
