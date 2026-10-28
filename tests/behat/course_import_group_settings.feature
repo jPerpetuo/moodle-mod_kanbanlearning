@@ -46,5 +46,9 @@ Feature: Course import preserves Kanban board structure and group mode
       | Initial | Include groups and groupings | 0 |
     And I am on the "Destination course" course page
     And I click on "Source Kanban" "link"
-    Then ".mod_kanbanlearning_boardselector" "css_element" should not exist
+    Then ".mod_kanbanlearning_boardselector" "css_element" should exist
+    And I should see "Shared board" in the ".mod_kanbanlearning_boardselector_current" "css_element"
     And ".mod_kanbanlearning_column_container .mod_kanbanlearning_column" "css_element" should exist
+    When I click on ".mod_kanbanlearning_boardselector_button" "css_element"
+    Then I should not see "Group A" in the ".mod_kanbanlearning_boardselector_menu" "css_element"
+    And I should not see "Group B" in the ".mod_kanbanlearning_boardselector_menu" "css_element"
