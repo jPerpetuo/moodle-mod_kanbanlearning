@@ -110,5 +110,4 @@ class behat_mod_kanbanlearning extends behat_base {
         ]);
         $this->getSession()->visit($url->out(false));
     }
-
 }
