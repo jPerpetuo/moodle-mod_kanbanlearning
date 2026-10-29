@@ -24,8 +24,8 @@ Feature: Group boards enforce membership
       | Group B | groupb   | C1     |
     And the following "group members" exist:
       | user     | group   |
-      | student1 | Group A |
-      | student2 | Group B |
+      | student1 | groupa   |
+      | student2 | groupb   |
     And the following "activity" exists:
       | activity  | kanbanlearning  |
       | course    | C1              |
