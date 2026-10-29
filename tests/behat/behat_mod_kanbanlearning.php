@@ -137,7 +137,7 @@ class behat_mod_kanbanlearning extends behat_base {
                 usleep(100000);
             } while (microtime(true) < $deadline);
 
-            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+            throw new \Behat\Mink\Exception\ExpectationException(
                 'Expected the direct group board URL to show the access-denied message.',
                 $this->getSession()->getDriver()
             );
