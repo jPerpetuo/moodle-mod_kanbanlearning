@@ -489,7 +489,8 @@ require([], function() {
         }
 
         const approvalSealToggle = event.target.closest('[data-action="toggle_approval_seal"]');
-        if (state.openmenu && state.openmenu.contains(event.target) && event.target.closest('.dropdown-item') && !approvalSealToggle) {
+        const clickedDropdownItem = event.target.closest('.dropdown-item');
+        if (state.openmenu && state.openmenu.contains(event.target) && clickedDropdownItem && !approvalSealToggle) {
             window.setTimeout(function() {
                 closeMenu();
             }, 0);
