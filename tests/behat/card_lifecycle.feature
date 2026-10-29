@@ -47,4 +47,4 @@ Feature: Manage cards through the board interface
     And I wait "1" seconds
     And I click on ".modal.show .modal-footer .btn-primary" "css_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][2]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban lifecycle regression card']]" "xpath_element" does not exist
-    Then I should see "0" occurrences of "Kanban lifecycle regression card" in the ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(3)" "css_element"
+    And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][3]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban lifecycle regression card']]" "xpath_element" does not exist

@@ -380,7 +380,7 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid], 'id ASC');
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
