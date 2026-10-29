@@ -26,7 +26,8 @@ Feature: Discuss card work through the board interface
     Given I am on the "Learning Kanban" "kanbanlearning activity" page logged in as teacher1
     When I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_addcard_link" "css_element"
     And I wait until ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card" "css_element" exists
-    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card .mod_kanbanlearning_discussion_trigger" "css_element"
+    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card .mod_kanbanlearning_action_menu_trigger" "css_element"
+    And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card .mod_kanbanlearning_start_discussion [data-action='show_discussion']" "css_element"
     And I wait until ".mod_kanbanlearning_discussion_modal.show:not(.mod_kanbanlearning_loading)" "css_element" exists
     And I set the field with xpath "//div[contains(@class, 'mod_kanbanlearning_discussion_modal') and contains(@class, 'show')]//textarea[contains(@class, 'mod_kanbanlearning_discussion_input')]" to "Discussion regression message"
     And I click on ".mod_kanbanlearning_discussion_modal.show .mod_kanbanlearning_discussion_send" "css_element"
