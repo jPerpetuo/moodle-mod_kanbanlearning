@@ -127,9 +127,11 @@ class behat_mod_kanbanlearning extends behat_base {
         try {
             do {
                 $response = $this->getSession()->evaluateScript(
-                    'const frame = document.getElementById(' . $frameidjson . ');' .
+                    '(function() {' .
+                    'var frame = document.getElementById(' . $frameidjson . ');' .
                     'return frame && frame.contentDocument && frame.contentDocument.body ?' .
-                    ' frame.contentDocument.body.innerText : "";'
+                    ' frame.contentDocument.body.innerText : "";' .
+                    '})()'
                 );
                 if (is_string($response) && strpos($response, $expectedmessage) !== false) {
                     return;
