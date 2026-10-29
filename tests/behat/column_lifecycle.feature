@@ -24,7 +24,8 @@ Feature: Manage columns through the board interface
   @javascript
   Scenario: A teacher can manage columns without reloading the board
     Given I am on the "Learning Kanban" "kanbanlearning activity" page logged in as teacher1
-    When I click on ".mod_kanbanlearning_addcolumn_first [data-action='add_column']" "css_element"
+    When I move to ".mod_kanbanlearning_column [data-action='add_column']" "css_element"
+    And I click on ".mod_kanbanlearning_column [data-action='add_column']" "css_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]" "xpath_element" exists
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]//button[contains(@class, 'mod_kanbanlearning_action_menu_trigger')]" "xpath_element"
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]//*[@data-action='edit_details']" "xpath_element"
@@ -34,7 +35,8 @@ Feature: Manage columns through the board interface
     And I press "Save changes"
     Then I should see "Kanban source" in the "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban source']]" "xpath_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban source']]//span[contains(@class, 'mod_kanbanlearning_column_dot') and contains(@style, 'rgb(53, 121, 220)')]" "xpath_element" exists
-    When I click on ".mod_kanbanlearning_addcolumn_first [data-action='add_column']" "css_element"
+    When I move to ".mod_kanbanlearning_column [data-action='add_column']" "css_element"
+    And I click on ".mod_kanbanlearning_column [data-action='add_column']" "css_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]" "xpath_element" exists
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]//button[contains(@class, 'mod_kanbanlearning_action_menu_trigger')]" "xpath_element"
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='New column']]//*[@data-action='edit_details']" "xpath_element"
