@@ -34,7 +34,6 @@ require_once($behatbase);
  * Behat steps definitions for mod_kanbanlearning.
  */
 class behat_mod_kanbanlearning extends behat_base {
-
     /**
      * Drag one column after another using the browser drag events handled by Moodle's reactive components.
      *
