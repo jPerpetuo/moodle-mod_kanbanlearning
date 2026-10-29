@@ -76,14 +76,15 @@ class behat_mod_kanbanlearning extends behat_base {
     }
 
     /**
-     * Directly request a group board by its group idnumber from the current Kanban activity.
+     * Verify that directly requesting another group's board is denied.
      *
-     * This step is intended to verify access checks for boardid URLs without hard-coding database IDs.
+     * The request is made in a hidden iframe so Moodle's Behat error handler does not treat the expected
+     * error page as a failure of the browser navigation step.
      *
-     * @When /^I directly access the Kanban board for group "([^"]*)"$/
+     * @Then /^the direct URL for group "([^"]*)" should be denied$/
      * @param string $groupidnumber Group idnumber in the current course.
      */
-    public function i_directly_access_kanban_group_board(string $groupidnumber): void {
+    public function direct_kanban_group_board_url_should_be_denied(string $groupidnumber): void {
         global $DB;
 
         $currenturl = new moodle_url($this->getSession()->getCurrentUrl());
@@ -108,6 +109,43 @@ class behat_mod_kanbanlearning extends behat_base {
             'id' => $cmid,
             'boardid' => $board->id,
         ]);
-        $this->getSession()->visit($url->out(false));
+        $urljson = json_encode($url->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $frameid = 'kanbanlearning-group-access-check';
+        $frameidjson = json_encode($frameid);
+        $this->execute_script(
+            'const frame = document.createElement("iframe");' .
+            'frame.id = ' . $frameidjson . ';' .
+            'frame.setAttribute("aria-hidden", "true");' .
+            'frame.style.display = "none";' .
+            'frame.src = ' . $urljson . ';' .
+            'document.body.appendChild(frame);'
+        );
+
+        $expectedmessage = get_string('boardgroupaccessdenied', 'mod_kanbanlearning');
+        $deadline = microtime(true) + 10;
+        $response = '';
+        try {
+            do {
+                $response = $this->getSession()->evaluateScript(
+                    'const frame = document.getElementById(' . $frameidjson . ');' .
+                    'return frame && frame.contentDocument && frame.contentDocument.body ?' .
+                    ' frame.contentDocument.body.innerText : "";'
+                );
+                if (is_string($response) && strpos($response, $expectedmessage) !== false) {
+                    return;
+                }
+                usleep(100000);
+            } while (microtime(true) < $deadline);
+
+            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+                'Expected the direct group board URL to show the access-denied message.',
+                $this->getSession()->getDriver()
+            );
+        } finally {
+            $this->execute_script(
+                'const frame = document.getElementById(' . $frameidjson . ');' .
+                'if (frame) { frame.remove(); }'
+            );
+        }
     }
 }

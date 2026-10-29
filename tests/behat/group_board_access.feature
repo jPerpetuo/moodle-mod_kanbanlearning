@@ -42,5 +42,4 @@ Feature: Group boards enforce membership
     Then I should see "Group B" in the ".mod_kanbanlearning_boardselector_current" "css_element"
     When I am on the "Learning Kanban" "kanbanlearning activity" page logged in as student1
     Then ".mod_kanbanlearning_column_container .mod_kanbanlearning_column" "css_element" should exist
-    When I directly access the Kanban board for group "groupb"
-    Then I should see "You cannot access this board because you are not a member of its group."
+    Then the direct URL for group "groupb" should be denied
