@@ -358,8 +358,15 @@ export default class extends kanbanlearningComponent {
      * Dispatch event to update the discussion data.
      */
     _updateDiscussion() {
-        this.getElement(selectors.DISCUSSIONMODAL).classList.add('mod_kanbanlearning_loading');
-        this.reactive.dispatch('getDiscussionUpdates', this.id);
+        const modal = this.getElement(selectors.DISCUSSIONMODAL);
+        modal.classList.add('mod_kanbanlearning_loading');
+        Promise.resolve(this.reactive.dispatch('getDiscussionUpdates', this.id)).then(
+            () => modal.classList.remove('mod_kanbanlearning_loading'),
+            (error) => {
+                modal.classList.remove('mod_kanbanlearning_loading');
+                displayException(error);
+            }
+        );
     }
 
     /**
