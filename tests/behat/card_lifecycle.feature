@@ -43,6 +43,10 @@ Feature: Manage cards through the board interface
     And I should see "1" occurrences of "Kanban lifecycle regression card" in the ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(3)" "css_element"
     When I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(3) .mod_kanbanlearning_card .mod_kanbanlearning_action_menu_trigger" "css_element"
     And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(3) .mod_kanbanlearning_card [data-action='delete_card']" "css_element"
-    And I press "Delete"
+    And I wait until ".modal.show .modal-footer .btn-primary" "css_element" exists
+    And I wait "1" seconds
+    And I click on ".modal.show .modal-footer .btn-primary" "css_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][2]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban lifecycle regression card']]" "xpath_element" does not exist
     Then I should see "0" occurrences of "Kanban lifecycle regression card" in the ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(3)" "css_element"
+
+
