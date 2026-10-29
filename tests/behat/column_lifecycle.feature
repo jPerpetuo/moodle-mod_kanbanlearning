@@ -48,7 +48,7 @@ Feature: Manage columns through the board interface
     And I click on ".mod_kanbanlearning_column:nth-of-type(5) .mod_kanbanlearning_action_menu_trigger" "css_element"
     And I click on ".mod_kanbanlearning_column:nth-of-type(5) [data-action='unlock_column']" "css_element"
     And I wait until ".mod_kanbanlearning_column:nth-of-type(5):not(.mod_kanbanlearning_locked_column)" "css_element" exists
-    And I drag "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban source']]" "xpath_element" and I drop it in "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban target']]" "xpath_element"
+    And I drag the "Kanban source" column after the "Kanban target" column on the Kanban board
     And I wait until "//ul[contains(@class, 'mod_kanbanlearning_column_container')]/li[contains(@class, 'mod_kanbanlearning_column')][last()][.//a[normalize-space(.)='Kanban source']]" "xpath_element" exists
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban target']]//button[contains(@class, 'mod_kanbanlearning_action_menu_trigger')]" "xpath_element"
     And I click on "//li[contains(@class, 'mod_kanbanlearning_column')][.//a[normalize-space(.)='Kanban target']]//*[@data-action='delete_column']" "xpath_element"
