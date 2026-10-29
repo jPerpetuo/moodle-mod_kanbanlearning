@@ -33,6 +33,7 @@ Feature: Manage card attachments through the board interface
     And I wait until ".modal.show [data-fieldtype='filemanager']" "css_element" exists
     And I upload "lib/tests/fixtures/empty.txt" file to "Attachments" filemanager
     And I press "Save changes"
+    And I wait until ".modal.show" "css_element" does not exist
     And I wait until "//li[contains(concat(' ', normalize-space(@class), ' '), ' mod_kanbanlearning_card ')][.//a[normalize-space(.)='Kanban attachment regression card'] and contains(concat(' ', normalize-space(@class), ' '), ' mod_kanbanlearning_hasattachment ')]" "xpath_element" exists
     And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card:nth-child(2) .mod_kanbanlearning_detail_trigger" "css_element"
     Then I should see "empty.txt" in the ".modal.show .mod_kanbanlearning_description_modal" "css_element"
@@ -42,6 +43,8 @@ Feature: Manage card attachments through the board interface
     And I wait until ".modal.show [data-fieldtype='filemanager']" "css_element" exists
     And I delete "empty.txt" from "Attachments" filemanager
     And I press "Save changes"
+    And I wait until ".modal.show" "css_element" does not exist
     And I wait until "//li[contains(concat(' ', normalize-space(@class), ' '), ' mod_kanbanlearning_card ')][.//a[normalize-space(.)='Kanban attachment regression card'] and contains(concat(' ', normalize-space(@class), ' '), ' mod_kanbanlearning_hasattachment ')]" "xpath_element" does not exist
     And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card:nth-child(2) .mod_kanbanlearning_detail_trigger" "css_element"
     And I should not see "empty.txt" in the ".modal.show .mod_kanbanlearning_description_modal" "css_element"
+
