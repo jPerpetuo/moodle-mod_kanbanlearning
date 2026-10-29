@@ -24,7 +24,11 @@
  */
 
 // This file may be loaded by Behat before config.php is included.
-require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
+$behatbase = __DIR__ . '/../../../../lib/behat/behat_base.php';
+if (!file_exists($behatbase)) {
+    $behatbase = __DIR__ . '/../../../../../lib/behat/behat_base.php';
+}
+require_once($behatbase);
 
 /**
  * Behat steps definitions for mod_kanbanlearning.
@@ -39,6 +43,7 @@ class behat_mod_kanbanlearning extends behat_base {
      * @When /^I drag the "([^"]*)" column after the "([^"]*)" column on the Kanban board$/
      * @param string $sourcetitle Title of the column to move.
      * @param string $targettitle Title of the column that should precede it.
+     * @return void`n     * @return void
      */
     public function i_drag_column_after_column_on_kanban_board(string $sourcetitle, string $targettitle): void {
         if (!$this->running_javascript()) {
