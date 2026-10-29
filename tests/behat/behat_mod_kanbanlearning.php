@@ -42,7 +42,6 @@ class behat_mod_kanbanlearning extends behat_base {
      * @When /^I drag the "([^"]*)" column after the "([^"]*)" column on the Kanban board$/
      * @param string $sourcetitle Title of the column to move.
      * @param string $targettitle Title of the column that should precede it.
-     * @return void`n     * @return void
      */
     public function i_drag_column_after_column_on_kanban_board(string $sourcetitle, string $targettitle): void {
         if (!$this->running_javascript()) {
