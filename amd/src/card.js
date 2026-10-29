@@ -564,6 +564,7 @@ export default class extends kanbanlearningComponent {
         this.getElement(selectors.DISCUSSIONMODALTITLE).textContent = incomingtitleplain;
     }
         const hasstyleupdate = element.options !== undefined || element.background !== undefined;
+        const hascontentupdate = element.description !== undefined || element.attachments !== undefined;
         const currenthasdescription = this.getElement().classList.contains('mod_kanbanlearning_hasdescription');
         const currenthasattachment = this.getElement().classList.contains('mod_kanbanlearning_hasattachment');
         const currenthasdiscussion = this.getElement().classList.contains('mod_kanbanlearning_hasdiscussion');
@@ -571,6 +572,7 @@ export default class extends kanbanlearningComponent {
         if (element.hasdescription !== undefined) {
             const nexthasdescription = Boolean(element.hasdescription);
             const preservetransientdescriptiondrop = hasstyleupdate &&
+                !hascontentupdate &&
                 currenthasdescription &&
                 !nexthasdescription;
             if (!preservetransientdescriptiondrop) {
@@ -580,6 +582,7 @@ export default class extends kanbanlearningComponent {
         if (element.hasattachment !== undefined) {
             const nexthasattachment = Boolean(element.hasattachment);
             const preservetransientattachmentdrop = hasstyleupdate &&
+                !hascontentupdate &&
                 currenthasattachment &&
                 !nexthasattachment;
             if (!preservetransientattachmentdrop) {
