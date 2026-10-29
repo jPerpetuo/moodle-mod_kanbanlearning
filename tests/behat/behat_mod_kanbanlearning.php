@@ -74,4 +74,41 @@ class behat_mod_kanbanlearning extends behat_base {
             "source.dispatchEvent(new DragEvent('dragend', dragoptions));";
         $this->execute_script($script);
     }
+
+    /**
+     * Directly request a group board by its group idnumber from the current Kanban activity.
+     *
+     * This step is intended to verify access checks for boardid URLs without hard-coding database IDs.
+     *
+     * @When /^I directly access the Kanban board for group "([^"]*)"$/
+     * @param string $groupidnumber Group idnumber in the current course.
+     */
+    public function i_directly_access_kanban_group_board(string $groupidnumber): void {
+        global $DB;
+
+        $currenturl = new moodle_url($this->getSession()->getCurrentUrl());
+        $cmid = (int)$currenturl->get_param('id');
+        if (empty($cmid)) {
+            throw new coding_exception('The current page is not a Kanban activity page.');
+        }
+
+        $cm = get_coursemodule_from_id('kanbanlearning', $cmid, 0, false, MUST_EXIST);
+        $group = $DB->get_record('groups', [
+            'courseid' => $cm->course,
+            'idnumber' => $groupidnumber,
+        ], '*', MUST_EXIST);
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $cm->instance,
+            'groupid' => $group->id,
+            'userid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+
+        $url = new moodle_url('/mod/kanbanlearning/view.php', [
+            'id' => $cmid,
+            'boardid' => $board->id,
+        ]);
+        $this->getSession()->visit($url->out(false));
+    }
+
 }
