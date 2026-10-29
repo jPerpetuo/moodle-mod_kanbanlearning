@@ -392,6 +392,8 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
+        $boardsequence = explode(',', $DB->get_field('kanbanlearning_board', 'sequence', ['id' => $boardid]));
+        $expectedsequence = array_values(array_diff($boardsequence, [(string)$columnids[0]]));
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::delete_column(
             $this->kanbanlearning->cmid,
             $boardid,
@@ -411,7 +413,7 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
 
         $this->assertEquals($cards[0]->id, $update[0]['fields']['id']);
         $this->assertEquals($columnids[0], $update[1]['fields']['id']);
-        $this->assertEquals(join(',', [$columnids[1], $columnids[2]]), $update[2]['fields']['sequence']);
+        $this->assertEquals(join(',', $expectedsequence), $update[2]['fields']['sequence']);
     }
 
     /**
