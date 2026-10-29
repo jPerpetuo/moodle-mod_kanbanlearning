@@ -150,4 +150,153 @@ class behat_mod_kanbanlearning extends behat_base {
             );
         }
     }
+
+    /**
+     * Verify that a student assigned to a card in another group's board cannot modify that card or its columns.
+     *
+     * The calls use Moodle's AJAX web-service client from the student's authenticated browser session. The
+     * fixture card is assigned to the current test student so the card-level capability check passes and the
+     * group-membership check is what rejects the move.
+     *
+     * @Then /^a student outside group "([^"]*)" cannot move an assigned card or add a column$/
+     * @param string $groupidnumber Group idnumber whose board belongs to another group.
+     */
+    public function student_outside_group_cannot_modify_group_board(string $groupidnumber): void {
+        global $DB;
+
+        $currenturl = new moodle_url($this->getSession()->getCurrentUrl());
+        $cmid = (int)$currenturl->get_param('id');
+        if (empty($cmid)) {
+            throw new coding_exception('The current page is not a Kanban activity page.');
+        }
+
+        $cm = get_coursemodule_from_id('kanbanlearning', $cmid, 0, false, MUST_EXIST);
+        $group = $DB->get_record('groups', [
+            'courseid' => $cm->course,
+            'idnumber' => $groupidnumber,
+        ], '*', MUST_EXIST);
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $cm->instance,
+            'groupid' => $group->id,
+            'userid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+
+        $columnids = array_map('intval', explode(',', $board->sequence));
+        if (count($columnids) < 2) {
+            throw new coding_exception('The group board needs at least two columns for the access test.');
+        }
+
+        // Create a card and assign it to the current Behat student so that move permissions are otherwise valid.
+        $boardmanager = new \mod_kanbanlearning\boardmanager($cmid, (int)$board->id);
+        $sourcecolumnid = $columnids[0];
+        $targetcolumnid = $columnids[1];
+        $cardtitle = 'Group access regression ' . bin2hex(random_bytes(6));
+        $cardid = $boardmanager->add_card($sourcecolumnid, 0, ['title' => $cardtitle]);
+        $student = $DB->get_record('user', ['username' => 'student1'], '*', MUST_EXIST);
+        $DB->insert_record('kanbanlearning_assignee', [
+            'kanbanlearning_card' => $cardid,
+            'userid' => $student->id,
+        ]);
+
+        $beforecolumncount = $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $board->id]);
+        $requests = [
+            [
+                'methodname' => 'mod_kanbanlearning_move_card',
+                'args' => [
+                    'cmid' => $cmid,
+                    'boardid' => (int)$board->id,
+                    'data' => [
+                        'cardid' => $cardid,
+                        'columnid' => $targetcolumnid,
+                        'aftercard' => 0,
+                    ],
+                ],
+            ],
+            [
+                'methodname' => 'mod_kanbanlearning_add_column',
+                'args' => [
+                    'cmid' => $cmid,
+                    'boardid' => (int)$board->id,
+                    'data' => [
+                        'title' => 'Unauthorized group column',
+                        'aftercol' => 0,
+                    ],
+                ],
+            ],
+        ];
+        $requestsjson = json_encode($requests, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $nodeid = 'kanbanlearning-group-operation-check';
+        $nodeidjson = json_encode($nodeid);
+
+        $this->execute_script(
+            '(function() {' .
+            'var result = document.createElement("pre");' .
+            'result.id = ' . $nodeidjson . ';' .
+            'result.style.display = "none";' .
+            'document.body.appendChild(result);' .
+            'var requests = ' . $requestsjson . ';' .
+            'require(["core/ajax"], function(Ajax) {' .
+            'var attempts = requests.map(function(request) {' .
+            'return Ajax.call([request])[0].then(' .
+            'function() { return {status: "allowed"}; },' .
+            'function(error) { return {status: "denied", message: error && error.message ? error.message : ""}; }' .
+            ');' .
+            '});' .
+            'Promise.all(attempts).then(function(outcomes) {' .
+            'result.textContent = JSON.stringify(outcomes);' .
+            'result.setAttribute("data-complete", "1");' .
+            '}).catch(function(error) {' .
+            'result.textContent = JSON.stringify([{status: "client-error", message: String(error)}]);' .
+            'result.setAttribute("data-complete", "1");' .
+            '});' .
+            '});' .
+            '})()'
+        );
+
+        $deadline = microtime(true) + 10;
+        $response = '';
+        try {
+            do {
+                $response = $this->getSession()->evaluateScript(
+                    '(function() {' .
+                    'var node = document.getElementById(' . $nodeidjson . ');' .
+                    'return node && node.getAttribute("data-complete") === "1" ? node.textContent : "";' .
+                    '})()'
+                );
+                if (is_string($response) && $response !== '') {
+                    break;
+                }
+                usleep(100000);
+            } while (microtime(true) < $deadline);
+        } finally {
+            $this->execute_script(
+                'var node = document.getElementById(' . $nodeidjson . '); if (node) { node.remove(); }'
+            );
+        }
+
+        $outcomes = is_string($response) ? json_decode($response, true) : null;
+        if (
+            !is_array($outcomes) ||
+            count($outcomes) !== 2 ||
+            ($outcomes[0]['status'] ?? '') !== 'denied' ||
+            ($outcomes[1]['status'] ?? '') !== 'denied'
+        ) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'A student from another group must not move the assigned card or add a column.',
+                $this->getSession()->getDriver()
+            );
+        }
+
+        $card = $DB->get_record('kanbanlearning_card', ['id' => $cardid], '*', MUST_EXIST);
+        if (
+            (int)$card->kanbanlearning_column !== $sourcecolumnid ||
+            $DB->count_records('kanbanlearning_column', ['kanbanlearning_board' => $board->id]) !== $beforecolumncount
+        ) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'A denied group operation changed the board data.',
+                $this->getSession()->getDriver()
+            );
+        }
+    }
 }

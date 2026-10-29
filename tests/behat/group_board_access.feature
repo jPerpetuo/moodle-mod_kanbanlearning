@@ -43,3 +43,4 @@ Feature: Group boards enforce membership
     When I am on the "Learning Kanban" "kanbanlearning activity" page logged in as student1
     Then ".mod_kanbanlearning_column_container .mod_kanbanlearning_column" "css_element" should exist
     Then the direct URL for group "groupb" should be denied
+    And a student outside group "groupb" cannot move an assigned card or add a column
