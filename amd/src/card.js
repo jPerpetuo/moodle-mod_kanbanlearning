@@ -360,13 +360,12 @@ export default class extends kanbanlearningComponent {
     _updateDiscussion() {
         const modal = this.getElement(selectors.DISCUSSIONMODAL);
         modal.classList.add('mod_kanbanlearning_loading');
-        Promise.resolve(this.reactive.dispatch('getDiscussionUpdates', this.id)).then(
-            () => modal.classList.remove('mod_kanbanlearning_loading'),
-            (error) => {
+        Promise.resolve(this.reactive.dispatch('getDiscussionUpdates', this.id))
+            .then(() => modal.classList.remove('mod_kanbanlearning_loading'))
+            .catch((error) => {
                 modal.classList.remove('mod_kanbanlearning_loading');
                 displayException(error);
-            }
-        );
+            });
     }
 
     /**
