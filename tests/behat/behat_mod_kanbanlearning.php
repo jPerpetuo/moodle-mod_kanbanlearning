@@ -307,7 +307,7 @@ class behat_mod_kanbanlearning extends behat_base {
      */
     public function i_focus_approval_reaction_control_on_completed_card(): void {
         if (!$this->running_javascript()) {
-            throw new \Behat\Mink\Exception\\DriverException(
+            throw new \Behat\Mink\Exception\DriverException(
                 'Focusing the approval reaction control requires JavaScript.',
                 $this->getSession()
             );
