@@ -28,6 +28,9 @@ use mod_kanbanlearning\boardmanager;
  * @covers      \mod_kanbanlearning\task\reminder
  */
 final class reminder_test extends \advanced_testcase {
+    /** @var string Activity name used in reminder messages. */
+    private const ACTIVITY_NAME = 'Reminder test activity';
+
     /** @var \stdClass The course used for testing */
     private $course;
     /** @var \stdClass The kanbanlearning used for testing */
@@ -46,7 +49,7 @@ final class reminder_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
         $this->kanbanlearning = $this->getDataGenerator()->create_module(
             'kanbanlearning',
-            ['course' => $this->course]
+            ['course' => $this->course, 'name' => self::ACTIVITY_NAME]
         );
 
         for ($i = 0; $i < 3; $i++) {
@@ -96,13 +99,13 @@ final class reminder_test extends \advanced_testcase {
         $this->assert_due_notification(
             $this->users[0]->id,
             'Overdue assigned card',
-            $manager->get_board()->name,
+            self::ACTIVITY_NAME,
             $duedate
         );
         $this->assert_due_notification(
             $this->users[1]->id,
             'Overdue assigned card',
-            $manager->get_board()->name,
+            self::ACTIVITY_NAME,
             $duedate
         );
         $this->assertEmpty($this->get_due_notifications($this->users[2]->id));
@@ -140,13 +143,13 @@ final class reminder_test extends \advanced_testcase {
         $this->assert_due_notification(
             $this->users[0]->id,
             'Early reminder card',
-            $manager->get_board()->name,
+            self::ACTIVITY_NAME,
             $duedate
         );
         $this->assert_due_notification(
             $this->users[2]->id,
             'Early reminder card',
-            $manager->get_board()->name,
+            self::ACTIVITY_NAME,
             $duedate
         );
         $this->assertEmpty($this->get_due_notifications($this->users[1]->id));
