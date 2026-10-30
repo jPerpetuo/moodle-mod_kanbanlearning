@@ -608,9 +608,10 @@ final class boardmanager_test extends \advanced_testcase {
     public function test_apply_template_to_group_boards_checks_all_boards_before_overwriting(): void {
         global $DB;
 
+        $this->setAdminUser();
         $groupa = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group A']);
         $groupb = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group B']);
-        $DB->set_field('kanbanlearning', 'boardmode', 1, ['id' => $this->kanbanlearning->id]);
+        $DB->set_field('kanbanlearning', 'boardmode', constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, ['id' => $this->kanbanlearning->id]);
         $DB->set_field(
             'kanbanlearning',
             'boardgroups',
