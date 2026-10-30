@@ -35,6 +35,7 @@ Feature: Keyboard access to approval reactions
     And I focus the approval reaction control on the completed Kanban card
     And I press the enter key
     Then the focused element is ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card [data-action='toggle_approval_seal']" "css_element"
+    And I wait until ".mod_kanbanlearning_approval_seal_picker.is-open [data-seal='approved']" "css_element" is visible
     When I press the tab key
     Then the focused element is ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card [data-action='approval_seal'][data-seal='approved']" "css_element"
     When I press the enter key
