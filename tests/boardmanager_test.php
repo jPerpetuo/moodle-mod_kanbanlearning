@@ -573,7 +573,7 @@ final class boardmanager_test extends \advanced_testcase {
         $exception = null;
         try {
             $boardmanager->apply_template_to_board((int)$board->id, $templateid, false);
-        } catch (\\moodle_exception $caught) {
+        } catch (\moodle_exception $caught) {
             $exception = $caught;
         }
 
@@ -645,7 +645,7 @@ final class boardmanager_test extends \advanced_testcase {
         $exception = null;
         try {
             $boardmanager->apply_template_to_all_group_boards($templateid, false);
-        } catch (\\moodle_exception $caught) {
+        } catch (\moodle_exception $caught) {
             $exception = $caught;
         }
 
