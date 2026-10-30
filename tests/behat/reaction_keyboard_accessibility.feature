@@ -41,7 +41,7 @@ Feature: Keyboard access to approval reactions
     And I wait until ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card .mod_kanbanlearning_approval_seal" "css_element" exists
     Then I should see "✅" in the ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card .mod_kanbanlearning_approval_seal" "css_element"
     And the focused element is ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child .mod_kanbanlearning_card [data-action='toggle_approval_seal']" "css_element"
-@javascript
+  @javascript
   Scenario: The reaction picker reduces motion when the browser requests it
     Given I am on the "Learning Kanban" "kanbanlearning activity" page logged in as teacher1
     When I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_addcard_link" "css_element"
