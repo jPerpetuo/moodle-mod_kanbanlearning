@@ -796,12 +796,15 @@ export default class extends kanbanlearningComponent {
             return;
         }
         const seal = target.dataset.action === 'remove_approval_seal' ? '' : target.dataset.seal;
-        this.reactive.dispatch('setApprovalSeal', this.id, seal);
+        const update = this.reactive.dispatch('setApprovalSeal', this.id, seal);
         const picker = this.getElement().querySelector('.mod_kanbanlearning_approval_seal_picker');
         if (picker) {
             this._setApprovalSealPickerOpen(picker, false);
             if (event.detail === 0) {
-                this.getElement(selectors.APPROVALSEALTOGGLE, this.id)?.focus();
+                // The reactive update can re-render the card and discard focus; restore it after the update completes.
+                Promise.resolve(update)
+                    .then(() => this.getElement(selectors.APPROVALSEALTOGGLE, this.id)?.focus())
+                    .catch(displayException);
             }
         }
     }
