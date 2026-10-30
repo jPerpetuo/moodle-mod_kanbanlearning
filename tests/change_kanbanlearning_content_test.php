@@ -620,4 +620,162 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
             ['cardid' => $cardid, 'seal' => 'approved']
         );
     }
+    /**
+     * External card movement rejects missing required parameters.
+     *
+     * @return void
+     */
+    public function test_move_card_rejects_missing_parameter(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/externallib.php');
+
+        $this->resetAfterTest();
+        $this->setUser($this->users[2]);
+
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $boardmanager->create_board();
+
+        $this->expectException(\invalid_parameter_exception::class);
+        \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
+            $boardid,
+            ['cardid' => 1, 'columnid' => 1]
+        );
+    }
+
+    /**
+     * Students cannot add columns through the external service.
+     *
+     * @return void
+     */
+    public function test_add_column_requires_capability(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/externallib.php');
+
+        $this->resetAfterTest();
+        $this->setUser($this->users[2]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $boardmanager->create_board();
+        $this->setUser($this->users[0]);
+
+        $this->expectException(\required_capability_exception::class);
+        \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
+            $this->kanbanlearning->cmid,
+            $boardid,
+            ['aftercol' => 0, 'title' => 'Student column']
+        );
+    }
+
+    /**
+     * External card movement rejects a card that does not exist.
+     *
+     * @return void
+     */
+    public function test_move_card_rejects_missing_card(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/externallib.php');
+
+        $this->resetAfterTest();
+        $this->setUser($this->users[2]);
+
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $boardmanager->create_board();
+
+        $this->expectException(\dml_missing_record_exception::class);
+        \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
+            $boardid,
+            ['cardid' => PHP_INT_MAX, 'aftercard' => 0, 'columnid' => 1]
+        );
+    }
+
+    /**
+     * Moving a card into a locked non-completion column leaves it in place.
+     *
+     * @return void
+     */
+    public function test_move_card_into_locked_column_is_rejected(): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/lib/externallib.php');
+
+        $this->resetAfterTest();
+        $this->setUser($this->users[2]);
+
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $boardmanager->create_board();
+        $boardmanager->load_board($boardid);
+        $columnids = array_map('intval', explode(',', $boardmanager->get_board()->sequence));
+        $sourcecolumnid = $columnids[0];
+        $targetcolumnid = $columnids[1];
+        $cardid = $boardmanager->add_card($sourcecolumnid, 0, ['title' => 'Card remains in source']);
+        $DB->set_field('kanbanlearning_column', 'locked', 1, ['id' => $targetcolumnid]);
+
+        $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+            $this->kanbanlearning->cmid,
+            $boardid,
+            ['cardid' => $cardid, 'aftercard' => 0, 'columnid' => $targetcolumnid]
+        );
+        $returnvalue = \external_api::clean_returnvalue(
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_card_returns(),
+            $returnvalue
+        );
+        $update = json_decode($returnvalue['update'], true);
+
+        $this->assertEquals($sourcecolumnid, $DB->get_field('kanbanlearning_card', 'kanbanlearning_column', ['id' => $cardid]));
+        $this->assertCount(1, $update);
+        $this->assertSame('columns', $update[0]['name']);
+        $this->assertEquals($targetcolumnid, $update[0]['fields']['id']);
+        $this->assertEquals(1, $update[0]['fields']['locked']);
+    }
+
+    /**
+     * Moving an assigned card into a column over its WIP limit is rejected without mutation.
+     *
+     * @return void
+     */
+    public function test_move_card_respects_wip_limit(): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/lib/externallib.php');
+
+        $this->resetAfterTest();
+        $this->setUser($this->users[2]);
+
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $boardid = $boardmanager->create_board();
+        $boardmanager->load_board($boardid);
+        $columnids = array_map('intval', explode(',', $boardmanager->get_board()->sequence));
+        $sourcecolumnid = $columnids[0];
+        $targetcolumnid = $columnids[1];
+        $movingcardid = $boardmanager->add_card($sourcecolumnid, 0, ['title' => 'Card to move']);
+        $existingcardid = $boardmanager->add_card($targetcolumnid, 0, ['title' => 'Card at WIP limit']);
+        $boardmanager->assign_user($existingcardid, $this->users[0]->id);
+        $boardmanager->assign_user($movingcardid, $this->users[0]->id);
+        $DB->set_field(
+            'kanbanlearning_column',
+            'options',
+            json_encode(['wiplimit' => 1]),
+            ['id' => $targetcolumnid]
+        );
+
+        try {
+            \mod_kanbanlearning\external\change_kanbanlearning_content::move_card(
+                $this->kanbanlearning->cmid,
+                $boardid,
+                ['cardid' => $movingcardid, 'aftercard' => 0, 'columnid' => $targetcolumnid]
+            );
+            $this->fail('The move should fail when it exceeds the target column WIP limit.');
+        } catch (\moodle_exception $exception) {
+            $this->assertSame('wiplimitreached', $exception->errorcode);
+        }
+
+        $this->assertEquals(
+            $sourcecolumnid,
+            $DB->get_field('kanbanlearning_card', 'kanbanlearning_column', ['id' => $movingcardid])
+        );
+        $this->assertSame(
+            (string)$existingcardid,
+            $DB->get_field('kanbanlearning_column', 'sequence', ['id' => $targetcolumnid])
+        );
+    }
+
 }
