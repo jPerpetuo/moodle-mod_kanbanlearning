@@ -568,7 +568,4 @@ class behat_mod_kanbanlearning extends behat_base {
             );
         }
     }
-
-
-
 }
