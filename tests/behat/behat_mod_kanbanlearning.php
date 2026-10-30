@@ -488,7 +488,7 @@ class behat_mod_kanbanlearning extends behat_base {
      */
     public function i_open_approval_reaction_picker_with_reduced_motion_enabled(): void {
         if (!$this->running_javascript()) {
-            throw new \\Behat\\Mink\\Exception\\DriverException(
+            throw new \Behat\Mink\Exception\DriverException(
                 'The reduced-motion reaction test requires JavaScript.',
                 $this->getSession()
             );
@@ -562,7 +562,7 @@ class behat_mod_kanbanlearning extends behat_base {
             empty($data['properties']) ||
             array_diff($data['properties'], ['opacity'])
         ) {
-            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+            throw new \Behat\Mink\Exception\ExpectationException(
                 'The reaction picker must stay accessible and animate only opacity for reduced motion.',
                 $this->getSession()->getDriver()
             );
@@ -570,92 +570,5 @@ class behat_mod_kanbanlearning extends behat_base {
     }
 
 
-    /**
-     * Open the completed-card reaction picker with a simulated reduced-motion preference.
-     *
-     * @When /^I open the approval reaction picker with reduced motion enabled$/
-     */
-    public function i_open_approval_reaction_picker_with_reduced_motion_enabled(): void {
-        if (!$this->running_javascript()) {
-            throw new \\Behat\\Mink\\Exception\\DriverException(
-                'The reduced-motion reaction test requires JavaScript.',
-                $this->getSession()
-            );
-        }
-
-        $selector = '.mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child ' .
-            '.mod_kanbanlearning_card [data-action="toggle_approval_seal"]';
-        $selectorjson = json_encode($selector, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
-        $this->execute_script(
-            '(function() {' .
-            'var control = document.querySelector(' . $selectorjson . ');' .
-            'var card = control && control.closest(".mod_kanbanlearning_card");' .
-            'var picker = card && card.querySelector(".mod_kanbanlearning_approval_seal_picker");' .
-            'if (!control || !picker || !control.getClientRects().length) {' .
-            'throw new Error("The visible completed-card reaction control was not found.");' .
-            '}' .
-            'var originalMatchMedia = window.matchMedia.bind(window);' .
-            'window.matchMedia = function(query) {' .
-            'if (query === "(prefers-reduced-motion: reduce)") {' .
-            'return {matches: true, media: query, onchange: null, addListener: function() {}, ' .
-            'removeListener: function() {}, addEventListener: function() {}, removeEventListener: function() {}, ' .
-            'dispatchEvent: function() { return false; }};' .
-            '}' .
-            'return originalMatchMedia(query);' .
-            '};' .
-            'try {' .
-            'control.click();' .
-            'var animation = picker.__modKanbanApprovalSealAnimation;' .
-            'var properties = animation ? animation.effect.getKeyframes().flatMap(function(frame) {' .
-            'return Object.keys(frame).filter(function(key) {' .
-            'return ["offset", "easing", "composite", "computedOffset"].indexOf(key) === -1;' .
-            '});' .
-            '}) : [];' .
-            'picker.dataset.reducedMotionTest = JSON.stringify({' .
-            'reducedClass: picker.classList.contains("mod_kanbanlearning_approval_seal_picker_reduced_motion"),' .
-            'ariaHidden: picker.getAttribute("aria-hidden"),' .
-            'ariaExpanded: control.getAttribute("aria-expanded"),' .
-            'duration: animation ? animation.effect.getTiming().duration : null,' .
-            'properties: properties' .
-            '});' .
-            '} finally {' .
-            'window.matchMedia = originalMatchMedia;' .
-            '}' .
-            '})()'
-        );
-    }
-
-    /**
-     * Assert reduced motion keeps the picker accessible and animates opacity only.
-     *
-     * @Then /^the approval reaction picker uses opacity-only reduced motion$/
-     */
-    public function approval_reaction_picker_uses_opacity_only_reduced_motion(): void {
-        $selector = '.mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child ' .
-            '.mod_kanbanlearning_card .mod_kanbanlearning_approval_seal_picker';
-        $selectorjson = json_encode($selector, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
-        $result = $this->getSession()->evaluateScript(
-            '(function() {' .
-            'var picker = document.querySelector(' . $selectorjson . ');' .
-            'return picker ? picker.dataset.reducedMotionTest || "" : "";' .
-            '})()'
-        );
-        $data = is_string($result) ? json_decode($result, true) : null;
-
-        if (
-            !is_array($data) ||
-            empty($data['reducedClass']) ||
-            ($data['ariaHidden'] ?? '') !== 'false' ||
-            ($data['ariaExpanded'] ?? '') !== 'true' ||
-            ($data['duration'] ?? null) !== 100 ||
-            empty($data['properties']) ||
-            array_diff($data['properties'], ['opacity'])
-        ) {
-            throw new \\Behat\\Mink\\Exception\\ExpectationException(
-                'The reaction picker must stay accessible and animate only opacity for reduced motion.',
-                $this->getSession()->getDriver()
-            );
-        }
-    }
 
 }
