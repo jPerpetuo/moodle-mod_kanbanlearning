@@ -299,4 +299,28 @@ class behat_mod_kanbanlearning extends behat_base {
             );
         }
     }
+
+    /**
+     * Focus the reaction control on the completed card so keyboard interaction can be tested.
+     *
+     * @When /^I focus the approval reaction control on the completed Kanban card$/
+     */
+    public function i_focus_approval_reaction_control_on_completed_card(): void {
+        if (!$this->running_javascript()) {
+            throw new \\Behat\\Mink\\Exception\\DriverException(
+                'Focusing the approval reaction control requires JavaScript.',
+                $this->getSession()
+            );
+        }
+
+        $this->execute_script(
+            'const control = document.querySelector(".mod_kanbanlearning_column_container > ' +
+            '.mod_kanbanlearning_column:last-child .mod_kanbanlearning_card ' +
+            '[data-action="toggle_approval_seal"]");' .
+            'if (!control || control.getClientRects().length === 0) {' .
+            'throw new Error("The visible approval reaction control was not found.");' .
+            '}' .
+            'control.focus();'
+        );
+    }
 }
