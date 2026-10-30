@@ -94,6 +94,9 @@ final class upgrade_test extends \advanced_testcase {
         $columnid = $DB->get_field('kanbanlearning_column', 'id', ['kanbanlearning_board' => $boardid], IGNORE_MULTIPLE);
         $firstcardid = $boardmanager->add_card($columnid, 0, ['title' => 'First legacy card']);
         $secondcardid = $boardmanager->add_card($columnid, $firstcardid, ['title' => 'Second legacy card']);
+        // Give the cards distinct timestamps so the upgrade's timecreated ordering is deterministic.
+        $DB->set_field('kanbanlearning_card', 'timecreated', time() - 10, ['id' => $firstcardid]);
+        $DB->set_field('kanbanlearning_card', 'timecreated', time() + 10, ['id' => $secondcardid]);
         $DB->set_field('kanbanlearning_card', 'number', 0, ['id' => $firstcardid]);
         $DB->set_field('kanbanlearning_card', 'number', 0, ['id' => $secondcardid]);
 
