@@ -324,4 +324,160 @@ class behat_mod_kanbanlearning extends behat_base {
             'control.focus();'
         );
     }
+
+    /**
+     * Drag a card to the bottom of a target column using the board's native HTML5 drag handlers.
+     *
+     * @When /^I drag the "([^"]*)" card to the bottom of the "([^"]*)" column on the Kanban board$/
+     * @param string $cardtitle Visible title of the card.
+     * @param string $targettitle Visible title of the destination column.
+     */
+    public function i_drag_card_to_bottom_of_column_on_kanban_board(string $cardtitle, string $targettitle): void {
+        if (!$this->running_javascript()) {
+            throw new \\Behat\\Mink\\Exception\\DriverException(
+                'Kanban card drag and drop requires JavaScript.',
+                $this->getSession()
+            );
+        }
+
+        $cardtitlejson = json_encode($cardtitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $targettitlejson = json_encode($targettitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $script = 'const cardtitle = ' . $cardtitlejson . ";\\n" .
+            'const targettitle = ' . $targettitlejson . ";\\n" .
+            "const cards = Array.from(document.querySelectorAll('.mod_kanbanlearning_card'));\\n" .
+            "const source = cards.find((card) => {\\n" .
+            "    const link = card.querySelector('.mod_kanbanlearning_card_title a.quickeditlink');\\n" .
+            "    return link && link.textContent.trim() === cardtitle;\\n" .
+            "});\\n" .
+            "const columns = Array.from(document.querySelectorAll('.mod_kanbanlearning_column'));\\n" .
+            "const target = columns.find((column) => {\\n" .
+            "    const link = column.querySelector('a.quickeditlink');\\n" .
+            "    return link && link.textContent.trim() === targettitle;\\n" .
+            "});\\n" .
+            "if (!source || !target || source.closest('.mod_kanbanlearning_column') === target) {\\n" .
+            "    throw new Error('Kanban card or destination column for the drag step was not found.');\\n" .
+            "}\\n" .
+            "const bounds = target.getBoundingClientRect();\\n" .
+            "const clientY = Math.max(bounds.top + 1, bounds.bottom - 1);\\n" .
+            "const dataTransfer = new DataTransfer();\\n" .
+            "const dragoptions = {bubbles: true, cancelable: true, dataTransfer: dataTransfer, clientY: clientY};\\n" .
+            "source.dispatchEvent(new DragEvent('dragstart', dragoptions));\\n" .
+            "target.dispatchEvent(new DragEvent('dragenter', dragoptions));\\n" .
+            "target.dispatchEvent(new DragEvent('dragover', dragoptions));\\n" .
+            "target.dispatchEvent(new DragEvent('drop', dragoptions));\\n" .
+            "source.dispatchEvent(new DragEvent('dragend', dragoptions));";
+        $this->execute_script($script);
+    }
+
+    /**
+     * Verify that an authenticated student cannot download an attachment from another group's board.
+     *
+     * @Then /^a student outside group "([^"]*)" cannot download a card attachment$/
+     * @param string $groupidnumber Group idnumber whose board belongs to another group.
+     */
+    public function student_outside_group_cannot_download_card_attachment(string $groupidnumber): void {
+        global $DB;
+
+        $currenturl = new moodle_url($this->getSession()->getCurrentUrl());
+        $cmid = (int)$currenturl->get_param('id');
+        if (empty($cmid)) {
+            throw new coding_exception('The current page is not a Kanban activity page.');
+        }
+
+        $cm = get_coursemodule_from_id('kanbanlearning', $cmid, 0, false, MUST_EXIST);
+        $group = $DB->get_record('groups', [
+            'courseid' => $cm->course,
+            'idnumber' => $groupidnumber,
+        ], '*', MUST_EXIST);
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $cm->instance,
+            'groupid' => $group->id,
+            'userid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $columnids = array_map('intval', explode(',', $board->sequence));
+        if (empty($columnids[0])) {
+            throw new coding_exception('The group board needs a column for the attachment access test.');
+        }
+
+        $boardmanager = new \\mod_kanbanlearning\\boardmanager($cmid, (int)$board->id);
+        $cardid = $boardmanager->add_card($columnids[0], 0, ['title' => 'Private group attachment test']);
+        $context = context_module::instance($cmid);
+        $filename = 'private-group-attachment.txt';
+        $secret = 'group-private-file-' . bin2hex(random_bytes(8));
+        get_file_storage()->create_file_from_string([
+            'contextid' => $context->id,
+            'component' => 'mod_kanbanlearning',
+            'filearea' => 'attachments',
+            'itemid' => $cardid,
+            'filepath' => '/',
+            'filename' => $filename,
+        ], $secret);
+
+        $fileurl = moodle_url::make_pluginfile_url(
+            $context->id,
+            'mod_kanbanlearning',
+            'attachments',
+            $cardid,
+            '/',
+            $filename
+        )->out(false);
+        $fileurljson = json_encode($fileurl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $secretjson = json_encode($secret, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $nodeid = 'kanbanlearning-group-attachment-check';
+        $nodeidjson = json_encode($nodeid);
+
+        $this->execute_script(
+            '(function() {' .
+            'var result = document.createElement("pre");' .
+            'result.id = ' . $nodeidjson . ';' .
+            'result.style.display = "none";' .
+            'document.body.appendChild(result);' .
+            'fetch(' . $fileurljson . ', {credentials: "same-origin", cache: "no-store"})' .
+            '.then(async function(response) {' .
+            'result.textContent = JSON.stringify({status: response.status, body: await response.text()});' .
+            'result.setAttribute("data-complete", "1");' .
+            '}).catch(function(error) {' .
+            'result.textContent = JSON.stringify({error: String(error)});' .
+            'result.setAttribute("data-complete", "1");' .
+            '});' .
+            '})()'
+        );
+
+        $deadline = microtime(true) + 10;
+        $response = '';
+        try {
+            do {
+                $response = $this->getSession()->evaluateScript(
+                    '(function() {' .
+                    'var node = document.getElementById(' . $nodeidjson . ');' .
+                    'return node && node.getAttribute("data-complete") === "1" ? node.textContent : "";' .
+                    '})()'
+                );
+                if (is_string($response) && $response !== '') {
+                    break;
+                }
+                usleep(100000);
+            } while (microtime(true) < $deadline);
+        } finally {
+            $this->execute_script(
+                'var node = document.getElementById(' . $nodeidjson . '); if (node) { node.remove(); }'
+            );
+        }
+
+        $outcome = is_string($response) ? json_decode($response, true) : null;
+        if (!is_array($outcome) || empty($outcome['status'])) {
+            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+                'Could not verify the response for the cross-group attachment request.',
+                $this->getSession()->getDriver()
+            );
+        }
+        if (strpos((string)($outcome['body'] ?? ''), $secret) !== false) {
+            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+                'A student from another group received the private card attachment.',
+                $this->getSession()->getDriver()
+            );
+        }
+    }
+
 }
