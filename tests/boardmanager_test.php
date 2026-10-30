@@ -611,7 +611,12 @@ final class boardmanager_test extends \advanced_testcase {
         $this->setAdminUser();
         $groupa = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group A']);
         $groupb = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group B']);
-        $DB->set_field('kanbanlearning', 'boardmode', constants::MOD_KANBANLEARNING_BOARDMODE_GROUP, ['id' => $this->kanbanlearning->id]);
+        $DB->set_field(
+            'kanbanlearning',
+            'boardmode',
+            constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
+            ['id' => $this->kanbanlearning->id]
+        );
         $DB->set_field(
             'kanbanlearning',
             'boardgroups',
