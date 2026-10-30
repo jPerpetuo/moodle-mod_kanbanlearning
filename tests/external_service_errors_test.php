@@ -20,6 +20,7 @@ namespace mod_kanbanlearning;
  * PHPUnit coverage for external service error paths.
  *
  * @package     mod_kanbanlearning
+ * @copyright   2026 Joao Ariel Perpetuo
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \mod_kanbanlearning\external\change_kanbanlearning_content
  * @runTestsInSeparateProcesses
