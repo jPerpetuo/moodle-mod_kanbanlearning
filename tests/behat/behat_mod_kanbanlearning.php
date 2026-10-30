@@ -313,10 +313,11 @@ class behat_mod_kanbanlearning extends behat_base {
             );
         }
 
+        $selector = '.mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child ' .
+            '.mod_kanbanlearning_card [data-action="toggle_approval_seal"]';
+        $selectorjson = json_encode($selector, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         $this->execute_script(
-            'const control = document.querySelector(".mod_kanbanlearning_column_container > ' .
-            '.mod_kanbanlearning_column:last-child .mod_kanbanlearning_card ' .
-            '[data-action="toggle_approval_seal"]");' .
+            'const control = document.querySelector(' . $selectorjson . ');' .
             'if (!control || control.getClientRects().length === 0) {' .
             'throw new Error("The visible approval reaction control was not found.");' .
             '}' .
