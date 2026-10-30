@@ -334,7 +334,7 @@ class behat_mod_kanbanlearning extends behat_base {
      */
     public function i_drag_card_to_bottom_of_column_on_kanban_board(string $cardtitle, string $targettitle): void {
         if (!$this->running_javascript()) {
-            throw new \\Behat\\Mink\\Exception\\DriverException(
+            throw new \Behat\Mink\Exception\DriverException(
                 'Kanban card drag and drop requires JavaScript.',
                 $this->getSession()
             );
@@ -342,29 +342,29 @@ class behat_mod_kanbanlearning extends behat_base {
 
         $cardtitlejson = json_encode($cardtitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         $targettitlejson = json_encode($targettitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
-        $script = 'const cardtitle = ' . $cardtitlejson . ";\\n" .
-            'const targettitle = ' . $targettitlejson . ";\\n" .
-            "const cards = Array.from(document.querySelectorAll('.mod_kanbanlearning_card'));\\n" .
-            "const source = cards.find((card) => {\\n" .
-            "    const link = card.querySelector('.mod_kanbanlearning_card_title a.quickeditlink');\\n" .
-            "    return link && link.textContent.trim() === cardtitle;\\n" .
-            "});\\n" .
-            "const columns = Array.from(document.querySelectorAll('.mod_kanbanlearning_column'));\\n" .
-            "const target = columns.find((column) => {\\n" .
-            "    const link = column.querySelector('a.quickeditlink');\\n" .
-            "    return link && link.textContent.trim() === targettitle;\\n" .
-            "});\\n" .
-            "if (!source || !target || source.closest('.mod_kanbanlearning_column') === target) {\\n" .
-            "    throw new Error('Kanban card or destination column for the drag step was not found.');\\n" .
-            "}\\n" .
-            "const bounds = target.getBoundingClientRect();\\n" .
-            "const clientY = Math.max(bounds.top + 1, bounds.bottom - 1);\\n" .
-            "const dataTransfer = new DataTransfer();\\n" .
-            "const dragoptions = {bubbles: true, cancelable: true, dataTransfer: dataTransfer, clientY: clientY};\\n" .
-            "source.dispatchEvent(new DragEvent('dragstart', dragoptions));\\n" .
-            "target.dispatchEvent(new DragEvent('dragenter', dragoptions));\\n" .
-            "target.dispatchEvent(new DragEvent('dragover', dragoptions));\\n" .
-            "target.dispatchEvent(new DragEvent('drop', dragoptions));\\n" .
+        $script = 'const cardtitle = ' . $cardtitlejson . ";\n" .
+            'const targettitle = ' . $targettitlejson . ";\n" .
+            "const cards = Array.from(document.querySelectorAll('.mod_kanbanlearning_card'));\n" .
+            "const source = cards.find((card) => {\n" .
+            "    const link = card.querySelector('.mod_kanbanlearning_card_title a.quickeditlink');\n" .
+            "    return link && link.textContent.trim() === cardtitle;\n" .
+            "});\n" .
+            "const columns = Array.from(document.querySelectorAll('.mod_kanbanlearning_column'));\n" .
+            "const target = columns.find((column) => {\n" .
+            "    const link = column.querySelector('a.quickeditlink');\n" .
+            "    return link && link.textContent.trim() === targettitle;\n" .
+            "});\n" .
+            "if (!source || !target || source.closest('.mod_kanbanlearning_column') === target) {\n" .
+            "    throw new Error('Kanban card or destination column for the drag step was not found.');\n" .
+            "}\n" .
+            "const bounds = target.getBoundingClientRect();\n" .
+            "const clientY = Math.max(bounds.top + 1, bounds.bottom - 1);\n" .
+            "const dataTransfer = new DataTransfer();\n" .
+            "const dragoptions = {bubbles: true, cancelable: true, dataTransfer: dataTransfer, clientY: clientY};\n" .
+            "source.dispatchEvent(new DragEvent('dragstart', dragoptions));\n" .
+            "target.dispatchEvent(new DragEvent('dragenter', dragoptions));\n" .
+            "target.dispatchEvent(new DragEvent('dragover', dragoptions));\n" .
+            "target.dispatchEvent(new DragEvent('drop', dragoptions));\n" .
             "source.dispatchEvent(new DragEvent('dragend', dragoptions));";
         $this->execute_script($script);
     }
@@ -400,7 +400,7 @@ class behat_mod_kanbanlearning extends behat_base {
             throw new coding_exception('The group board needs a column for the attachment access test.');
         }
 
-        $boardmanager = new \\mod_kanbanlearning\\boardmanager($cmid, (int)$board->id);
+        $boardmanager = new \mod_kanbanlearning\boardmanager($cmid, (int)$board->id);
         $cardid = $boardmanager->add_card($columnids[0], 0, ['title' => 'Private group attachment test']);
         $context = context_module::instance($cmid);
         $filename = 'private-group-attachment.txt';
@@ -467,13 +467,13 @@ class behat_mod_kanbanlearning extends behat_base {
 
         $outcome = is_string($response) ? json_decode($response, true) : null;
         if (!is_array($outcome) || empty($outcome['status'])) {
-            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+            throw new \Behat\Mink\Exception\ExpectationException(
                 'Could not verify the response for the cross-group attachment request.',
                 $this->getSession()->getDriver()
             );
         }
         if (strpos((string)($outcome['body'] ?? ''), $secret) !== false) {
-            throw new \\Behat\\Mink\\Exception\\ExpectationException(
+            throw new \Behat\Mink\Exception\ExpectationException(
                 'A student from another group received the private card attachment.',
                 $this->getSession()->getDriver()
             );
