@@ -28,6 +28,7 @@ Feature: Move cards using drag and drop
     And I wait until ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card" "css_element" exists
     And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card:nth-child(2) .mod_kanbanlearning_card_title .quickeditlink" "css_element"
     And I set the field with xpath "//textarea[contains(@class, 'mod_kanbanlearning_card_title_editor')]" to "Kanban drag and drop regression card"
+    And I press the enter key
     And I click on ".mod_kanbanlearning_column_container > .mod_kanbanlearning_column:nth-child(2) .mod_kanbanlearning_card:nth-child(2) .mod_kanbanlearning_action_menu_trigger" "css_element"
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][2]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban drag and drop regression card']]" "xpath_element" exists
     When I drag the "Kanban drag and drop regression card" card to the bottom of the "Doing" column on the Kanban board
