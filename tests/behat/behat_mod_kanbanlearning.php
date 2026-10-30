@@ -314,8 +314,8 @@ class behat_mod_kanbanlearning extends behat_base {
         }
 
         $this->execute_script(
-            'const control = document.querySelector(".mod_kanbanlearning_column_container > ' +
-            '.mod_kanbanlearning_column:last-child .mod_kanbanlearning_card ' +
+            'const control = document.querySelector(".mod_kanbanlearning_column_container > ' .
+            '.mod_kanbanlearning_column:last-child .mod_kanbanlearning_card ' .
             '[data-action="toggle_approval_seal"]");' .
             'if (!control || control.getClientRects().length === 0) {' .
             'throw new Error("The visible approval reaction control was not found.");' .
