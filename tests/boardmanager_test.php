@@ -674,5 +674,4 @@ final class boardmanager_test extends \advanced_testcase {
             ]));
         }
     }
-
 }
