@@ -35,6 +35,35 @@ require_once($behatbase);
  */
 class behat_mod_kanbanlearning extends behat_base {
     /**
+     * Add a test card to the first column before loading the Kanban activity.
+     *
+     * @Given /^the Kanban activity has a card titled "([^"]*)" in its first column$/
+     * @param string $title Card title.
+     */
+    public function kanban_activity_has_card_in_first_column(string $title): void {
+        global $DB;
+
+        $course = $DB->get_record('course', ['shortname' => 'C1'], 'id', MUST_EXIST);
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $course->id,
+            'name' => 'Learning Kanban',
+        ], 'id', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('kanbanlearning', $activity->id, $course->id, false, MUST_EXIST);
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $activity->id,
+            'userid' => 0,
+            'groupid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $columnids = array_map('intval', explode(',', $board->sequence));
+        if (empty($columnids[0])) {
+            throw new coding_exception('The Kanban board needs a first column for the drag and drop test.');
+        }
+
+        $boardmanager = new \\mod_kanbanlearning\\boardmanager($cm->id, (int)$board->id);
+        $boardmanager->add_card($columnids[0], 0, ['title' => $title]);
+    }
+    /**
      * Drag one column after another using the browser drag events handled by Moodle's reactive components.
      *
      * The generic Mink drag step does not reliably trigger the HTML5 drag events used by the board.
@@ -322,6 +351,37 @@ class behat_mod_kanbanlearning extends behat_base {
             'throw new Error("The visible approval reaction control was not found.");' .
             '}' .
             'control.focus();'
+        );
+    }
+
+    /**
+     * Wait for the reaction picker opening animation before testing the keyboard tab order.
+     *
+     * @Then /^the approval reaction picker finishes opening$/
+     */
+    public function approval_reaction_picker_finishes_opening(): void {
+        $selector = '.mod_kanbanlearning_column_container > .mod_kanbanlearning_column:last-child ' .
+            '.mod_kanbanlearning_card .mod_kanbanlearning_approval_seal_picker';
+        $selectorjson = json_encode($selector, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $deadline = microtime(true) + 5;
+
+        do {
+            $isopen = $this->getSession()->evaluateScript(
+                '(function() {' .
+                'var picker = document.querySelector(' . $selectorjson . ');' .
+                'var button = picker && picker.querySelector("[data-seal=approved]");' .
+                'return Boolean(picker && picker.classList.contains("is-open") && button && button.getClientRects().length);' .
+                '})()'
+            );
+            if ($isopen) {
+                return;
+            }
+            usleep(50000);
+        } while (microtime(true) < $deadline);
+
+        throw new \\Behat\\Mink\\Exception\\ExpectationException(
+            'The approval reaction picker did not finish opening.',
+            $this->getSession()->getDriver()
         );
     }
 
