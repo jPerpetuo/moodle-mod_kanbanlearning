@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_kanbanlearning';
 $plugin->release = '0.4.0-beta';
-$plugin->version = 2026102002;
+$plugin->version = 2026110300;
 $plugin->requires = 2022112800;
-$plugin->supported = [401, 502];
+$plugin->supported = [401, 503];
 $plugin->maturity = MATURITY_BETA;
