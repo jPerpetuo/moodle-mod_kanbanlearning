@@ -386,6 +386,42 @@ class behat_mod_kanbanlearning extends behat_base {
     }
 
     /**
+     * Add a test card to the second column before loading the Kanban activity.
+     *
+     * @Given /^the Kanban activity has a card titled "([^"]*)" in its second column$/
+     * @param string $title Card title.
+     */
+    public function kanban_activity_has_card_in_second_column(string $title): void {
+        global $DB;
+
+        $course = $DB->get_record('course', ['shortname' => 'C1'], 'id', MUST_EXIST);
+        $activity = $DB->get_record('kanbanlearning', [
+            'course' => $course->id,
+            'name' => 'Learning Kanban',
+        ], 'id', MUST_EXIST);
+        $cm = get_coursemodule_from_instance(
+            'kanbanlearning',
+            $activity->id,
+            $course->id,
+            false,
+            MUST_EXIST
+        );
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $activity->id,
+            'userid' => 0,
+            'groupid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $columnids = array_map('intval', explode(',', $board->sequence));
+        if (empty($columnids[1])) {
+            throw new coding_exception('The Kanban board needs a second column for the drag and drop test.');
+        }
+
+        $boardmanager = new \mod_kanbanlearning\boardmanager($cm->id, (int)$board->id);
+        $boardmanager->add_card($columnids[1], 0, ['title' => $title]);
+    }
+
+    /**
      * Drag a card to the bottom of a target column using the board's native HTML5 drag handlers.
      *
      * @When /^I drag the "([^"]*)" card to the bottom of the "([^"]*)" column on the Kanban board$/
