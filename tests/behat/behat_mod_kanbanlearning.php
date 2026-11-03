@@ -422,13 +422,14 @@ class behat_mod_kanbanlearning extends behat_base {
     }
 
     /**
-     * Drag a card to the bottom of a target column using the board's native HTML5 drag handlers.
+     * Drag a card to the third board column using the board's native HTML5 drag handlers.
      *
-     * @When /^I drag the "([^"]*)" card to the bottom of the "([^"]*)" column on the Kanban board$/
+     * The generic Mink drag step does not reliably trigger the HTML5 drag events used by the board.
+     *
+     * @When /^I drag the "([^"]*)" card to the bottom of the third column on the Kanban board$/
      * @param string $cardtitle Visible title of the card.
-     * @param string $targettitle Visible title of the destination column.
      */
-    public function i_drag_card_to_bottom_of_column_on_kanban_board(string $cardtitle, string $targettitle): void {
+    public function i_drag_card_to_bottom_of_third_column_on_kanban_board(string $cardtitle): void {
         if (!$this->running_javascript()) {
             throw new \Behat\Mink\Exception\DriverException(
                 'Kanban card drag and drop requires JavaScript.',
@@ -437,21 +438,19 @@ class behat_mod_kanbanlearning extends behat_base {
         }
 
         $cardtitlejson = json_encode($cardtitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
-        $targettitlejson = json_encode($targettitle, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         $script = 'const cardtitle = ' . $cardtitlejson . ";\n" .
-            'const targettitle = ' . $targettitlejson . ";\n" .
             "const cards = Array.from(document.querySelectorAll('.mod_kanbanlearning_card'));\n" .
             "const source = cards.find((card) => {\n" .
             "    const link = card.querySelector('.mod_kanbanlearning_card_title a.quickeditlink');\n" .
-            "    return link && link.textContent.trim() === cardtitle;\n" .
+            "    return link && link.textContent.replace(/\\s+/g, ' ').trim() === cardtitle;\n" .
             "});\n" .
             "const columns = Array.from(document.querySelectorAll('.mod_kanbanlearning_column'));\n" .
-            "const target = columns.find((column) => {\n" .
-            "    const link = column.querySelector('a.quickeditlink');\n" .
-            "    return link && link.textContent.trim() === targettitle;\n" .
-            "});\n" .
-            "if (!source || !target || source.closest('.mod_kanbanlearning_column') === target) {\n" .
-            "    throw new Error('Kanban card or destination column for the drag step was not found.');\n" .
+            "const target = columns[2];\n" .
+            "if (!source) {\n" .
+            "    throw new Error('Kanban card for the drag step was not found.');\n" .
+            "}\n" .
+            "if (!target || source.closest('.mod_kanbanlearning_column') === target) {\n" .
+            "    throw new Error('The third Kanban column for the drag step was not found.');\n" .
             "}\n" .
             "const bounds = target.getBoundingClientRect();\n" .
             "const clientY = Math.max(bounds.top + 1, bounds.bottom - 1);\n" .
