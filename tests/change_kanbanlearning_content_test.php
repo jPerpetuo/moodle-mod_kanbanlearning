@@ -78,7 +78,13 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        $columnids = array_map('intval', explode(',', $DB->get_field(
+            'kanbanlearning_board',
+            'sequence',
+            ['id' => $boardid],
+            MUST_EXIST
+        )));
+        $DB->set_field('kanbanlearning_column', 'locked', 0, ['kanbanlearning_board' => $boardid]);
 
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::add_column(
             $this->kanbanlearning->cmid,
@@ -194,7 +200,8 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        // Use the board's stored order instead of relying on the database's default row order.
+        $columnids = explode(',', $boardmanager->get_board()->sequence);
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::move_column(
             $this->kanbanlearning->cmid,
             $boardid,
@@ -373,12 +380,20 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
+        $columnids = $DB->get_fieldset_select(
+            'kanbanlearning_column',
+            'id',
+            'kanbanlearning_board = :id',
+            ['id' => $boardid],
+            'id ASC'
+        );
         $cards = [];
         foreach ($columnids as $columnid) {
             $cardid = $boardmanager->add_card($columnid, 0, ['title' => 'Testcard']);
             $cards[] = $boardmanager->get_card($cardid);
         }
+        $boardsequence = explode(',', $DB->get_field('kanbanlearning_board', 'sequence', ['id' => $boardid]));
+        $expectedsequence = array_values(array_diff($boardsequence, [(string)$columnids[0]]));
         $returnvalue = \mod_kanbanlearning\external\change_kanbanlearning_content::delete_column(
             $this->kanbanlearning->cmid,
             $boardid,
@@ -398,7 +413,7 @@ final class change_kanbanlearning_content_test extends \advanced_testcase {
 
         $this->assertEquals($cards[0]->id, $update[0]['fields']['id']);
         $this->assertEquals($columnids[0], $update[1]['fields']['id']);
-        $this->assertEquals(join(',', [$columnids[1], $columnids[2]]), $update[2]['fields']['sequence']);
+        $this->assertEquals(join(',', $expectedsequence), $update[2]['fields']['sequence']);
     }
 
     /**

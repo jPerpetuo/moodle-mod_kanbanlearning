@@ -1668,7 +1668,7 @@ class boardmanager {
         }
         $cardupdate['attachments'] = helper::get_attachments($context->id, $cardid);
         $cardupdate['hasattachment'] = count($cardupdate['attachments']) > 0;
-        $cardupdate['hasdescription'] = !empty(trim((string)($cardupdate['description'] ?? ''))) || $cardupdate['hasattachment'];
+        $cardupdate['hasdescription'] = !empty(trim((string)($carddata['description'] ?? ''))) || $cardupdate['hasattachment'];
         if (!empty($cardupdate['description'])) {
             $cardupdate['description'] = file_rewrite_pluginfile_urls(
                 $cardupdate['description'],
@@ -1777,10 +1777,10 @@ class boardmanager {
             'kanbanlearning_instance = :id',
             ['id' => $this->kanbanlearning->id]
         );
-        if (empty($boards)) {
+        if (empty($boardids)) {
             $boardids = $allboardids;
         } else {
-            $boardids = array_intersect($boards, $allboardids);
+            $boardids = array_intersect($boardids, $allboardids);
         }
         $card = $this->get_card($cardid);
         $originalboard = $card->kanbanlearning_board;

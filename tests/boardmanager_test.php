@@ -205,6 +205,42 @@ final class boardmanager_test extends \advanced_testcase {
      * Unsupported reaction keys must not be persisted.
      * @return void
      */
+    /**
+     * Sending a card copy to another board does not carry or retain its reaction.
+     *
+     * @return void
+     */
+    public function test_push_card_copy_does_not_copy_approval_seal(): void {
+        global $DB;
+
+        $DB->set_field('kanbanlearning', 'approval_seals', 1, ['id' => $this->kanbanlearning->id]);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid);
+        $sourceboardid = $boardmanager->create_board();
+        $targetboardid = $boardmanager->create_board();
+        $otherboardid = $boardmanager->create_board();
+        $boardmanager->load_board($sourceboardid);
+        $completioncolumnid = $boardmanager->get_first_completion_column();
+        $cardid = $boardmanager->add_card($completioncolumnid, 0, ['title' => 'Completed card']);
+        $boardmanager->set_approval_seal($cardid, 'approved');
+
+        $boardmanager->push_card_copy($cardid, [$targetboardid]);
+        $copy = $DB->get_record('kanbanlearning_card', [
+            'kanbanlearning_board' => $targetboardid,
+            'originalid' => $cardid,
+        ], '*', MUST_EXIST);
+
+        $this->assertSame('', $copy->approval_seal);
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', [
+            'kanbanlearning_board' => $otherboardid,
+            'originalid' => $cardid,
+        ]));
+
+        $DB->set_field('kanbanlearning_card', 'approval_seal', 'highlight', ['id' => $copy->id]);
+        $boardmanager->push_card_copy($cardid, [$targetboardid]);
+
+        $this->assertSame('', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $copy->id]));
+        $this->assertSame('approved', $DB->get_field('kanbanlearning_card', 'approval_seal', ['id' => $cardid]));
+    }
     public function test_approval_seal_rejects_unknown_key(): void {
         global $DB;
 
@@ -251,9 +287,12 @@ final class boardmanager_test extends \advanced_testcase {
         $boardmanager = new boardmanager($this->kanbanlearning->cmid);
         $boardid = $boardmanager->create_board();
         $boardmanager->load_board($boardid);
-        $columnids = $DB->get_fieldset_select('kanbanlearning_column', 'id', 'kanbanlearning_board = :id', ['id' => $boardid]);
-        $normalcolumnid = reset($columnids);
-        $cardid = $boardmanager->add_card($normalcolumnid, 0, ['title' => 'Work in progress']);
+        $columns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $boardid], 'id ASC');
+        $normalcolumn = reset($columns);
+        $normalcolumn->title = 'Work in progress';
+        $normalcolumn->options = '{}';
+        $DB->update_record('kanbanlearning_column', $normalcolumn);
+        $cardid = $boardmanager->add_card($normalcolumn->id, 0, ['title' => 'Work in progress']);
         $DB->set_field('kanbanlearning_card', 'completed', 1, ['id' => $cardid]);
 
         $this->expectException(\moodle_exception::class);
@@ -506,5 +545,133 @@ final class boardmanager_test extends \advanced_testcase {
                 'expected' => '{"test":"<b>good html<\/b>"}',
             ],
         ];
+    }
+
+    /**
+     * Applying a template requires confirmation before removing cards and preserves board identity.
+     *
+     * @return void
+     */
+    public function test_apply_template_requires_confirmation_before_overwriting_cards(): void {
+        global $DB;
+
+        $board = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $this->kanbanlearning->id,
+            'userid' => 0,
+            'groupid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid, (int)$board->id);
+        $columnids = array_map('intval', explode(',', $board->sequence));
+        $sourcecolumnid = $columnids[0];
+
+        $DB->set_field('kanbanlearning_column', 'title', 'Template source column', ['id' => $sourcecolumnid]);
+        $templateid = $boardmanager->create_template();
+        $DB->set_field('kanbanlearning_column', 'title', 'Target-only column title', ['id' => $sourcecolumnid]);
+        $cardid = $boardmanager->add_card($sourcecolumnid, 0, ['title' => 'Keep until confirmed']);
+
+        $exception = null;
+        try {
+            $boardmanager->apply_template_to_board((int)$board->id, $templateid, false);
+        } catch (\moodle_exception $caught) {
+            $exception = $caught;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertSame('templateoverwriteconfirmationrequired', $exception->errorcode);
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $cardid]));
+        $this->assertSame(
+            'Target-only column title',
+            $DB->get_field('kanbanlearning_column', 'title', ['id' => $sourcecolumnid])
+        );
+
+        $boardmanager->apply_template_to_board((int)$board->id, $templateid, true);
+
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['id' => $cardid]));
+        $updatedboard = $DB->get_record('kanbanlearning_board', ['id' => $board->id], '*', MUST_EXIST);
+        $this->assertSame((int)$board->id, (int)$updatedboard->id);
+        $this->assertSame(0, (int)$updatedboard->userid);
+        $this->assertSame(0, (int)$updatedboard->groupid);
+        $this->assertSame(0, (int)$updatedboard->template);
+        $updatedcolumnids = array_map('intval', explode(',', $updatedboard->sequence));
+        $this->assertSame(
+            'Template source column',
+            $DB->get_field('kanbanlearning_column', 'title', ['id' => $updatedcolumnids[0]])
+        );
+    }
+
+    /**
+     * Bulk template application checks every group board before deleting any cards.
+     *
+     * @return void
+     */
+    public function test_apply_template_to_group_boards_checks_all_boards_before_overwriting(): void {
+        global $DB;
+
+        $this->setAdminUser();
+        $groupa = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group A']);
+        $groupb = $this->getDataGenerator()->create_group(['courseid' => $this->course->id, 'name' => 'Template Group B']);
+        $DB->set_field(
+            'kanbanlearning',
+            'boardmode',
+            constants::MOD_KANBANLEARNING_BOARDMODE_GROUP,
+            ['id' => $this->kanbanlearning->id]
+        );
+        $DB->set_field(
+            'kanbanlearning',
+            'boardgroups',
+            $groupa->id . ',' . $groupb->id,
+            ['id' => $this->kanbanlearning->id]
+        );
+
+        $sharedboard = $DB->get_record('kanbanlearning_board', [
+            'kanbanlearning_instance' => $this->kanbanlearning->id,
+            'userid' => 0,
+            'groupid' => 0,
+            'template' => 0,
+        ], '*', MUST_EXIST);
+        $boardmanager = new boardmanager($this->kanbanlearning->cmid, (int)$sharedboard->id);
+        $sharedcolumnids = array_map('intval', explode(',', $sharedboard->sequence));
+        $DB->set_field('kanbanlearning_column', 'title', 'Bulk template source', ['id' => $sharedcolumnids[0]]);
+        $templateid = $boardmanager->create_template();
+
+        $groupboarda = $boardmanager->get_or_create_board(0, (int)$groupa->id);
+        $groupboardb = $boardmanager->get_or_create_board(0, (int)$groupb->id);
+        $groupcolumns = [];
+        foreach ([$groupboarda, $groupboardb] as $boardid) {
+            $groupboard = $DB->get_record('kanbanlearning_board', ['id' => $boardid], '*', MUST_EXIST);
+            $columnids = array_map('intval', explode(',', $groupboard->sequence));
+            $groupcolumns[$boardid] = $columnids[0];
+            $DB->set_field('kanbanlearning_column', 'title', 'Group-specific title ' . $boardid, ['id' => $columnids[0]]);
+        }
+        $groupmanager = new boardmanager($this->kanbanlearning->cmid, (int)$groupboardb);
+        $cardid = $groupmanager->add_card($groupcolumns[$groupboardb], 0, ['title' => 'Preserve until confirmed']);
+
+        $exception = null;
+        try {
+            $boardmanager->apply_template_to_all_group_boards($templateid, false);
+        } catch (\moodle_exception $caught) {
+            $exception = $caught;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertSame('templateoverwriteconfirmationrequired', $exception->errorcode);
+        $this->assertTrue($DB->record_exists('kanbanlearning_card', ['id' => $cardid]));
+        foreach ([$groupboarda, $groupboardb] as $boardid) {
+            $this->assertSame(
+                'Group-specific title ' . $boardid,
+                $DB->get_field('kanbanlearning_column', 'title', ['id' => $groupcolumns[$boardid]])
+            );
+        }
+
+        $boardmanager->apply_template_to_all_group_boards($templateid, true);
+
+        $this->assertFalse($DB->record_exists('kanbanlearning_card', ['id' => $cardid]));
+        foreach ([$groupboarda, $groupboardb] as $boardid) {
+            $this->assertTrue($DB->record_exists('kanbanlearning_column', [
+                'kanbanlearning_board' => $boardid,
+                'title' => 'Bulk template source',
+            ]));
+        }
     }
 }

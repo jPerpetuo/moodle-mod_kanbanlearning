@@ -358,8 +358,14 @@ export default class extends kanbanlearningComponent {
      * Dispatch event to update the discussion data.
      */
     _updateDiscussion() {
-        this.getElement(selectors.DISCUSSIONMODAL).classList.add('mod_kanbanlearning_loading');
-        this.reactive.dispatch('getDiscussionUpdates', this.id);
+        const modal = this.getElement(selectors.DISCUSSIONMODAL);
+        modal.classList.add('mod_kanbanlearning_loading');
+        Promise.resolve(this.reactive.dispatch('getDiscussionUpdates', this.id))
+            .then(() => modal.classList.remove('mod_kanbanlearning_loading'))
+            .catch((error) => {
+                modal.classList.remove('mod_kanbanlearning_loading');
+                displayException(error);
+            });
     }
 
     /**
@@ -558,6 +564,7 @@ export default class extends kanbanlearningComponent {
         this.getElement(selectors.DISCUSSIONMODALTITLE).textContent = incomingtitleplain;
     }
         const hasstyleupdate = element.options !== undefined || element.background !== undefined;
+        const hascontentupdate = element.description !== undefined || element.attachments !== undefined;
         const currenthasdescription = this.getElement().classList.contains('mod_kanbanlearning_hasdescription');
         const currenthasattachment = this.getElement().classList.contains('mod_kanbanlearning_hasattachment');
         const currenthasdiscussion = this.getElement().classList.contains('mod_kanbanlearning_hasdiscussion');
@@ -565,6 +572,7 @@ export default class extends kanbanlearningComponent {
         if (element.hasdescription !== undefined) {
             const nexthasdescription = Boolean(element.hasdescription);
             const preservetransientdescriptiondrop = hasstyleupdate &&
+                !hascontentupdate &&
                 currenthasdescription &&
                 !nexthasdescription;
             if (!preservetransientdescriptiondrop) {
@@ -574,6 +582,7 @@ export default class extends kanbanlearningComponent {
         if (element.hasattachment !== undefined) {
             const nexthasattachment = Boolean(element.hasattachment);
             const preservetransientattachmentdrop = hasstyleupdate &&
+                !hascontentupdate &&
                 currenthasattachment &&
                 !nexthasattachment;
             if (!preservetransientattachmentdrop) {
@@ -787,12 +796,15 @@ export default class extends kanbanlearningComponent {
             return;
         }
         const seal = target.dataset.action === 'remove_approval_seal' ? '' : target.dataset.seal;
-        this.reactive.dispatch('setApprovalSeal', this.id, seal);
+        const update = this.reactive.dispatch('setApprovalSeal', this.id, seal);
         const picker = this.getElement().querySelector('.mod_kanbanlearning_approval_seal_picker');
         if (picker) {
             this._setApprovalSealPickerOpen(picker, false);
             if (event.detail === 0) {
-                this.getElement(selectors.APPROVALSEALTOGGLE, this.id)?.focus();
+                // The reactive update can re-render the card and discard focus; restore it after the update completes.
+                Promise.resolve(update)
+                    .then(() => this.getElement(selectors.APPROVALSEALTOGGLE, this.id)?.focus())
+                    .catch(displayException);
             }
         }
     }

@@ -32,7 +32,7 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
     protected function define_structure(): array {
         $paths = [];
         $paths[] = new restore_path_element('kanbanlearning', '/activity/kanbanlearning');
-        $userinfo = $this->get_setting_value('userinfo');
+        $userinfo = $this->get_setting_value('users');
 
         $paths[] = new restore_path_element('board', '/activity/kanbanlearning/boards/kanbanlearning_board');
         $paths[] = new restore_path_element(
@@ -89,16 +89,23 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         if (!$includegroups) {
             $data->boardgroups = '';
             $data->boardgroupid = 0;
-        } else if (!empty($data->boardgroups)) {
-            $mappedgroupids = [];
-            $groupids = preg_split('/[;,]/', (string)$data->boardgroups, -1, PREG_SPLIT_NO_EMPTY);
-            foreach ($groupids as $groupid) {
-                $mappedgroupid = $this->get_mappingid('group', (int)$groupid);
-                if (!empty($mappedgroupid)) {
-                    $mappedgroupids[] = (int)$mappedgroupid;
-                }
+        } else {
+            if (!empty($data->boardgroupid)) {
+                $mappedboardgroupid = $this->get_mappingid('group', (int)$data->boardgroupid);
+                $data->boardgroupid = !empty($mappedboardgroupid) ? (int)$mappedboardgroupid : 0;
             }
-            $data->boardgroups = implode(',', array_unique($mappedgroupids));
+
+            if (!empty($data->boardgroups)) {
+                $mappedgroupids = [];
+                $groupids = preg_split('/[;,]/', (string)$data->boardgroups, -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($groupids as $groupid) {
+                    $mappedgroupid = $this->get_mappingid('group', (int)$groupid);
+                    if (!empty($mappedgroupid)) {
+                        $mappedgroupids[] = (int)$mappedgroupid;
+                    }
+                }
+                $data->boardgroups = implode(',', array_unique($mappedgroupids));
+            }
         }
         if (
             (int)$data->boardmode === \mod_kanbanlearning\constants::MOD_KANBANLEARNING_BOARDMODE_GROUP
@@ -128,7 +135,7 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         $data = (object) $data;
         $oldid = $data->id;
 
-        if ($this->get_setting_value('userinfo')) {
+        if ($this->get_setting_value('users')) {
             $data->userid = $this->get_mappingid('user', $data->userid);
             $data->groupid = $this->get_mappingid('group', $data->groupid);
         } else {
@@ -177,7 +184,7 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
         $data = (object) $data;
         $oldid = $data->id;
 
-        $userinfo = $this->get_setting_value('userinfo');
+        $userinfo = $this->get_setting_value('users');
         if (!$userinfo) {
             $data->discussion = 0;
         }
@@ -285,7 +292,7 @@ class restore_kanbanlearning_activity_structure_step extends restore_activity_st
             $kanbanlearningcolumns = $DB->get_records('kanbanlearning_column', ['kanbanlearning_board' => $board->id]);
 
             foreach ($kanbanlearningcolumns as $column) {
-                if (!$this->get_setting_value('userinfo')) {
+                if (!$this->get_setting_value('users')) {
                     // Card IDs are not restored without user data.
                     $DB->set_field('kanbanlearning_column', 'sequence', '', ['id' => $column->id]);
                     continue;
