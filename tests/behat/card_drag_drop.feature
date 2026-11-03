@@ -26,6 +26,6 @@ Feature: Move cards using drag and drop
     Given the Kanban activity has a card titled "Kanban drag and drop regression card" in its second column
     And I am on the "Learning Kanban" "kanbanlearning activity" page logged in as teacher1
     And I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][2]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban drag and drop regression card']]" "xpath_element" exists
-    When I drag the "Kanban drag and drop regression card" card to the bottom of the "Doing" column on the Kanban board
+    When I drag the "Kanban drag and drop regression card" card to the bottom of the third column on the Kanban board
     Then I wait until "//li[contains(@class, 'mod_kanbanlearning_column')][3]//li[contains(@class, 'mod_kanbanlearning_card')][.//a[normalize-space(.)='Kanban drag and drop regression card']]" "xpath_element" exists
     And I should see "Kanban drag and drop regression card" in the "//li[contains(@class, 'mod_kanbanlearning_column')][3]" "xpath_element"
