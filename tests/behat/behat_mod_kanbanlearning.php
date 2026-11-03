@@ -60,7 +60,7 @@ class behat_mod_kanbanlearning extends behat_base {
             throw new coding_exception('The Kanban board needs a first column for the drag and drop test.');
         }
 
-        $boardmanager = new \\mod_kanbanlearning\\boardmanager($cm->id, (int)$board->id);
+        $boardmanager = new \mod_kanbanlearning\boardmanager($cm->id, (int)$board->id);
         $boardmanager->add_card($columnids[0], 0, ['title' => $title]);
     }
     /**
@@ -379,7 +379,7 @@ class behat_mod_kanbanlearning extends behat_base {
             usleep(50000);
         } while (microtime(true) < $deadline);
 
-        throw new \\Behat\\Mink\\Exception\\ExpectationException(
+        throw new \Behat\Mink\Exception\ExpectationException(
             'The approval reaction picker did not finish opening.',
             $this->getSession()->getDriver()
         );
